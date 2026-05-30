@@ -48,7 +48,7 @@ Solutions disponibles / à suggérer :
 | Terrasse de devant | Plein soleil matin + midi, très exposée côté rue, reste chaude toute la journée en été — la plus chaude des deux terrasses | Plantes aimant chaleur et soleil intense, figuier, aromatiques |
 | Terrasse de derrière | Soleil l'après-midi, un mur ombragé apporte un peu d'ombre, brise du jardin — moins chaude que devant malgré soleil de l'après-midi | Plantes mi-ombre ou sensibles à la chaleur excessive — érable et hortensia déplacés ici ; groseiller prévu ici |
 | Mini jardin de devant | Petit espace en pleine terre entre la maison et le mur côté rue. Moins de soleil direct qu'on pourrait croire malgré l'orientation devant — végétation dense qui s'ombre elle-même. Pas d'arrosage régulier prévu (zone jardin = risque stress hydrique). En cours de restructuration. | Arbustes rustiques, plantes ne nécessitant pas d'arrosage fréquent |
-| Jardin général | Arbustes, vivaces, pleine terre | Framboisier, olivier |
+| Jardin général | Arbustes, vivaces, pleine terre | Framboisier, olivier, roses |
 | Intérieur | Lumière indirecte | Pothos, pachira, dracaena, curcuma |
 
 ---
