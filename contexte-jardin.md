@@ -45,9 +45,20 @@ Solutions disponibles / à suggérer :
 | Potager mi-ombre | À côté de la mini-serre, sol plus travaillé | Poireaux, laitues (avec protection), carottes |
 | Mini-serre | Très chaude en été | Aubergines, poivrons, piments, patates |
 | Serre grande | Bacs gauche/droite/milieu | Radis, semis protégés |
-| Terrasse | Pots et bacs, soleil variable | Plantes en pots, herbs |
+| Terrasse de devant | Plein soleil matin + midi, très exposée côté rue, reste chaude toute la journée en été — la plus chaude des deux terrasses | Plantes aimant chaleur et soleil intense, figuier, groseiller, aromatiques |
+| Terrasse de derrière | Soleil l'après-midi, un mur ombragé apporte un peu d'ombre, brise du jardin — moins chaude que devant malgré soleil de l'après-midi | Plantes mi-ombre ou sensibles à la chaleur excessive — c'est là qu'ont été déplacés l'érable et l'hortensia |
 | Jardin général | Arbustes, vivaces | Framboisier, érable, hortensia |
 | Intérieur | Lumière indirecte | Pothos, pachira, dracaena, curcuma |
+
+---
+
+## Arrosage par zone — fiabilité
+
+- **Intérieur** : zone la plus surveillée, arrosage fiable
+- **Terrasse de devant** : très bien arrosée, priorité naturelle
+- **Terrasse de derrière** : bien arrosée, priorité naturelle
+- **Serre (jardin)** : arrosée mais demande un effort actif — à ne pas oublier
+- **Jardin (pots en pleine terre)** : zone à risque élevé de stress hydrique — oublis fréquents possibles. Éviter d'y mettre des plantes en pot très sensibles à la sécheresse.
 
 ---
 
