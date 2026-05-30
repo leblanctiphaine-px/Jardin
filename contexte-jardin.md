@@ -45,9 +45,10 @@ Solutions disponibles / à suggérer :
 | Potager mi-ombre | À côté de la mini-serre, sol plus travaillé | Poireaux, laitues (avec protection), carottes |
 | Mini-serre | Très chaude en été | Aubergines, poivrons, piments, patates |
 | Serre grande | Bacs gauche/droite/milieu | Radis, semis protégés |
-| Terrasse de devant | Plein soleil matin + midi, très exposée côté rue, reste chaude toute la journée en été — la plus chaude des deux terrasses | Plantes aimant chaleur et soleil intense, figuier, groseiller, aromatiques |
-| Terrasse de derrière | Soleil l'après-midi, un mur ombragé apporte un peu d'ombre, brise du jardin — moins chaude que devant malgré soleil de l'après-midi | Plantes mi-ombre ou sensibles à la chaleur excessive — c'est là qu'ont été déplacés l'érable et l'hortensia |
-| Jardin général | Arbustes, vivaces | Framboisier, érable, hortensia |
+| Terrasse de devant | Plein soleil matin + midi, très exposée côté rue, reste chaude toute la journée en été — la plus chaude des deux terrasses | Plantes aimant chaleur et soleil intense, figuier, aromatiques |
+| Terrasse de derrière | Soleil l'après-midi, un mur ombragé apporte un peu d'ombre, brise du jardin — moins chaude que devant malgré soleil de l'après-midi | Plantes mi-ombre ou sensibles à la chaleur excessive — érable et hortensia déplacés ici ; groseiller prévu ici |
+| Mini jardin de devant | Petit espace en pleine terre entre la maison et le mur côté rue. Moins de soleil direct qu'on pourrait croire malgré l'orientation devant — végétation dense qui s'ombre elle-même. Pas d'arrosage régulier prévu (zone jardin = risque stress hydrique). En cours de restructuration. | Arbustes rustiques, plantes ne nécessitant pas d'arrosage fréquent |
+| Jardin général | Arbustes, vivaces, pleine terre | Framboisier, olivier |
 | Intérieur | Lumière indirecte | Pothos, pachira, dracaena, curcuma |
 
 ---
@@ -74,6 +75,28 @@ Solutions disponibles / à suggérer :
 
 - **Vincent** : aide au jardin, à vérifier s'il a coupé les mauvaises herbes et branches du framboisier
 - **Flo** : doit apporter des billes d'argile pour le pot à rétention d'eau des tomates
+
+---
+
+## Mini jardin de devant — état et chantier en cours
+
+Petit jardin en pleine terre côté rue, vu depuis la terrasse de devant (rambarde métallique grise).
+
+### Plantes identifiées
+- **2 viogniers blancs** : l'un mort (à déraciner), l'autre en mauvais état à cause de la chenille caractéristique de cet arbre — à tailler drastiquement. Question ouverte : replanter loin pour échapper aux chenilles, ou faire des boutures pour en profiter quand même ?
+- **2 érables plantés l'un contre l'autre** (sûrement pour l'effet visuel à l'origine) — à séparer
+- Arbuste vert-jaune vif (gauche sur photo 1, dense et bien développé)
+- Végétation mixte : iris, plantes basses, branches mortes, envahi
+
+### Tâches identifiées
+- [ ] Déraciner le viognier mort
+- [ ] Tailler drastiquement le viognier malade (décider ensuite : replanter ailleurs ou boutures)
+- [ ] Séparer les deux érables
+- [ ] Désherbage général et dégagement de la zone
+
+### Notes
+- Moins de soleil direct que prévu malgré l'orientation côté rue — la végétation dense crée de l'ombre
+- Pas d'arrosage régulier prévu (zone pleine terre, accès moins fréquent) → éviter d'y mettre des plantes sensibles à la sécheresse comme le groseiller
 
 ---
 
