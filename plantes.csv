@@ -1,11 +1,11 @@
 nom,emplacement,etat,besoins_eau,ensoleillement,notes
-Haricots,jardin,en croissance,moyen,plein soleil,ont poussé plus vite que prévu
+Haricots,jardin,mangés par limaces — à resemer,moyen,plein soleil,premier semis détruit par limaces — resemer avec protection granulés + cloche
 Framboisier,jardin,actif,faible,plein soleil,branches au-dessus à éclaircir pour plus de lumière
-Tomates,terrasse (pot avec coupelle),sur-arrosée,élevé,plein soleil,"feuilles qui jaunissent = noyade. STOP coupelle — ne jamais remplir la coupelle, la vider si eau stagnante. Arroser seulement le dessus du pot quand les 2-3 cm du dessus sont secs. Laisser sécher avant de réarroser"
+Tomates (6 pieds),terrasse + jardin,en croissance,élevé,plein soleil,"6 plants dont 1 en pot terrasse (coupelle vidée). STOP coupelle — arroser seulement le dessus quand les 2-3 cm du dessus sont secs"
 Figuier,bac (déplanté du jardin),stressé — transplantation,moyen,plein soleil,"feuilles qui fanent = choc de transplantation. Pas perdu si réagit vite. Mettre à l'ombre partielle, arroser sans noyer, ne pas fertiliser maintenant. Surveiller nouvelles feuilles dans 2-3 semaines"
 Poireaux,jardin,à replanter,moyen,mi-ombre,"filiformes et jaunis — urgence max, à planter cette semaine sinon perdus. Arroser la veille, trou au manche, ne pas reboucher"
 Aubergine,pépinière,à repiquer,élevé,plein soleil,légèrement stressée mais récupérable — repiquer dans les 10 jours en plein soleil sol chaud
-Basilic,pépinière,à repiquer,moyen,plein soleil,"2 plants corrects — repiquer sous 3 semaines, attendre fin des risques de gel"
+Basilic (5 plants),serre (x2) + terrasse (x2) + intérieur (x1),actif,moyen,plein soleil,"bien installé — 2 en serre, 2 en terrasse, 1 intérieur. Stock graines supplémentaires disponibles"
 Poivrier du Sichuan,pépinière (caissette),semis,moyen,mi-ombre,"jolis semis — repiquer en godets 8-10 cm dans 2-4 semaines (quand 2-3 vraies feuilles, ~5-6 cm), puis pleine terre à l'automne"
 Pothos (x3),boutures en veau,à rempoter,moyen,lumière indirecte,"racines bien formées (~10 cm pour le centre) — rempoter aujourd'hui. Terreau drainant, pot avec trou. Après rempotage laisser sécher entre deux arrosages"
 Curcuma,intérieur (grand pot),en croissance lente,élevé,lumière indirecte lumineuse,"pousses sorties mais feuilles pâles et croissance stagnante — vérifier luminosité et apporter engrais liquide"
@@ -67,3 +67,7 @@ Mélange pour Abeilles Bijenmix,stock graines,non semé,faible,plein soleil,"12 
 Capucine,stock graines,non semé,faible,plein soleil,"du jardin de la maman d'Emilie — pleine terre, semis avril-mai. ⚠️ PAS à côté des choux : attire les chenilles qui les mangent"
 Vesce d'Hiver,stock graines,non semé,faible,plein soleil,"engrais vert bio (Vicia villosa) — 80g, fixe l'azote, améliore structure du sol argileux"
 Butternut 2025,stock graines,non semé,moyen,plein soleil,"graines maison — semis mi-mai, pleine terre. Possible F1 hybride à confirmer"
+Courgette Genovese (3 plants),jardin,en croissance,moyen,plein soleil,3 plants en place — stock graines disponible si perte
+Concombre Tendergreen Burpless (2 plants),serre ou jardin,en croissance,élevé,plein soleil,2 plants en place — stock graines disponible
+Betterave de Détroit (7 plants),serre,en croissance,moyen,plein soleil,7 plants semés 12 mai — prêts début août. Facile à resemer pour succession
+Pastèque Sugar Baby (1 plant),serre,en croissance,élevé,plein soleil,1 plant en serre — chaleur indispensable pour fructification
