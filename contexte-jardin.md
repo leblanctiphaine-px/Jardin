@@ -100,6 +100,50 @@ Petit jardin en pleine terre côté rue, vu depuis la terrasse de devant (rambar
 
 ---
 
+## Colocs — préférences alimentaires
+
+- Goûts simples, volume important (13 personnes)
+- Adorent : tomates, basilic, fruits rouges, butternut, patates douces
+- Croqués frais (pois, carottes) fonctionnent bien
+- Privilégier les cultures à gros rendement
+
+---
+
+## Conseils plantation — juin 2026
+
+### À faire CETTE SEMAINE (urgent)
+- **Potimarron et butternut maison 2025** — semer directement en pleine terre plein soleil. Arroser la veille (sol dur). Possible F1 hybride — tenter quand même quelques graines. Dernière chance pour récolte avant l'hiver.
+- **Haricots (Purple Queen ou Délinel)** — resemer en remplacement des plants mangés par limaces. Protéger dès la germination : granulés phosphate de fer + cloche 2-3 premières semaines.
+
+### Recommandé juin (encore dans les clous)
+- **Concombre supplémentaire** — 1-2 plants depuis graines Kokopelli Tendergreen Burpless, en serre ou plein soleil.
+- **Betteraves en succession** — semer un 2e rang en serre pour récolte sept-oct (les 7 actuels seront prêts en août).
+- **Pois Petit Provençal** — en pot sur terrasse, pied nain 40cm. Parfait pour grignoter frais.
+- **Carottes rondes ou courtes** — sol dur = éviter les longues. Semer en lignes dans zone travaillée.
+
+### Juillet — août
+- **Chou Brocoli Calabrese Vert** — semer pour récolte printanière.
+- **Mâche Ronde Maraîchère** — semer août-sept.
+- **Épinard Géant d'Hiver** — semer juillet-sept, rustique.
+- **Haricots en succession** — un rang en serre pour 2e vague protégée.
+
+### À éviter cette saison
+- Carottes longues (sol trop dur → résultat décevant)
+- Tomates supplémentaires (trop tard + 6 plants déjà en place)
+- Artichaut (trop tard, vivace → prévoir 2027)
+- Pastèque supplémentaire (fragile, 1 suffit)
+- Panais, rutabaga (racines profondes incompatibles avec sol argileux dur)
+
+### Capucine — attention
+- Ne jamais planter à côté des choux — attire les chenilles qui les mangent
+- Planter en bordure de potager loin du brocoli
+
+### Vesce d'Hiver (engrais vert)
+- Semer à l'automne sur les zones de potager vides après récolte
+- Fixe l'azote et améliore la structure du sol argileux — très utile pour ton sol
+
+---
+
 ## Notes générales
 
 - Jardin de coloc — voir README.txt pour le contexte général
