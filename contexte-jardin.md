@@ -144,6 +144,17 @@ Petit jardin en pleine terre côté rue, vu depuis la terrasse de devant (rambar
 
 ---
 
+## ⚠️ Réflexe à toujours appliquer — cartographie du jardin
+
+Chaque fois qu'une plante est semée, repiquée ou plantée (ou meurt/est récoltée définitivement), **mettre à jour `plantes.csv`** avec :
+- la date de l'action (semis, repiquage, perte...)
+- l'emplacement précis (zone + repère visuel si possible : "près du pot noir contre le mur", "coin terrasse devant la serre"...)
+- toute info utile (protection mise en place, particularités du sol/exposition, état observé)
+
+Objectif : construire au fil du temps une vraie cartographie du jardin — quoi est planté où et depuis quand — pour mieux conseiller sur les rotations, les associations, le suivi des récoltes et les diagnostics en cas de problème.
+
+---
+
 ## Notes générales
 
 - Jardin de coloc — voir README.txt pour le contexte général
