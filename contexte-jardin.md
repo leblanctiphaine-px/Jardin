@@ -12,7 +12,7 @@ Plantes moins sensibles : tomates (une fois établies), haricots, poireaux adult
 
 Solutions disponibles / à suggérer :
 - Cloches en tissu ou filet (déjà utilisées)
-- Pièges à bière (enterrer un pot, remplir de bière — les limaces se noient)
+- Pièges à bière (enterrer un pot, remplir de bière — les limaces se noient) — 5 pièges actifs depuis le 4 juin, nouveaux pièges ajoutés près des courges le 9 juin. Vider tous les 2-3 jours. Limaces mortes + bière → compost (OK, les enterrer un peu dans le tas)
 - Granulés anti-limaces au phosphate de fer (autorisés en bio)
 - Cendre de bois ou coquilles d'œufs broyées autour des plants (barrière physique)
 - Arroser le matin plutôt que le soir (les limaces sortent la nuit sur sol humide)
