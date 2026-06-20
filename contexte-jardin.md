@@ -111,9 +111,9 @@ Petit jardin en pleine terre côté rue, vu depuis la terrasse de devant (rambar
 
 ## Conseils plantation — juin 2026
 
-### À faire CETTE SEMAINE (urgent)
-- **Potimarron et butternut maison 2025** — semer DIRECTEMENT en pleine terre, pas en nursery (les courges détestent la transplantation). Arroser la veille (sol dur). 2-3 graines par emplacement, éclaircir ensuite. Germination 5-7 jours en juin. Dernière chance pour récolte avant l'hiver.
-- **Haricots (Purple Queen ou Délinel)** — resemer en remplacement des plants mangés par limaces. Protéger dès la germination : granulés phosphate de fer + cloche 2-3 premières semaines.
+### Fait
+- **Potimarron et butternut maison 2025** — semés directement en pleine terre, ça pousse déjà (juin 2026).
+- **Haricots (Purple Queen ou Délinel)** — resemés en remplacement des plants mangés par limaces.
 
 ### Recommandé juin (encore dans les clous)
 - **Concombre supplémentaire** — 1-2 plants depuis graines Kokopelli Tendergreen Burpless, en serre ou plein soleil.
