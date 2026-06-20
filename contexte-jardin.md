@@ -155,6 +155,20 @@ Objectif : construire au fil du temps une vraie cartographie du jardin — quoi 
 
 ---
 
+## Légende ensoleillement (plantes d'intérieur, colonne `ensoleillement` de `plantes.csv`)
+
+Note recommandée pour la plante, sur 5 — pas la position actuellement appliquée :
+
+| Note | Signification |
+|------|---------------|
+| 1/5 | Très faible — coin sombre, loin de toute fenêtre |
+| 2/5 | Faible — lumière indirecte tamisée, pièce sans soleil direct |
+| 3/5 | Moyenne — lumière indirecte vive, proche d'une fenêtre sans soleil direct |
+| 4/5 | Élevée — lumière vive, tolère un peu de soleil direct doux (matin/soir) |
+| 5/5 | Maximale — plein soleil direct prolongé |
+
+---
+
 ## Notes générales
 
 - Jardin de coloc — voir README.txt pour le contexte général
