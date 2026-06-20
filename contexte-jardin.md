@@ -74,7 +74,7 @@ Solutions disponibles / à suggérer :
 ## Collaborateurs
 
 - **Vincent** : aide au jardin, à vérifier s'il a coupé les mauvaises herbes et branches du framboisier
-- **Flo** : doit apporter des billes d'argile pour le pot à rétention d'eau des tomates
+- **Flo** : a acheté les billes d'argile pour le pot à rétention d'eau des tomates — reste à les installer
 
 ---
 
