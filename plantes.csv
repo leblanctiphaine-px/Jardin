@@ -1,16 +1,16 @@
 nom,emplacement,etat,besoins_eau,ensoleillement,notes
 Haricots,jardin,mangés par limaces — à resemer,moyen,plein soleil,premier semis détruit par limaces — resemer avec protection granulés + cloche
 Framboisier,jardin,actif,faible,plein soleil,branches au-dessus à éclaircir pour plus de lumière
-Tomates (6 pieds),terrasse + jardin,en croissance,élevé,plein soleil,"6 plants dont 1 en pot terrasse (coupelle vidée). STOP coupelle — arroser seulement le dessus quand les 2-3 cm du dessus sont secs"
+Tomates (7 pieds),terrasse + jardin + serre,en croissance,élevé,plein soleil,"7 plants : 6 en terrasse/jardin + 1 à replanter en serre (5 juillet). STOP coupelle — arroser seulement le dessus quand les 2-3 cm du dessus sont secs"
 Figuier,bac (déplanté du jardin),stressé — transplantation,moyen,plein soleil,"feuilles qui fanent = choc de transplantation. Pas perdu si réagit vite. Mettre à l'ombre partielle, arroser sans noyer, ne pas fertiliser maintenant. Surveiller nouvelles feuilles dans 2-3 semaines"
 Poireaux,jardin,à replanter,moyen,mi-ombre,"filiformes et jaunis — urgence max, à planter cette semaine sinon perdus. Arroser la veille, trou au manche, ne pas reboucher"
 Aubergine,pépinière,à repiquer,élevé,plein soleil,légèrement stressée mais récupérable — repiquer dans les 10 jours en plein soleil sol chaud
 Basilic (5 plants),serre (x2) + terrasse (x2) + intérieur (x1),actif,moyen,plein soleil,"bien installé — 2 en serre, 2 en terrasse, 1 intérieur. Stock graines supplémentaires disponibles. À récolter régulièrement (stimule la pousse, évite la montée en graine)"
 Menthe,à préciser,actif,élevé,mi-ombre,"ajoutée à la récolte régulière (17/06) — arroser et récolter régulièrement, la menthe aime l'humidité"
-Poivrier du Sichuan,pépinière (caissette),semis,moyen,mi-ombre,"jolis semis — repiquer en godets 8-10 cm dans 2-4 semaines (quand 2-3 vraies feuilles, ~5-6 cm), puis pleine terre à l'automne"
+Poivrier du Sichuan,pépinière (caissette) + godets,semis à repiquage,moyen,mi-ombre,"1 plant mis en godet (5 juillet), reste à repiquer en godets 8-10 cm. Puis pleine terre à l'automne"
 Pothos (x3),boutures en veau,à rempoter,moyen,lumière indirecte,"racines bien formées (~10 cm pour le centre) — rempoter aujourd'hui. Terreau drainant, pot avec trou. Après rempotage laisser sécher entre deux arrosages"
 Curcuma,intérieur (déplacé, lumineux sans soleil direct — pot 15cm),feuilles brûlées (en cours de récupération suite déplacement),un grand verre d'eau (~250ml) 2 fois par semaine,3/5,"Grandes feuilles vertes droites lancéolées. — déplacé le 20/06 pour stopper la brûlure des feuilles. Surveiller l'apparition de nouvelles feuilles saines, garder le terreau humide"
-Dracaena Lemon Lime,intérieur (meuble devant fenêtre est — pot 10cm),à rempoter,un verre d'eau (~150ml) toutes les 1-2 semaines,4/5,"Feuilles fines rayées vert/jaune/blanc, port dressé. — racines qui sortent par le bas — à rempoter dans pot légèrement plus grand. Vérifier que le pot a un trou de drainage"
+Dracaena Lemon Lime (pied),intérieur (meuble devant fenêtre est — pot 10cm),à rempoter,un verre d'eau (~150ml) toutes les 1-2 semaines,4/5,"Feuilles fines rayées vert/jaune/blanc, port dressé. — tige coupée à mi-hauteur le 5 juillet pour ramification, pied à rempoter dans pot légèrement plus grand. Vérifier que le pot a un trou de drainage"
 Pachira aquatica (1 seul plant),intérieur (panier, déplacé plus près d'une fenêtre — pot 15cm),étiolé, peu vigoureux — convalescence,un verre d'eau (~200ml) toutes les 2 semaines,4/5 — déplacé le 20/06 pour plus de lumière,"Tronc tressé noueux, feuilles à 5 folioles. — a subi dépotage + ablation racines/tronc pourris, repousse étiolée et peu vigoureuse. Déplacé pour plus de lumière (était à 2/5) — surveiller si la repousse se densifie dans les semaines qui suivent. Arroser seulement quand les 2-3 cm du dessus sont secs, pas de soucoupe"
 Radis,serre (partie gauche),prêts à récolter,faible,mi-ombre,à récolter dès que possible
 Laitues,potager mi-ombre (sous cloche),en danger,moyen,mi-ombre,"3 plantées sous cloche filet — 1 déjà morte, 2 survivantes. Limaces sévères dans cette zone, protection indispensable"
@@ -26,7 +26,7 @@ Chou chinois,liste de souhaits,non acheté,moyen,mi-ombre,semer juillet-août po
 Mesclun,liste de souhaits,non acheté,moyen,mi-ombre,semer août-septembre — craint la chaleur estivale
 Épinards,liste de souhaits,non acheté,moyen,mi-ombre,semer septembre — monte en graine avec la chaleur
 Cornichons,liste de souhaits — recommandé juin,non acheté,élevé,plein soleil,semer maintenant jusqu'à fin juin — idéal serre ou plein soleil
-Melon,liste de souhaits — recommandé juin,non acheté,élevé,plein soleil,encore possible début juin — serre idéale mais arrosage régulier indispensable
+Melon,serre + ailleurs,en croissance,élevé,plein soleil,"3 melons en serre (plantés 5 juillet), à en mettre d'autres ailleurs. Arrosage régulier indispensable"
 Physalis,liste de souhaits,non acheté,moyen,plein soleil,semer maintenant mais récolte tardive — serre chaude
 Piments,liste de souhaits,non acheté,moyen,plein soleil,un peu tard (idéal mars-avril) — tentable en serre chaude
 Fèves,liste de souhaits,non acheté,moyen,plein soleil,semer octobre-novembre ou février — trop tard maintenant
@@ -71,7 +71,7 @@ Vesce d'Hiver,stock graines,non semé,faible,plein soleil,"engrais vert bio (Vic
 Butternut 2025 (semé 5 juin),coin terrasse — pot noir près du mur,en germination,moyen,plein soleil,"3 trous, 1 graine chacun, espacés — zone repérée avec forte présence limaces/escargots (familles entières), granulés phosphate de fer posés en protection"
 Potimarron 2025 (semé 5 juin),coin terrasse — pot noir près du mur,en germination,moyen,plein soleil,"3 trous, 1 graine chacun, espacés — même zone que butternut, granulés phosphate de fer posés en protection"
 Courgette Genovese (3 plants),jardin,en croissance,moyen,plein soleil,3 plants en place — stock graines disponible si perte
-Concombre Tendergreen Burpless (2 plants),serre ou jardin,en croissance,élevé,plein soleil,2 plants en place — stock graines disponible
+Concombre Tendergreen Burpless (4 plants),jardin + serre,en croissance,élevé,plein soleil,"2 plants en jardin (plantés 5 juillet), 2 à planter en serre. Stock graines disponible"
 Betterave de Détroit (7 plants),serre,en croissance,moyen,plein soleil,7 plants semés 12 mai — prêts début août. Facile à resemer pour succession
 Pastèque Sugar Baby (1 plant),serre,en croissance,élevé,plein soleil,"1 plant en serre — chaleur indispensable pour fructification. Laisser ramper au sol (a de la place) — pas de tuteur nécessaire"
 Patates douces,sacs à patates (serre),en croissance,moyen,plein soleil,"dans des sacs à patates en serre — sortir quand temps stabilisé (tâche en cours)"
@@ -91,3 +91,4 @@ Ficus ginseng,intérieur (meuble devant fenêtre est — pot 10cm),actif,un verr
 Peperomia rotundifolia,intérieur (~3m de la fenêtre ouest — pot 10cm),actif,un verre d'eau (~150ml) 1 fois par semaine,3/5,"Petites feuilles rondes charnues, tiges fines retombantes"
 Succulente non identifiée (étagère blanche),intérieur (meuble devant fenêtre est, près du basilic — pot 10cm),peu de feuillage — à surveiller,un petit verre d'eau (~100ml) toutes les 2-3 semaines — laisser sécher complètement,4/5,"Pot côtelé moutarde/ocre, feuilles charnues en palette, tiges ligneuses rougeâtres duveteuses — espèce précise non identifiée (type Crassula/Echeveria arborescens). Peu de feuilles actuellement malgré la forte lumière — surveiller racines/arrosage"
 Patate douce (plante d'ornement),intérieur (~2m de la fenêtre est, derrière un poteau — pot 20cm),actif,un mug d'eau (~300ml) 2 fois par semaine — garder le terreau humide sans détremper,4/5,"Feuilles en cœur vert vif retombantes en longues lianes — confondue au premier coup d'œil avec du lierre"
+Dracaena Lemon Lime (tête/bouture),intérieur (meuble devant fenêtre est — pot neuf),rempoté,un verre d'eau (~150ml) toutes les 1-2 semaines,4/5,"Bouture de la tige coupée du dracaena le 5 juillet, remportée le même jour — développera les racines et des ramifications"
