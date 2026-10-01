@@ -82,19 +82,20 @@ textarea{min-height:90px;resize:vertical}
 .group-h{font:600 .78rem var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:18px 0 4px}
 .empty{color:var(--muted);padding:24px;text-align:center;border:1px dashed var(--line);border-radius:8px}
 /* Contexte */
-.sec{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.sec{min-width:0}
 .sec-h{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .sec h2{font:700 1.15rem/1.25 var(--f-display);margin:0;text-wrap:balance}
 .sec .md{font-size:.95rem;overflow-x:auto}
 .md h3{font:600 1rem var(--f-body);margin:12px 0 4px}
 .md p{margin:6px 0} .md ul{margin:6px 0;padding-left:20px}
-.md table{border-collapse:collapse;font-size:.85rem;margin:8px 0}
-.md td,.md th{border:1px solid var(--line);padding:4px 8px;text-align:left;vertical-align:top}
+.fiches{display:grid;gap:8px;margin:8px 0}
+.fiche{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.fiche-t{font-weight:600;margin-bottom:4px}
+.fiche-l{font-size:.9rem;margin-top:4px}
+.fiche-h{display:block;font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
 .md code{font:.85em var(--f-mono);background:var(--accent-soft);padding:0 4px;border-radius:3px}
 .sec-edit{display:grid;gap:8px;margin-top:10px}
 .sec-edit textarea{min-height:220px;font:.85rem/1.5 var(--f-mono)}
-details.sec summary{cursor:pointer;list-style:none}
-details.sec summary::-webkit-details-marker{display:none}
 /* Dialog */
 dialog{border:1px solid var(--line);border-radius:12px;padding:0;background:var(--surface);color:var(--ink);width:min(640px,calc(100vw - 32px));max-height:calc(100vh - 32px)}
 dialog::backdrop{background:rgba(10,20,15,.45)}
@@ -612,13 +613,15 @@ function editTache(i,plante=""){
 function md(src){
   const inline=s=>esc(s).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/`(.+?)`/g,"<code>$1</code>");
   const out=[]; let list=false, table=null;
-  const flush=()=>{ if(list){out.push("</ul>");list=false} if(table){out.push("<table>"+table.join("")+"</table>");table=null} };
+  /* Un tableau devient une fiche par ligne : la 1re colonne en titre, les autres en « en-tête : valeur ». */
+  const fiches=t=>{ const [h,...rows]=t; return `<div class="fiches">${rows.map(r=>`<div class="fiche"><div class="fiche-t">${inline(r[0]||"")}</div>${
+    r.slice(1).map((c,i)=>c?`<div class="fiche-l"><span class="fiche-h">${inline(h[i+1]||"")}</span>${inline(c)}</div>`:"").join("")}</div>`).join("")}</div>`; };
+  const flush=()=>{ if(list){out.push("</ul>");list=false} if(table){out.push(fiches(table));table=null} };
   for(const raw of src.split("\n")){
     const l=raw.trim();
     if(/^\|/.test(l)){ if(/^\|[\s|:-]+\|$/.test(l)) continue; if(list){out.push("</ul>");list=false}
-      const cells=l.replace(/^\||\|$/g,"").split("|"); const tag=table?"td":"th"; table=table||[];
-      table.push("<tr>"+cells.map(c=>`<${tag}>${inline(c.trim())}</${tag}>`).join("")+"</tr>"); continue; }
-    if(table){out.push("<table>"+table.join("")+"</table>");table=null}
+      table=table||[]; table.push(l.replace(/^\||\|$/g,"").split("|").map(c=>c.trim())); continue; }
+    if(table){out.push(fiches(table));table=null}
     if(/^[-*] /.test(l)){ if(!list){out.push("<ul>");list=true} out.push(`<li>${inline(l.slice(2))}</li>`); continue; }
     flush();
     if(/^###? /.test(l)) out.push(`<h3>${inline(l.replace(/^#+ /,""))}</h3>`);
