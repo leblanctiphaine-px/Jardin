@@ -537,7 +537,7 @@ const trier=(r,z)=>z==="Stock de graines"?r.map(x=>({...x,n:0})).sort((a,b)=>ran
 const ligne=({p,i,n})=>`
     <button class="row" data-edit-plante="${i}">
       <span class="t">${esc(p.nom)}</span>
-      <span class="tags">${sensibleLimaces(p)?'<span class="pill slug">limaces</span>':""}${groupeDe(p)==="Stock de graines"&&dernierBilan(p)||`<span class="pill ${etatClasse(p.etat)}">${esc(p.etat)}</span>${dernierBilan(p)}`}${n?`<span class="pill plante">${n} tâche${n>1?"s":""}</span>`:""}</span>
+      <span class="tags">${sensibleLimaces(p)&&!MODES.projets.includes(groupeDe(p))?'<span class="pill slug">limaces</span>':""}${groupeDe(p)==="Stock de graines"&&dernierBilan(p)||`<span class="pill ${etatClasse(p.etat)}">${esc(p.etat)}</span>${dernierBilan(p)}`}${n?`<span class="pill plante">${n} tâche${n>1?"s":""}</span>`:""}</span>
       ${p.etat_detail?`<span class="detail">${esc(p.etat_detail)}</span>`:""}
       ${p.besoins_eau||p.ensoleillement?`<span class="meta">${[p.besoins_eau&&"eau "+esc(p.besoins_eau),esc(p.ensoleillement)].filter(Boolean).join(" · ")}</span>`:""}
     </button>`;
