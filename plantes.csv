@@ -1,82 +1,81 @@
-nom,zone,etat,etat_detail,besoins_eau,ensoleillement,notes
-Haricots,Potager mi-ombre,à surveiller,"mangés par les limaces, à resemer",moyen,plein soleil,premier semis détruit par limaces — resemer avec protection granulés + cloche
-Framboisier,Jardin de derrière,en forme,,faible,plein soleil,branches au-dessus à éclaircir pour plus de lumière
-Figuier,Terrasse de devant,à surveiller,stressé par la transplantation,moyen,plein soleil,"bac (déplanté du jardin) — feuilles qui fanent = choc de transplantation. Pas perdu si réagit vite. Mettre à l'ombre partielle, arroser sans noyer, ne pas fertiliser maintenant. Surveiller nouvelles feuilles dans 2-3 semaines"
-Aubergine,Serre,à surveiller,à repiquer,élevé,plein soleil,pépinière — légèrement stressée mais récupérable — repiquer dans les 10 jours en plein soleil sol chaud
-Basilic (5 plants),Serre,en forme,,moyen,plein soleil,"serre (x2) + terrasse (x2) + intérieur (x1) — bien installé — 2 en serre, 2 en terrasse, 1 intérieur. Stock graines supplémentaires disponibles. À récolter régulièrement (stimule la pousse, évite la montée en graine)"
-Menthe,Jardin de derrière,à surveiller,Desséchée,élevé,mi-ombre,"ajoutée à la récolte régulière (17/06) — arroser et récolter régulièrement, la menthe aime l'humidité"
-Poivrier du Sichuan,Intérieur,en croissance,,moyen,mi-ombre,"pépinière (caissette) — jolis semis — repiquer en godets 8-10 cm dans 2-4 semaines (quand 2-3 vraies feuilles, ~5-6 cm), puis pleine terre à l'automne"
-Pothos (x3),Intérieur,à surveiller,à rempoter,moyen,3/5,"boutures en veau — racines bien formées (~10 cm pour le centre) — rempoter aujourd'hui. Terreau drainant, pot avec trou. Après rempotage laisser sécher entre deux arrosages"
-Curcuma,Intérieur,à surveiller,"feuilles brûlées, en récupération depuis le déplacement",élevé,3/5,"déplacé, lumineux sans soleil direct — pot 15cm — Grandes feuilles vertes droites lancéolées. — déplacé le 20/06 pour stopper la brûlure des feuilles. Surveiller l'apparition de nouvelles feuilles saines, garder le terreau humide — Arrosage : un grand verre d'eau (~250ml) 2 fois par semaine"
-Dracaena Lemon Lime,Intérieur,à surveiller,à rempoter,faible,4/5,"meuble devant fenêtre est — pot 10cm — Feuilles fines rayées vert/jaune/blanc, port dressé. — racines qui sortent par le bas — à rempoter dans pot légèrement plus grand. Vérifier que le pot a un trou de drainage — Arrosage : un verre d'eau (~150ml) toutes les 1-2 semaines"
-Pachira aquatica (1 seul plant),Intérieur,à surveiller,"étiolé, peu vigoureux, en convalescence",faible,4/5,"panier, déplacé plus près d'une fenêtre — pot 15cm — Tronc tressé noueux, feuilles à 5 folioles. — a subi dépotage + ablation racines/tronc pourris, repousse étiolée et peu vigoureuse. Déplacé pour plus de lumière (était à 2/5) — surveiller si la repousse se densifie dans les semaines qui suivent. Arroser seulement quand les 2-3 cm du dessus sont secs, pas de soucoupe — Arrosage : un verre d'eau (~200ml) toutes les 2 semaines — déplacé le 20/06 pour plus de lumière"
-Sauge,Jardin de derrière,en forme,à tailler,moyen,plein soleil,"jardin/terrasse — moisit par dessous, grosses feuilles peu parfumées, taille sévère recommandée"
-Verveine,Potager plein soleil,en forme,,moyen,plein soleil,jardin/terrasse — récolter toutes les 1-2 semaines en été — stimule un port rond et touffu + stock tisane
-Érable du Japon,Terrasse de derrière,à surveiller,stressé,élevé,mi-ombre,"terrasse (pot noir) — Arroser régulièrement, le pot sèche vite"
-Hortensia,Terrasse de derrière,à surveiller,stressé,très élevé,mi-ombre,"terrasse (pot rose) — feuilles très abîmées aux bords = soif. Arroser abondamment tous les jours par forte chaleur, voire 2x/jour. Fleurs qui virent du rose au vert chartreuse = normal c'est leur cycle"
-Roses,Jardin de devant,en forme,,faible,mi-ombre,jardin de devant + jardin de derrière — présentes dans les deux jardins en pleine terre. Variété(s) inconnue(s) — remontantes ou non à déterminer. Tailler les fleurs fanées légèrement pour tenter une 2e floraison estivale. Ne pas tailler sévèrement sans connaître la variété. — supporte aussi le plein soleil
-Oranger du Mexique (Choisya),Jardin de derrière,en forme,,faible,mi-ombre,jardin de derrière (à côté du potager mi-ombre) — refleurit en fin d'été si taillé légèrement après la floraison de printemps. Taille douce uniquement — enlever fleurs fanées et mettre en forme.
-Chou chinois,Liste de souhaits,à acheter,,moyen,mi-ombre,semer juillet-août pour récolte automne
-Mesclun,Liste de souhaits,à acheter,,moyen,mi-ombre,semer août-septembre — craint la chaleur estivale
-Épinards,Liste de souhaits,à acheter,,moyen,mi-ombre,semer septembre — monte en graine avec la chaleur
-Cornichons,Liste de souhaits,à acheter,,élevé,plein soleil,recommandé juin — semer maintenant jusqu'à fin juin — idéal serre ou plein soleil
-Melon,Liste de souhaits,à acheter,,élevé,plein soleil,recommandé juin — encore possible début juin — serre idéale mais arrosage régulier indispensable
-Physalis,Liste de souhaits,à acheter,,moyen,plein soleil,semer maintenant mais récolte tardive — serre chaude
-Piments,Liste de souhaits,à acheter,,moyen,plein soleil,un peu tard (idéal mars-avril) — tentable en serre chaude
-Fèves,Liste de souhaits,à acheter,,moyen,plein soleil,semer octobre-novembre ou février — trop tard maintenant
-Navets,Liste de souhaits,à acheter,,moyen,plein soleil,semer juillet-août — trop tôt maintenant (monterait en fleur)
-Panais,Liste de souhaits,à acheter,,faible,plein soleil,besoin sol profond et meuble — problématique avec sol dur et argileux
-Rutabaga,Liste de souhaits,à acheter,,faible,plein soleil,semer juin-juillet possible — racine donc sol profond nécessaire
-Lentilles,Liste de souhaits,à acheter,,faible,plein soleil,semis mars-mai idéal — un peu tard mais tentable plein soleil
-Camomille,Liste de souhaits,à acheter,,faible,plein soleil,recommandé juin — semer maintenant — rustique et facile
-Coriandre,Liste de souhaits,à acheter,,moyen,mi-ombre,"recommandé juin — semer maintenant — rapide, utile, attention chaleur excessive"
-Courgette Genovese,Stock de graines,à semer,,moyen,plein soleil,"semis avril-mai, récolte juillet-octobre — 15 pieds (Invivo)"
-Concombre Tendergreen Burpless,Stock de graines,à semer,,élevé,plein soleil,bio & reproductible (Kokopelli) — semer maintenant jusqu'à fin juin
-Pastèque Sugar Baby,Stock de graines,à semer,,élevé,plein soleil,"bio & reproductible (Kokopelli) — fruit 19-22cm, semis mai-juin"
-Artichaut Gros Vert de Laon,Stock de graines,à semer,,moyen,plein soleil,"semis mars-juin (Caillard) — vivace, prévoir place en pleine terre"
-Chou Brocoli Calabrese Vert,Stock de graines,à semer,,moyen,plein soleil,récolte avril-juin — semer juillet-août pour récolte printanière
-Radis Rond Écarlate,Stock de graines,à semer,,moyen,mi-ombre,"semis mars-sept, récolte avril-oct — convient pot/bac (Invivo)"
-Radis Noir Long Poids d'Horloge,Stock de graines,à semer,,moyen,mi-ombre,"semis mai-octobre, récolte 4 mois après — légume d'autrefois reproductible (Vilmorin)"
-Carottes 10 variétés,Stock de graines,à semer,,moyen,plein soleil,"sachet kraft — semis toute saison, semer en lignes"
-Rhubarbe Géante Victoria,Stock de graines,à semer,,moyen,mi-ombre,"grainetier bio Ferme de Sainte Marthe — vivace, prévoir emplacement permanent"
-Oignon Rouge Pâle de Niort,Stock de graines,à semer,,faible,plein soleil,"bio & reproductible (Kokopelli) — semis fév-mai, récolte juil-sept, 500 plants"
-Betterave de Détroit,Stock de graines,à semer,,moyen,plein soleil,"semis mars-juin, récolte juin-novembre (Invivo) — déjà semé en serre"
-Mâche Ronde Maraîchère,Stock de graines,à semer,,moyen,mi-ombre,"semis août-septembre, récolte 2 mois après — précoce résistante mildiou (Vilmorin)"
-Épinard Géant d'Hiver,Stock de graines,à semer,,moyen,mi-ombre,"semis juillet-septembre, récolte 2-3 mois — rustique et productif (Vilmorin)"
-Tomate-Cerise Scarlet Starfire / Starfire Isis,Stock de graines,à semer,,élevé,plein soleil,"bio & reproductible (Kokopelli) — variété mi-saison, production Isère, 33+ plants"
-Tomate Fireworks,Stock de graines,à semer,,élevé,plein soleil,"bio & reproductible (Kokopelli) — variété précoce, production Ariège"
-Tomate Calabash Red,Stock de graines,à semer,,élevé,plein soleil,"bio & reproductible (Kokopelli) — variété mi-saison, production Creuse"
-Aubergine Diamond,Stock de graines,à semer,,élevé,plein soleil,"bio & reproductible (Kokopelli) — fruit 15-25cm, production Dordogne, semis fév-mai"
-Endive (variété non précisée),Stock de graines,à semer,,moyen,mi-ombre,(Invivo) — vérifier variété exacte sur le sachet
-Haricot nain Purple Queen,Stock de graines,à semer,,moyen,plein soleil,"bio & reproductible (Ferme de Sainte Marthe) — semis avril-juillet, récolte juillet-oct"
-Haricot nain Délinel filet sans fil,Stock de graines,à semer,,moyen,plein soleil,(GrainOsol) — conditionné en France
-Pois à Grain Rond Petit Provençal,Stock de graines,à semer,,moyen,plein soleil,"pied nain 40cm, résistant au froid (Invivo) — semis fév-nov, récolte mai-juillet"
-Basilic Grandes Feuilles,Stock de graines,à semer,,moyen,plein soleil,(myfood) — à semer maintenant en serre ou pot
-Basilic Bio Aromatico della riviera ligure,Stock de graines,à semer,,moyen,plein soleil,bio (Est Wood) — variété italienne parfumée
-Pois de Senteur Bio en Mélange,Stock de graines,à semer,,moyen,plein soleil,attire pollinisateurs (Vilmorin) — semis avril-mai
-Œillets d'Inde,Stock de graines,à semer,,faible,plein soleil,"sachet Fine pour Maîtresses — déjà en pépinière aussi, repousse nuisibles"
-Mélange fleurs Pour couvrir ma jolie Maman,Stock de graines,à semer,,faible,plein soleil,sachet cadeau — mélange courge/reine type annuelles
-Seedshaker Butterfly Mix,Stock de graines,à semer,,faible,plein soleil,20 espèces de fleurs pour 15m² — secouer directement sur sol préparé
-Balsamine à Fleur de Camélia double variée,Stock de graines,à semer,,moyen,mi-ombre,"semis avril-juin, floraison juin-septembre, 50cm (Vilmorin Vita)"
-Mélange pour Abeilles Bijenmix,Stock de graines,à semer,,faible,plein soleil,12 variétés de fleurs pour ±50m² — semis mars-septembre (Faniflora)
-Capucine,Stock de graines,à semer,,faible,plein soleil,"(reste des graines) — du jardin de la maman d'Emilie — pleine terre, semis avril-mai. ⚠️ PAS à côté des choux : attire les chenilles qui les mangent"
-Vesce d'Hiver,Stock de graines,à semer,,faible,plein soleil,"engrais vert bio (Vicia villosa) — 80g, fixe l'azote, améliore structure du sol argileux"
-Butternut 2025 (semé 5 juin),Jardin de derrière,semis,en germination,moyen,plein soleil,"3 trous, 1 graine chacun, espacés — zone repérée avec forte présence limaces/escargots (familles entières), granulés phosphate de fer posés en protection — 01/10 déplacée : Jardin"
-Potimarron 2025 (semé 5 juin),Jardin de derrière,semis,en germination,moyen,plein soleil,"3 trous, 1 graine chacun, espacés — même zone que butternut, granulés phosphate de fer posés en protection — 01/10 déplacée : Jardin"
-Concombre Tendergreen Burpless (2 plants),Serre,en croissance,,élevé,plein soleil,serre ou jardin — 2 plants en place — stock graines disponible
-Betterave de Détroit (7 plants),Potager mi-ombre,en croissance,,moyen,plein soleil,7 plants semés 12 mai — prêts début août. Facile à resemer pour succession
-Patates douces,Jardin de derrière,en croissance,,moyen,plein soleil,sacs à patates (serre) — dans des sacs à patates en serre — sortir quand temps stabilisé (tâche en cours)
-Potimarron 2025,Stock de graines,à semer,,moyen,plein soleil,"(maison) — graines maison 2025 — possible F1 hybride à confirmer. URGENT : semer cette semaine en pleine terre, dernière chance"
-"Plante araignée / Chlorophytum (meuble fenêtre est, collée)",Intérieur,en forme,,moyen,3/5,"meuble devant fenêtre est — pot 10cm — Touffe de longues feuilles fines en lanières, vert et blanc panaché, retombantes en étoile depuis le centre du pot — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
-"Plante araignée / Chlorophytum (meuble fenêtre est, décalée)",Intérieur,en forme,,moyen,3/5,"meuble devant fenêtre est, légèrement décalée — pot 10cm — Touffe de longues feuilles fines en lanières, vert et blanc panaché, retombantes en étoile depuis le centre du pot — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
-Pothos suspendu,Intérieur,en forme,,moyen,3/5,"suspendu, ~5m de la fenêtre est — pot 10cm — Feuilles en cœur vert/jaune marbré, tiges retombantes — sèche plus vite en suspension qu'en pot posé — Arrosage : un verre d'eau (~150ml) 1 fois par semaine — vérifier plus souvent si l'air est sec"
-Pothos (meuble fenêtre est),Intérieur,en forme,,moyen,3/5,"meuble devant fenêtre est — pot 10cm — Feuilles en cœur vert/jaune marbré, tiges grimpantes ou retombantes — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
-Langue de belle-mère / Sansevieria (plante principale),Intérieur,en forme,,faible,3/5,"meuble devant fenêtre est, déplaçable ailleurs — pot 10cm — Feuilles raides, pointues, dressées verticalement, vert marbré, très résistante à la sécheresse. Plante d'origine en bonne forme — peut être déplacée ailleurs dans la maison pour décorer — Arrosage : un petit verre d'eau (~100ml) toutes les 2-3 semaines"
-Langue de belle-mère / Sansevieria (rejets repiqués),Intérieur,à surveiller,"nouvelle pousse étiolée, fine, tordue et translucide",faible,5/5,"nouveau pot, reste au soleil pour récupérer — pot 10cm — Rejets de la plante principale, séparés et repiqués dans un nouveau pot — pousse étiolée/fine/tordue/translucide : manque de lumière sur la nouvelle pousse et/ou excès d'arrosage. À laisser en plein soleil et espacer les arrosages pour qu'ils récupèrent une forme normale — Arrosage : un petit verre d'eau (~100ml) toutes les 2-3 semaines — réduire si excès actuel"
-Pilea peperomioides,Intérieur,en forme,,moyen,4/5,"meuble fenêtre est — pot 10cm — Feuilles rondes plates en forme de pièce de monnaie sur tiges fines, port buissonnant — confirmée : grosses feuilles rondes — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
-"Tradescantia zebrina/pallida (x2, meuble fenêtre est)",Intérieur,en forme,,moyen,3/5,"meuble devant fenêtre est, légèrement décalées — pots 10cm — Feuillage panaché violet/vert avec rayures argentées, port retombant ou buissonnant — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
-Tradescantia zebrina/pallida (panier suspendu),Intérieur,à surveiller,"fine, peu de fleurs",moyen,4/5,"panier suspendu — Feuillage panaché violet/vert avec rayures argentées, port retombant — plus clairsemée que les 2 autres, peu de fleurs. Était déjà étiolée avant le réglage à 4/5 (probablement pas un manque de lumière) — tailler les tiges dégarnies pour relancer une pousse plus dense, réévaluer dans quelques semaines — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
-Ficus ginseng,Intérieur,en forme,,faible,4/5,"meuble devant fenêtre est — pot 10cm — Tronc/racines renflées noueuses, petites feuilles ovales vert foncé brillant — Arrosage : un verre d'eau (~150ml) toutes les 1-2 semaines (semi-succulent, tolère le sec)"
-Peperomia rotundifolia,Intérieur,en forme,,moyen,3/5,"~3m de la fenêtre ouest — pot 10cm — Petites feuilles rondes charnues, tiges fines retombantes — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
-Succulente non identifiée (étagère blanche),Intérieur,à surveiller,peu de feuillage,faible,4/5,"meuble devant fenêtre est, près du basilic — pot 10cm — Pot côtelé moutarde/ocre, feuilles charnues en palette, tiges ligneuses rougeâtres duveteuses — espèce précise non identifiée (type Crassula/Echeveria arborescens). Peu de feuilles actuellement malgré la forte lumière — surveiller racines/arrosage — Arrosage : un petit verre d'eau (~100ml) toutes les 2-3 semaines — laisser sécher complètement"
-Patate douce (plante d'ornement),Intérieur,en forme,,élevé,4/5,"~2m de la fenêtre est, derrière un poteau — pot 20cm — Feuilles en cœur vert vif retombantes en longues lianes — confondue au premier coup d'œil avec du lierre — Arrosage : un mug d'eau (~300ml) 2 fois par semaine — garder le terreau humide sans détremper"
+nom,zone,emplacement,etat,etat_detail,besoins_eau,ensoleillement,notes
+Haricots,Potager mi-ombre,,à surveiller,"mangés par les limaces, à resemer",moyen,plein soleil,premier semis détruit par limaces — resemer avec protection granulés + cloche
+Framboisier,Jardin de derrière,,en forme,,faible,plein soleil,branches au-dessus à éclaircir pour plus de lumière
+Figuier,Terrasse de devant,,à surveiller,stressé par la transplantation,moyen,plein soleil,"bac (déplanté du jardin) — feuilles qui fanent = choc de transplantation. Pas perdu si réagit vite. Mettre à l'ombre partielle, arroser sans noyer, ne pas fertiliser maintenant. Surveiller nouvelles feuilles dans 2-3 semaines"
+Aubergine,Serre,,à surveiller,à repiquer,élevé,plein soleil,pépinière — légèrement stressée mais récupérable — repiquer dans les 10 jours en plein soleil sol chaud
+Basilic (5 plants),Serre,,en forme,,moyen,plein soleil,"serre (x2) + terrasse (x2) + intérieur (x1) — bien installé — 2 en serre, 2 en terrasse, 1 intérieur. Stock graines supplémentaires disponibles. À récolter régulièrement (stimule la pousse, évite la montée en graine)"
+Menthe,Jardin de derrière,,à surveiller,Desséchée,élevé,mi-ombre,"ajoutée à la récolte régulière (17/06) — arroser et récolter régulièrement, la menthe aime l'humidité"
+Poivrier du Sichuan,Intérieur,,en croissance,,moyen,mi-ombre,"pépinière (caissette) — jolis semis — repiquer en godets 8-10 cm dans 2-4 semaines (quand 2-3 vraies feuilles, ~5-6 cm), puis pleine terre à l'automne"
+Pothos (x3),Intérieur,,à surveiller,à rempoter,moyen,3/5,"boutures en veau — racines bien formées (~10 cm pour le centre) — rempoter aujourd'hui. Terreau drainant, pot avec trou. Après rempotage laisser sécher entre deux arrosages"
+Curcuma,Intérieur,,à surveiller,"feuilles brûlées, en récupération depuis le déplacement",élevé,3/5,"déplacé, lumineux sans soleil direct — pot 15cm — Grandes feuilles vertes droites lancéolées. — déplacé le 20/06 pour stopper la brûlure des feuilles. Surveiller l'apparition de nouvelles feuilles saines, garder le terreau humide — Arrosage : un grand verre d'eau (~250ml) 2 fois par semaine"
+Dracaena Lemon Lime,Intérieur,,à surveiller,à rempoter,faible,4/5,"meuble devant fenêtre est — pot 10cm — Feuilles fines rayées vert/jaune/blanc, port dressé. — racines qui sortent par le bas — à rempoter dans pot légèrement plus grand. Vérifier que le pot a un trou de drainage — Arrosage : un verre d'eau (~150ml) toutes les 1-2 semaines"
+Pachira aquatica (1 seul plant),Intérieur,,à surveiller,"étiolé, peu vigoureux, en convalescence",faible,4/5,"panier, déplacé plus près d'une fenêtre — pot 15cm — Tronc tressé noueux, feuilles à 5 folioles. — a subi dépotage + ablation racines/tronc pourris, repousse étiolée et peu vigoureuse. Déplacé pour plus de lumière (était à 2/5) — surveiller si la repousse se densifie dans les semaines qui suivent. Arroser seulement quand les 2-3 cm du dessus sont secs, pas de soucoupe — Arrosage : un verre d'eau (~200ml) toutes les 2 semaines — déplacé le 20/06 pour plus de lumière"
+Sauge,Jardin de derrière,,en forme,à tailler,moyen,plein soleil,"jardin/terrasse — moisit par dessous, grosses feuilles peu parfumées, taille sévère recommandée"
+Érable du Japon,Terrasse de derrière,,à surveiller,stressé,élevé,mi-ombre,"terrasse (pot noir) — Arroser régulièrement, le pot sèche vite"
+Hortensia,Terrasse de derrière,,à surveiller,stressé,très élevé,mi-ombre,"terrasse (pot rose) — feuilles très abîmées aux bords = soif. Arroser abondamment tous les jours par forte chaleur, voire 2x/jour. Fleurs qui virent du rose au vert chartreuse = normal c'est leur cycle"
+Roses,Jardin de devant,,en forme,,faible,mi-ombre,jardin de devant + jardin de derrière — présentes dans les deux jardins en pleine terre. Variété(s) inconnue(s) — remontantes ou non à déterminer. Tailler les fleurs fanées légèrement pour tenter une 2e floraison estivale. Ne pas tailler sévèrement sans connaître la variété. — supporte aussi le plein soleil
+Oranger du Mexique (Choisya),Jardin de derrière,,en forme,,faible,mi-ombre,jardin de derrière (à côté du potager mi-ombre) — refleurit en fin d'été si taillé légèrement après la floraison de printemps. Taille douce uniquement — enlever fleurs fanées et mettre en forme.
+Chou chinois,Liste de souhaits,,à acheter,,moyen,mi-ombre,semer juillet-août pour récolte automne
+Mesclun,Liste de souhaits,,à acheter,,moyen,mi-ombre,semer août-septembre — craint la chaleur estivale
+Épinards,Liste de souhaits,,à acheter,,moyen,mi-ombre,semer septembre — monte en graine avec la chaleur
+Cornichons,Liste de souhaits,,à acheter,,élevé,plein soleil,recommandé juin — semer maintenant jusqu'à fin juin — idéal serre ou plein soleil
+Melon,Liste de souhaits,,à acheter,,élevé,plein soleil,recommandé juin — encore possible début juin — serre idéale mais arrosage régulier indispensable
+Physalis,Liste de souhaits,,à acheter,,moyen,plein soleil,semer maintenant mais récolte tardive — serre chaude
+Piments,Liste de souhaits,,à acheter,,moyen,plein soleil,un peu tard (idéal mars-avril) — tentable en serre chaude
+Fèves,Liste de souhaits,,à acheter,,moyen,plein soleil,semer octobre-novembre ou février — trop tard maintenant
+Navets,Liste de souhaits,,à acheter,,moyen,plein soleil,semer juillet-août — trop tôt maintenant (monterait en fleur)
+Panais,Liste de souhaits,,à acheter,,faible,plein soleil,besoin sol profond et meuble — problématique avec sol dur et argileux
+Rutabaga,Liste de souhaits,,à acheter,,faible,plein soleil,semer juin-juillet possible — racine donc sol profond nécessaire
+Lentilles,Liste de souhaits,,à acheter,,faible,plein soleil,semis mars-mai idéal — un peu tard mais tentable plein soleil
+Camomille,Liste de souhaits,,à acheter,,faible,plein soleil,recommandé juin — semer maintenant — rustique et facile
+Coriandre,Liste de souhaits,,à acheter,,moyen,mi-ombre,"recommandé juin — semer maintenant — rapide, utile, attention chaleur excessive"
+Courgette Genovese,Stock de graines,,à semer,,moyen,plein soleil,"semis avril-mai, récolte juillet-octobre — 15 pieds (Invivo)"
+Concombre Tendergreen Burpless,Stock de graines,,à semer,,élevé,plein soleil,bio & reproductible (Kokopelli) — semer maintenant jusqu'à fin juin
+Pastèque Sugar Baby,Stock de graines,,à semer,,élevé,plein soleil,"bio & reproductible (Kokopelli) — fruit 19-22cm, semis mai-juin"
+Artichaut Gros Vert de Laon,Stock de graines,,à semer,,moyen,plein soleil,"semis mars-juin (Caillard) — vivace, prévoir place en pleine terre"
+Chou Brocoli Calabrese Vert,Stock de graines,,à semer,,moyen,plein soleil,récolte avril-juin — semer juillet-août pour récolte printanière
+Radis Rond Écarlate,Stock de graines,,à semer,,moyen,mi-ombre,"semis mars-sept, récolte avril-oct — convient pot/bac (Invivo)"
+Radis Noir Long Poids d'Horloge,Stock de graines,,à semer,,moyen,mi-ombre,"semis mai-octobre, récolte 4 mois après — légume d'autrefois reproductible (Vilmorin)"
+Carottes 10 variétés,Stock de graines,,à semer,,moyen,plein soleil,"sachet kraft — semis toute saison, semer en lignes"
+Rhubarbe Géante Victoria,Stock de graines,,à semer,,moyen,mi-ombre,"grainetier bio Ferme de Sainte Marthe — vivace, prévoir emplacement permanent"
+Oignon Rouge Pâle de Niort,Stock de graines,,à semer,,faible,plein soleil,"bio & reproductible (Kokopelli) — semis fév-mai, récolte juil-sept, 500 plants"
+Betterave de Détroit,Stock de graines,,à semer,,moyen,plein soleil,"semis mars-juin, récolte juin-novembre (Invivo) — déjà semé en serre"
+Mâche Ronde Maraîchère,Stock de graines,,à semer,,moyen,mi-ombre,"semis août-septembre, récolte 2 mois après — précoce résistante mildiou (Vilmorin)"
+Épinard Géant d'Hiver,Stock de graines,,à semer,,moyen,mi-ombre,"semis juillet-septembre, récolte 2-3 mois — rustique et productif (Vilmorin)"
+Tomate-Cerise Scarlet Starfire / Starfire Isis,Stock de graines,,à semer,,élevé,plein soleil,"bio & reproductible (Kokopelli) — variété mi-saison, production Isère, 33+ plants"
+Tomate Fireworks,Stock de graines,,à semer,,élevé,plein soleil,"bio & reproductible (Kokopelli) — variété précoce, production Ariège"
+Tomate Calabash Red,Stock de graines,,à semer,,élevé,plein soleil,"bio & reproductible (Kokopelli) — variété mi-saison, production Creuse"
+Aubergine Diamond,Stock de graines,,à semer,,élevé,plein soleil,"bio & reproductible (Kokopelli) — fruit 15-25cm, production Dordogne, semis fév-mai"
+Endive (variété non précisée),Stock de graines,,à semer,,moyen,mi-ombre,(Invivo) — vérifier variété exacte sur le sachet
+Haricot nain Purple Queen,Stock de graines,,à semer,,moyen,plein soleil,"bio & reproductible (Ferme de Sainte Marthe) — semis avril-juillet, récolte juillet-oct"
+Haricot nain Délinel filet sans fil,Stock de graines,,à semer,,moyen,plein soleil,(GrainOsol) — conditionné en France
+Pois à Grain Rond Petit Provençal,Stock de graines,,à semer,,moyen,plein soleil,"pied nain 40cm, résistant au froid (Invivo) — semis fév-nov, récolte mai-juillet"
+Basilic Grandes Feuilles,Stock de graines,,à semer,,moyen,plein soleil,(myfood) — à semer maintenant en serre ou pot
+Basilic Bio Aromatico della riviera ligure,Stock de graines,,à semer,,moyen,plein soleil,bio (Est Wood) — variété italienne parfumée
+Pois de Senteur Bio en Mélange,Stock de graines,,à semer,,moyen,plein soleil,attire pollinisateurs (Vilmorin) — semis avril-mai
+Œillets d'Inde,Stock de graines,,à semer,,faible,plein soleil,"sachet Fine pour Maîtresses — déjà en pépinière aussi, repousse nuisibles"
+Mélange fleurs Pour couvrir ma jolie Maman,Stock de graines,,à semer,,faible,plein soleil,sachet cadeau — mélange courge/reine type annuelles
+Seedshaker Butterfly Mix,Stock de graines,,à semer,,faible,plein soleil,20 espèces de fleurs pour 15m² — secouer directement sur sol préparé
+Balsamine à Fleur de Camélia double variée,Stock de graines,,à semer,,moyen,mi-ombre,"semis avril-juin, floraison juin-septembre, 50cm (Vilmorin Vita)"
+Mélange pour Abeilles Bijenmix,Stock de graines,,à semer,,faible,plein soleil,12 variétés de fleurs pour ±50m² — semis mars-septembre (Faniflora)
+Capucine,Stock de graines,,à semer,,faible,plein soleil,"(reste des graines) — du jardin de la maman d'Emilie — pleine terre, semis avril-mai. ⚠️ PAS à côté des choux : attire les chenilles qui les mangent"
+Vesce d'Hiver,Stock de graines,,à semer,,faible,plein soleil,"engrais vert bio (Vicia villosa) — 80g, fixe l'azote, améliore structure du sol argileux"
+Butternut 2025 (semé 5 juin),Jardin de derrière,,semis,en germination,moyen,plein soleil,"3 trous, 1 graine chacun, espacés — zone repérée avec forte présence limaces/escargots (familles entières), granulés phosphate de fer posés en protection — 01/10 déplacée : Jardin"
+Potimarron 2025 (semé 5 juin),Jardin de derrière,,semis,en germination,moyen,plein soleil,"3 trous, 1 graine chacun, espacés — même zone que butternut, granulés phosphate de fer posés en protection — 01/10 déplacée : Jardin"
+Concombre Tendergreen Burpless (2 plants),Serre,,en croissance,,élevé,plein soleil,serre ou jardin — 2 plants en place — stock graines disponible
+Betterave de Détroit (7 plants),Potager mi-ombre,,en croissance,,moyen,plein soleil,7 plants semés 12 mai — prêts début août. Facile à resemer pour succession
+Patates douces,Jardin de derrière,,en croissance,,moyen,plein soleil,sacs à patates (serre) — dans des sacs à patates en serre — sortir quand temps stabilisé (tâche en cours)
+Potimarron 2025,Stock de graines,,à semer,,moyen,plein soleil,"(maison) — graines maison 2025 — possible F1 hybride à confirmer. URGENT : semer cette semaine en pleine terre, dernière chance"
+"Plante araignée / Chlorophytum (meuble fenêtre est, collée)",Intérieur,,en forme,,moyen,3/5,"meuble devant fenêtre est — pot 10cm — Touffe de longues feuilles fines en lanières, vert et blanc panaché, retombantes en étoile depuis le centre du pot — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
+"Plante araignée / Chlorophytum (meuble fenêtre est, décalée)",Intérieur,,en forme,,moyen,3/5,"meuble devant fenêtre est, légèrement décalée — pot 10cm — Touffe de longues feuilles fines en lanières, vert et blanc panaché, retombantes en étoile depuis le centre du pot — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
+Pothos suspendu,Intérieur,,en forme,,moyen,3/5,"suspendu, ~5m de la fenêtre est — pot 10cm — Feuilles en cœur vert/jaune marbré, tiges retombantes — sèche plus vite en suspension qu'en pot posé — Arrosage : un verre d'eau (~150ml) 1 fois par semaine — vérifier plus souvent si l'air est sec"
+Pothos (meuble fenêtre est),Intérieur,,en forme,,moyen,3/5,"meuble devant fenêtre est — pot 10cm — Feuilles en cœur vert/jaune marbré, tiges grimpantes ou retombantes — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
+Langue de belle-mère / Sansevieria (plante principale),Intérieur,,en forme,,faible,3/5,"meuble devant fenêtre est, déplaçable ailleurs — pot 10cm — Feuilles raides, pointues, dressées verticalement, vert marbré, très résistante à la sécheresse. Plante d'origine en bonne forme — peut être déplacée ailleurs dans la maison pour décorer — Arrosage : un petit verre d'eau (~100ml) toutes les 2-3 semaines"
+Langue de belle-mère / Sansevieria (rejets repiqués),Intérieur,,à surveiller,"nouvelle pousse étiolée, fine, tordue et translucide",faible,5/5,"nouveau pot, reste au soleil pour récupérer — pot 10cm — Rejets de la plante principale, séparés et repiqués dans un nouveau pot — pousse étiolée/fine/tordue/translucide : manque de lumière sur la nouvelle pousse et/ou excès d'arrosage. À laisser en plein soleil et espacer les arrosages pour qu'ils récupèrent une forme normale — Arrosage : un petit verre d'eau (~100ml) toutes les 2-3 semaines — réduire si excès actuel"
+Pilea peperomioides,Intérieur,,en forme,,moyen,4/5,"meuble fenêtre est — pot 10cm — Feuilles rondes plates en forme de pièce de monnaie sur tiges fines, port buissonnant — confirmée : grosses feuilles rondes — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
+"Tradescantia zebrina/pallida (x2, meuble fenêtre est)",Intérieur,,en forme,,moyen,3/5,"meuble devant fenêtre est, légèrement décalées — pots 10cm — Feuillage panaché violet/vert avec rayures argentées, port retombant ou buissonnant — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
+Tradescantia zebrina/pallida (panier suspendu),Intérieur,,à surveiller,"fine, peu de fleurs",moyen,4/5,"panier suspendu — Feuillage panaché violet/vert avec rayures argentées, port retombant — plus clairsemée que les 2 autres, peu de fleurs. Était déjà étiolée avant le réglage à 4/5 (probablement pas un manque de lumière) — tailler les tiges dégarnies pour relancer une pousse plus dense, réévaluer dans quelques semaines — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
+Ficus ginseng,Intérieur,,en forme,,faible,4/5,"meuble devant fenêtre est — pot 10cm — Tronc/racines renflées noueuses, petites feuilles ovales vert foncé brillant — Arrosage : un verre d'eau (~150ml) toutes les 1-2 semaines (semi-succulent, tolère le sec)"
+Peperomia rotundifolia,Intérieur,,en forme,,moyen,3/5,"~3m de la fenêtre ouest — pot 10cm — Petites feuilles rondes charnues, tiges fines retombantes — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
+Succulente non identifiée (étagère blanche),Intérieur,,à surveiller,peu de feuillage,faible,4/5,"meuble devant fenêtre est, près du basilic — pot 10cm — Pot côtelé moutarde/ocre, feuilles charnues en palette, tiges ligneuses rougeâtres duveteuses — espèce précise non identifiée (type Crassula/Echeveria arborescens). Peu de feuilles actuellement malgré la forte lumière — surveiller racines/arrosage — Arrosage : un petit verre d'eau (~100ml) toutes les 2-3 semaines — laisser sécher complètement"
+Patate douce (plante d'ornement),Intérieur,,en forme,,élevé,4/5,"~2m de la fenêtre est, derrière un poteau — pot 20cm — Feuilles en cœur vert vif retombantes en longues lianes — confondue au premier coup d'œil avec du lierre — Arrosage : un mug d'eau (~300ml) 2 fois par semaine — garder le terreau humide sans détremper"
