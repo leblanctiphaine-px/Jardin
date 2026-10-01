@@ -116,6 +116,7 @@ dialog.plein .dlg{max-width:640px;margin:0 auto;padding-bottom:40px}
 .row .detail{grid-column:1/-1;font-size:.92rem;color:var(--ink);min-width:0}
 .liees{display:grid;gap:8px;border-top:1px solid var(--line);padding-top:12px}
 .liees .group-h{margin:0}
+.sugg{display:flex;flex-wrap:wrap;gap:6px;margin-top:-6px}
 .bilans{list-style:none;margin:0;padding:0;display:grid;gap:6px}.bilans li{font-size:.9rem}.bilans .meta{display:block;font-size:.8rem;color:var(--muted)}
 .pill.plante{background:var(--accent-soft);color:var(--accent)}
 .dlg h2{padding-right:44px;font:700 1.3rem var(--f-display);margin:0}
@@ -647,12 +648,19 @@ function editTache(i,plante=""){
     <div class="fields">
       <label class="f full">Tâche<input id="t-nom" value="${esc(base.tache)}" ${t?"":"autofocus"}></label>
       <label class="f full">Priorité${sel("t-prio",PRIO,base.priorite)}</label>
-      <label class="f full">Plante liée<input id="t-plante" list="dl-plantes" value="${esc(base.plante)}" placeholder="Aucune"></label>
+      <label class="f full">Plante liée<input id="t-plante" value="${esc(base.plante)}" placeholder="Chercher une plante…" autocomplete="off"></label><div class="sugg full" id="t-sugg" hidden></div>
       <label class="f full">Notes<textarea id="t-notes">${esc(base.notes)}</textarea></label>
     </div>
-    <datalist id="dl-plantes">${plantes.map(n=>`<option value="${esc(n)}">`).join("")}</datalist>
     <div class="actions"><div><button type="button" class="btn danger" id="del" ${t?"":"hidden"}>Supprimer</button></div></div>`,
-    {onDelete:()=>{ S.taches.splice(S.taches.indexOf(t),1); render(); sauver("taches",`Tâches : supprimer « ${t.tache} »`); }});
+    {plein:true, onDelete:()=>{ S.taches.splice(S.taches.indexOf(t),1); render(); sauver("taches",`Tâches : supprimer « ${t.tache} »`); }});
+  /* Recherche de plante : suggestions filtrées sous le champ, sans tenir compte des accents. */
+  const plat=x=>x.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  const suggerer=()=>{ const q=plat($("#t-plante").value.trim()), box=$("#t-sugg");
+    const r=plantes.filter(n=>plat(n).includes(q)&&n!==$("#t-plante").value).slice(0,6);
+    box.hidden=!r.length; box.innerHTML=r.map(n=>`<button type="button" class="chip" data-plante="${esc(n)}">${esc(n)}</button>`).join(""); };
+  $("#t-plante").onfocus=suggerer; $("#t-plante").addEventListener("input",suggerer);
+  $("#t-sugg").onclick=e=>{ const b=e.target.closest("[data-plante]"); if(!b) return; $("#t-plante").value=b.dataset.plante;
+    $("#t-sugg").hidden=true; $("#dlg-form").dispatchEvent(new Event("input")); };
   $("#dlg-form").oninput=()=>{
     const n={tache:$("#t-nom").value.trim(),priorite:$("#t-prio").value,statut:base.statut,notes:$("#t-notes").value.trim(),plante:$("#t-plante").value.trim()};
     if(!n.tache) return;
