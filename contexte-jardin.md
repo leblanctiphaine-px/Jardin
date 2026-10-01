@@ -39,13 +39,13 @@ Goutte-à-goutte (tuyaux bleus) installé sur plusieurs zones ; arrosage manuel 
 | Serre | Bacs gauche/droite/milieu, très chaude en été | Arrosée mais demande un effort actif, à ne pas oublier | Radis, semis protégés, aubergines, poivrons, piments, patates |
 | Terrasse de devant | Plein soleil matin + midi, très exposée côté rue, reste chaude toute la journée en été — la plus chaude des deux terrasses | Très bien arrosée. Tous les jours par forte chaleur | Plantes aimant chaleur et soleil intense, figuier, aromatiques |
 | Terrasse de derrière | Soleil l'après-midi, un mur ombragé apporte un peu d'ombre, brise du jardin — moins chaude que devant malgré soleil de l'après-midi | Bien arrosée. Tous les jours par forte chaleur, voire 2 fois par jour pour l'hortensia | Plantes mi-ombre ou sensibles à la chaleur excessive — érable et hortensia déplacés ici ; groseiller prévu ici |
-| Mini jardin de devant | Petit espace en pleine terre entre la maison et le mur côté rue. Moins de soleil direct qu'on pourrait croire malgré l'orientation devant — végétation dense qui s'ombre elle-même. En cours de restructuration. | Pas d'arrosage régulier prévu : risque de stress hydrique | Arbustes rustiques, plantes ne nécessitant pas d'arrosage fréquent |
-| Jardin général | Arbustes, vivaces, pleine terre | Goutte-à-goutte là où il est installé, arrosage manuel par forte chaleur. Risque élevé de stress hydrique (oublis fréquents) : éviter les pots très sensibles à la sécheresse | Framboisier, olivier, roses |
+| Jardin de devant | Petit espace en pleine terre entre la maison et le mur côté rue. Moins de soleil direct qu'on pourrait croire malgré l'orientation devant — végétation dense qui s'ombre elle-même. En cours de restructuration. | Pas d'arrosage régulier prévu : risque de stress hydrique | Arbustes rustiques, plantes ne nécessitant pas d'arrosage fréquent |
+| Jardin de derrière | Arbustes, vivaces, pleine terre | Goutte-à-goutte là où il est installé, arrosage manuel par forte chaleur. Risque élevé de stress hydrique (oublis fréquents) : éviter les pots très sensibles à la sécheresse | Framboisier, olivier, roses |
 | Intérieur | Lumière indirecte | Zone la plus surveillée, arrosage fiable. Mardi et vendredi minimum, plus souvent en été | Pothos, pachira, dracaena, curcuma |
 
 ---
 
-## Mini jardin de devant — état et chantier en cours
+## Jardin de devant — état et chantier en cours
 
 Petit jardin en pleine terre côté rue, vu depuis la terrasse de devant (rambarde métallique grise).
 
