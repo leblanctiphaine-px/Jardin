@@ -139,17 +139,23 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 
   <!-- ACCUEIL -->
   <section id="v-accueil" class="home" hidden>
-    <button class="card" data-tab="plantes">
-      <span class="card-k">Au jardin et à l'intérieur</span>
-      <span class="card-t">Plantes</span>
-      <span class="card-n" id="n-plantes"></span>
-      <span class="card-s" id="s-plantes"></span>
+    <button class="card" data-tab="jardin">
+      <span class="card-k">Potager, serre, pleine terre</span>
+      <span class="card-t">Jardin</span>
+      <span class="card-n" id="n-jardin"></span>
+      <span class="card-s" id="s-jardin"></span>
     </button>
-    <button class="card" data-tab="projets">
-      <span class="card-k">À semer ou à acheter</span>
-      <span class="card-t">Graines et envies</span>
-      <span class="card-n" id="n-projets"></span>
-      <span class="card-s" id="s-projets"></span>
+    <button class="card" data-tab="terrasses">
+      <span class="card-k">Pots et bacs</span>
+      <span class="card-t">Terrasses</span>
+      <span class="card-n" id="n-terrasses"></span>
+      <span class="card-s" id="s-terrasses"></span>
+    </button>
+    <button class="card" data-tab="interieur">
+      <span class="card-k">Plantes vertes de la maison</span>
+      <span class="card-t">Intérieur</span>
+      <span class="card-n" id="n-interieur"></span>
+      <span class="card-s" id="s-interieur"></span>
     </button>
     <button class="card" data-tab="taches">
       <span class="card-k">À faire</span>
@@ -162,6 +168,12 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
       <span class="card-t">Contexte</span>
       <span class="card-n" id="n-contexte"></span>
       <span class="card-s">Les infos durables sur le jardin</span>
+    </button>
+    <button class="card" data-tab="projets">
+      <span class="card-k">À semer ou à acheter</span>
+      <span class="card-t">Graines et envies</span>
+      <span class="card-n" id="n-projets"></span>
+      <span class="card-s" id="s-projets"></span>
     </button>
   </section>
 
@@ -231,7 +243,7 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 <script>
 const S = {plantes: [], taches: [], contexte: []};
 const COLS = {plantes:["nom","emplacement","etat","besoins_eau","ensoleillement","notes"], taches:["tache","priorite","responsable","statut","notes"]};
-let tab = "plantes", groupe = "Tous", mode = "plantes", statutF = "ouvertes";
+let tab = "accueil", groupe = "Tous", mode = "jardin", statutF = "ouvertes";
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const aujourdhui = () => new Date().toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit"});
@@ -368,13 +380,16 @@ async function demarrer(){
 function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),3500)}
 
 /* ---------- Règles métier tirées de CLAUDE.md ---------- */
-const MODES={plantes:["Jardin et terrasses","Intérieur"],projets:["Stock de graines","Liste de souhaits"]};
+const MODES={jardin:["Jardin"],terrasses:["Terrasses"],interieur:["Intérieur"],projets:["Stock de graines","Liste de souhaits"]};
+const VRAIES=["Jardin","Terrasses","Intérieur"];
+/* Classement d'après le début de l'emplacement : « terrasse + jardin » compte comme terrasse, « jardin/terrasse » comme jardin. */
 function groupeDe(p){
   const e=p.emplacement.toLowerCase();
-  if(e.startsWith("intérieur")) return "Intérieur";
+  if(e.startsWith("intérieur")||e.startsWith("boutures")) return "Intérieur";
   if(e.startsWith("stock graines")) return "Stock de graines";
   if(e.startsWith("liste de souhaits")) return "Liste de souhaits";
-  return "Jardin et terrasses";
+  if(e.startsWith("terrasse")||e.startsWith("coin terrasse")) return "Terrasses";
+  return "Jardin";
 }
 function etatClasse(e){
   e=e.toLowerCase();
@@ -392,6 +407,7 @@ function sensibleLimaces(p){
 function renderPlantes(){
   const groupes=MODES[mode];
   const dansMode=p=>groupes.includes(groupeDe(p));
+  $("#chips-plantes").hidden=groupes.length<2;
   $("#chips-plantes").innerHTML=["Tous",...groupes].map(g=>{
     const n=g==="Tous"?S.plantes.filter(dansMode).length:S.plantes.filter(p=>groupeDe(p)===g).length;
     return `<button class="chip" aria-pressed="${g===groupe}" data-g="${esc(g)}">${esc(g)}<span>${n}</span></button>`}).join("");
@@ -408,18 +424,19 @@ function renderPlantes(){
       <span class="tags">${sensibleLimaces(p)?'<span class="pill slug">limaces</span>':""}<span class="pill ${etatClasse(p.etat)}">${esc(p.etat)}</span></span>
       <span class="meta">${esc(p.emplacement)} · eau ${esc(p.besoins_eau)} · ${esc(p.ensoleillement)}</span>
     </button>`).join(""):`<p class="empty">Aucune plante ne correspond. Change le filtre ou ajoute-la.</p>`;
-  const vraies=S.plantes.filter(p=>MODES.plantes.includes(groupeDe(p)));
-  const alerte=vraies.filter(p=>etatClasse(p.etat)==="bad").length;
-  $("#n-plantes").textContent=vraies.length;
-  $("#s-plantes").innerHTML=alerte?`<b>${alerte} à surveiller</b> · ${vraies.filter(p=>groupeDe(p)==="Intérieur").length} à l'intérieur`:"Tout va bien";
+  for(const [k,g] of [["jardin","Jardin"],["terrasses","Terrasses"],["interieur","Intérieur"]]){
+    const ps=S.plantes.filter(p=>groupeDe(p)===g), alerte=ps.filter(p=>etatClasse(p.etat)==="bad").length;
+    $("#n-"+k).textContent=ps.length;
+    $("#s-"+k).innerHTML=alerte?`<b>${alerte} à surveiller</b>`:"Rien à signaler";
+  }
   const nG=S.plantes.filter(p=>groupeDe(p)==="Stock de graines").length, nE=S.plantes.filter(p=>groupeDe(p)==="Liste de souhaits").length;
   $("#n-projets").textContent=nG+nE;
   $("#s-projets").textContent=`${nG} sachets de graines · ${nE} envies`;
-  $("#add-plante").textContent=mode==="plantes"?"Ajouter une plante":"Ajouter des graines ou une envie";
-  $("#q-plantes").placeholder=mode==="plantes"?"Chercher une plante, un emplacement, une note…":"Chercher une graine ou une envie…";
+  $("#add-plante").textContent=mode!=="projets"?"Ajouter une plante":"Ajouter des graines ou une envie";
+  $("#q-plantes").placeholder=mode!=="projets"?"Chercher une plante, un emplacement, une note…":"Chercher une graine ou une envie…";
 }
 function editPlante(i){
-  const isNew=i==null, p=isNew?{nom:"",emplacement:mode==="projets"?(groupe==="Liste de souhaits"?"liste de souhaits":"stock graines"):"",etat:mode==="projets"?(groupe==="Liste de souhaits"?"non acheté":"non semé"):"",besoins_eau:"",ensoleillement:"",notes:""}:S.plantes[i];
+  const isNew=i==null, p=isNew?{nom:"",emplacement:mode==="projets"?(groupe==="Liste de souhaits"?"liste de souhaits":"stock graines"):{terrasses:"terrasse",interieur:"intérieur"}[mode]||"",etat:mode==="projets"?(groupe==="Liste de souhaits"?"non acheté":"non semé"):"",besoins_eau:"",ensoleillement:"",notes:""}:S.plantes[i];
   const projet=!isNew&&MODES.projets.includes(groupeDe(p));
   const opts=(k)=>[...new Set(S.plantes.map(x=>x[k]))].filter(Boolean).slice(0,60).map(v=>`<option value="${esc(v)}">`).join("");
   openDlg(`
@@ -456,7 +473,7 @@ function editPlante(i){
   ["#p-nom","#p-etat","#p-emp"].forEach(s=>$(s).addEventListener("input",upd));
   $("#promo")&&($("#promo").onclick=()=>{ const seme=groupeDe(p)==="Stock de graines";
     $("#p-etat").value=seme?"semis":"actif"; $("#p-emp").value=""; $("#p-emp").placeholder="Où exactement ? zone + repère (ex. serre, bac gauche)";
-    $("#p-date").checked=true; $("#p-emp").focus(); upd(); toast("Indique l'emplacement puis enregistre : elle passera dans Plantes"); });
+    $("#p-date").checked=true; $("#p-emp").focus(); upd(); toast("Indique l'emplacement puis enregistre : elle passera dans Jardin, Terrasses ou Intérieur selon l'emplacement"); });
 }
 
 /* ---------- Tâches ---------- */
@@ -556,7 +573,7 @@ function renderContexte(){
       <div class="sec-edit">
         <label class="f">Titre de la section<input id="c-titre" value="${esc(s.titre)}"></label>
         <label class="f">Contenu (Markdown)<textarea id="c-contenu">${esc(s.contenu)}</textarea></label>
-        <p class="hint">Pas de tableau de plantes ici : l'inventaire vit dans l'onglet Plantes.</p>
+        <p class="hint">Pas de tableau de plantes ici : l'inventaire vit dans Jardin, Terrasses et Intérieur.</p>
         <div class="actions"><div></div>
         <div><button class="btn" data-cancel-sec>Annuler</button><button class="btn primary" data-save-sec="${i}">Enregistrer</button></div></div>
       </div>
@@ -582,11 +599,11 @@ function openDlg(html,onSave,onDelete){
 
 /* ---------- Navigation ---------- */
 function render(){ renderPlantes(); renderTaches(); renderContexte(); }
-const TITRES={plantes:"Plantes",projets:"Graines et envies",taches:"Tâches",contexte:"Contexte",connexion:"Réglages"};
+const TITRES={jardin:"Jardin",terrasses:"Terrasses",interieur:"Intérieur",projets:"Graines et envies",taches:"Tâches",contexte:"Contexte",connexion:"Réglages"};
 function setTab(t,push=true){ if(!TITRES[t]) t="accueil"; if(!charge) t="connexion"; tab=t;
   if(t==="connexion"){ $("#c-token").value=cfg.token; $("#c-repo").value=cfg.repo; $("#c-branch").value=cfg.branch;
     $("#invite").hidden=!charge; if(charge) $("#invite-link").value=lienInvitation(); }
-  const vue=(t==="plantes"||t==="projets")?"plantes":t;
+  const vue=MODES[t]?"plantes":t;
   if(vue==="plantes"&&mode!==t){mode=t;groupe="Tous";$("#f-etat").value="";renderPlantes()}
   ["accueil","plantes","taches","contexte","connexion"].forEach(k=>$("#v-"+k).hidden=k!==vue);
   $("#crumb").hidden=t==="accueil"||!charge; $("#crumb-t").textContent=TITRES[t]||"";
