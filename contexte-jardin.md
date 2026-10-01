@@ -28,46 +28,21 @@ Solutions disponibles / à suggérer :
 
 ---
 
-## Arrosage
-
-- Système de goutte-à-goutte (tuyaux bleus visibles sur les photos)
-- Arrosage manuel complémentaire nécessaire par forte chaleur
-- Plantes d'intérieur : mardi et vendredi minimum, plus fréquent en été
-- Terrasse : quotidien par forte chaleur, voire 2x/jour pour l'hortensia
-
----
-
 ## Zones du jardin
 
-| Zone | Caractéristiques | Plantes adaptées |
-|------|-----------------|-----------------|
-| Potager plein soleil | Plein soleil, sol dur | Tomates, courgettes, courges, haricots, fleurs |
-| Potager mi-ombre | À côté de la mini-serre, sol plus travaillé | Poireaux, laitues (avec protection), carottes |
-| Mini-serre | Très chaude en été | Aubergines, poivrons, piments, patates |
-| Serre grande | Bacs gauche/droite/milieu | Radis, semis protégés |
-| Terrasse de devant | Plein soleil matin + midi, très exposée côté rue, reste chaude toute la journée en été — la plus chaude des deux terrasses | Plantes aimant chaleur et soleil intense, figuier, aromatiques |
-| Terrasse de derrière | Soleil l'après-midi, un mur ombragé apporte un peu d'ombre, brise du jardin — moins chaude que devant malgré soleil de l'après-midi | Plantes mi-ombre ou sensibles à la chaleur excessive — érable et hortensia déplacés ici ; groseiller prévu ici |
-| Mini jardin de devant | Petit espace en pleine terre entre la maison et le mur côté rue. Moins de soleil direct qu'on pourrait croire malgré l'orientation devant — végétation dense qui s'ombre elle-même. Pas d'arrosage régulier prévu (zone jardin = risque stress hydrique). En cours de restructuration. | Arbustes rustiques, plantes ne nécessitant pas d'arrosage fréquent |
-| Jardin général | Arbustes, vivaces, pleine terre | Framboisier, olivier, roses |
-| Intérieur | Lumière indirecte | Pothos, pachira, dracaena, curcuma |
+Goutte-à-goutte (tuyaux bleus) installé sur plusieurs zones ; arrosage manuel en complément par forte chaleur.
 
----
-
-## Arrosage par zone — fiabilité
-
-- **Intérieur** : zone la plus surveillée, arrosage fiable
-- **Terrasse de devant** : très bien arrosée, priorité naturelle
-- **Terrasse de derrière** : bien arrosée, priorité naturelle
-- **Serre (jardin)** : arrosée mais demande un effort actif — à ne pas oublier
-- **Jardin (pots en pleine terre)** : zone à risque élevé de stress hydrique — oublis fréquents possibles. Éviter d'y mettre des plantes en pot très sensibles à la sécheresse.
-
----
-
-## Infrastructure
-
-- Mini-serre : à côté du potager mi-ombre, chaleur intense en été
-- Goutte-à-goutte : installé sur plusieurs zones
-- Clôtures/bordures jaunes : délimitent les zones potager
+| Zone | Caractéristiques | Arrosage | Plantes adaptées |
+|------|-----------------|----------|-----------------|
+| Potager plein soleil | Plein soleil, sol dur | Goutte-à-goutte là où il est installé, arrosage manuel par forte chaleur. Risque élevé de stress hydrique (oublis fréquents) : éviter les pots très sensibles à la sécheresse | Tomates, courgettes, courges, haricots, fleurs |
+| Potager mi-ombre | À côté de la mini-serre, sol plus travaillé | Goutte-à-goutte là où il est installé, arrosage manuel par forte chaleur. Risque élevé de stress hydrique (oublis fréquents) : éviter les pots très sensibles à la sécheresse | Poireaux, laitues (avec protection), carottes |
+| Mini-serre | Très chaude en été | Arrosée mais demande un effort actif, à ne pas oublier | Aubergines, poivrons, piments, patates |
+| Serre grande | Bacs gauche/droite/milieu | Arrosée mais demande un effort actif, à ne pas oublier | Radis, semis protégés |
+| Terrasse de devant | Plein soleil matin + midi, très exposée côté rue, reste chaude toute la journée en été — la plus chaude des deux terrasses | Très bien arrosée. Tous les jours par forte chaleur | Plantes aimant chaleur et soleil intense, figuier, aromatiques |
+| Terrasse de derrière | Soleil l'après-midi, un mur ombragé apporte un peu d'ombre, brise du jardin — moins chaude que devant malgré soleil de l'après-midi | Bien arrosée. Tous les jours par forte chaleur, voire 2 fois par jour pour l'hortensia | Plantes mi-ombre ou sensibles à la chaleur excessive — érable et hortensia déplacés ici ; groseiller prévu ici |
+| Mini jardin de devant | Petit espace en pleine terre entre la maison et le mur côté rue. Moins de soleil direct qu'on pourrait croire malgré l'orientation devant — végétation dense qui s'ombre elle-même. En cours de restructuration. | Pas d'arrosage régulier prévu : risque de stress hydrique | Arbustes rustiques, plantes ne nécessitant pas d'arrosage fréquent |
+| Jardin général | Arbustes, vivaces, pleine terre | Goutte-à-goutte là où il est installé, arrosage manuel par forte chaleur. Risque élevé de stress hydrique (oublis fréquents) : éviter les pots très sensibles à la sécheresse | Framboisier, olivier, roses |
+| Intérieur | Lumière indirecte | Zone la plus surveillée, arrosage fiable. Mardi et vendredi minimum, plus souvent en été | Pothos, pachira, dracaena, curcuma |
 
 ---
 
