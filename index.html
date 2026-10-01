@@ -137,7 +137,6 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
     </div>
     <div class="sync">
       <span id="sync" class="syncst" aria-live="polite"></span>
-      <button class="btn" id="btn-reload" hidden>Recharger</button>
       <button class="btn" data-tab="connexion">Réglages</button>
     </div>
   </header>
@@ -267,7 +266,7 @@ function msgErreur(e){
     401:"GitHub refuse le jeton. Il a peut-être expiré : crée-en un nouveau dans Réglages.",
     403:"Ce jeton n'a pas le droit d'écrire dans le dépôt. Donne-lui « Contents : Read and write ».",
     404:"Dépôt, branche ou fichier introuvable. Vérifie le nom du dépôt et la branche dans Réglages."})[e.status]
-    ||`GitHub a répondu une erreur (${e.status}). Réessaie avec « Recharger ».`;
+    ||`GitHub a répondu une erreur (${e.status}). Rafraîchis la page pour réessayer.`;
 }
 const b64dec=s=>new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g,"")),c=>c.charCodeAt(0)));
 const b64enc=s=>{const b=new TextEncoder().encode(s);let x="";for(let i=0;i<b.length;i+=0x8000)x+=String.fromCharCode(...b.subarray(i,i+0x8000));return btoa(x)};
@@ -333,7 +332,8 @@ async function charger(k){
   fichiers[k]={sha:j.sha,texte};
   S[k]=k==="contexte"?lireMD(texte):lireCSV(k,texte);
 }
-function setSync(txt,cls){const e=$("#sync");e.textContent=txt;e.className="syncst "+(cls||"")}
+/* Seuls l'enregistrement en cours et les erreurs s'affichent ; un état normal ne montre rien. */
+function setSync(txt,cls){const e=$("#sync");e.textContent=cls==="ok"?"":txt;e.className="syncst "+(cls||"")}
 let chaine=Promise.resolve();
 /* Les écritures passent une par une : chaque commit repart du sha renvoyé par le précédent. */
 function sauver(k,message){
@@ -362,7 +362,7 @@ async function demarrer(){
     $("#conn-err").textContent=msgErreur(e); $("#conn-err").hidden=false;
     return setTab("connexion",false);
   }
-  charge=true; $("#conn-err").hidden=true; $("#btn-reload").hidden=false; setSync("À jour","ok");
+  charge=true; $("#conn-err").hidden=true; setSync("À jour","ok");
   const purgees=purgerFaites();
   render();
   if(purgees){ sauver("taches",`Tâches : retirer ${purgees} tâche(s) faite(s) depuis plus d'un mois`); toast(`${purgees} tâche(s) faite(s) il y a plus d'un mois retirée(s)`); }
@@ -621,8 +621,7 @@ $("#conn-form").onsubmit=e=>{ e.preventDefault();
   const repli=()=>{ i.select(); toast("Lien sélectionné : copie-le avec Ctrl+C ou un appui long"); };
   navigator.clipboard?.writeText(i.value).then(()=>toast("Lien copié"),repli) ?? repli(); };
 demarrer(); };
-$("#c-forget").onclick=()=>{ cfg.token=""; try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(_){} charge=false; $("#btn-reload").hidden=true; setSync("",""); setTab("connexion"); toast("Jeton oublié sur cet appareil"); };
-$("#btn-reload").onclick=()=>{ chaine.then(demarrer); };
+$("#c-forget").onclick=()=>{ cfg.token=""; try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(_){} charge=false; setSync("",""); setTab("connexion"); toast("Jeton oublié sur cet appareil"); };
 demarrer();
 </script>
 </body>
