@@ -375,18 +375,46 @@ let chaine=Promise.resolve();
 function sauver(k,message){
   setSync("Enregistrement…","busy");
   chaine=chaine.then(async()=>{
-    const texte=serialiser(k);
+    const texte=serialiser(k), objs=k==="contexte"?[]:S[k].slice(), sigs=objs.map(o=>signature(k,o));
     if(texte===fichiers[k].texte){setSync("À jour","ok");return}
     try{
       const r=await gh(`/repos/${cfg.repo}/contents/${PATHS[k]}`,{method:"PUT",body:JSON.stringify({message,content:b64enc(texte),sha:fichiers[k].sha,branch:cfg.branch})});
       fichiers[k].sha=r.content.sha; fichiers[k].texte=texte; setSync("Enregistré","ok");
     }catch(e){
+      if(e.status===409&&k!=="contexte"&&await fusionner(k,texte,message,objs,sigs)) return;
       if(e.status===409){ setSync("Conflit","bad"); toast("Le fichier a changé ailleurs entre-temps. Je recharge : refais ta modification.");
         try{await charger(k)}catch(_){} render(); }
       else { setSync("Non enregistré","bad"); toast(msgErreur(e)); }
     }
   });
   return chaine;
+}
+/* Conflit (le fichier a changé ailleurs, autre onglet ou autre coloc) : on reporte nos lignes modifiées
+   sur la version distante au lieu de perdre la modif, en gardant les objets ouverts dans une fiche. */
+function fusion3(base,mien,distant){
+  const L=t=>t.replace(/\n$/,"").split("\n"), b=L(base), m=L(mien), res=L(distant);
+  const compte=a=>{const c=new Map;a.forEach(x=>c.set(x,(c.get(x)||0)+1));return c};
+  const cb=compte(b), cm=compte(m);
+  for(const [x,n] of cb){ for(let r=n-(cm.get(x)||0);r>0;r--){ const j=res.indexOf(x); if(j>=0) res.splice(j,1); } }  // lignes retirées ou modifiées chez nous
+  let ancre=0; const vus=new Map;
+  m.forEach((x,i)=>{ const n=(vus.get(x)||0)+1; vus.set(x,n);
+    if(n<=(cb.get(x)||0)){ const j=res.indexOf(x); if(j>=0) ancre=j+1; return; }  // ligne inchangée : sert de repère
+    if(i===0) return;
+    res.splice(ancre,0,x); ancre++; });  // ligne ajoutée ou modifiée chez nous : juste après la précédente
+  return res.join("\n")+"\n";
+}
+async function fusionner(k,mien,message,objs,sigs){
+  try{
+    const j=await gh(`/repos/${cfg.repo}/contents/${PATHS[k]}?ref=${encodeURIComponent(cfg.branch)}`);
+    const texte=fusion3(fichiers[k].texte,mien,b64dec(j.content));
+    const r=await gh(`/repos/${cfg.repo}/contents/${PATHS[k]}`,{method:"PUT",body:JSON.stringify({message,content:b64enc(texte),sha:j.sha,branch:cfg.branch})});
+    fichiers[k]={sha:r.content.sha,texte};
+    /* On garde les objets d'origine (une fiche ouverte continue de s'enregistrer) ; ceux ajoutés pendant l'envoi restent en tête. */
+    const pris=new Set, nouveaux=S[k].filter(o=>!objs.includes(o));
+    S[k]=[...nouveaux,...lireCSV(k,texte).map(n=>{ const i=objs.findIndex((o,i)=>!pris.has(o)&&sigs[i]===signature(k,n)); if(i<0) return n;
+      const o=objs[i]; pris.add(o); cache(o,"_raw",n._raw); cache(o,"_sig",n._sig); return o; })];
+    setSync("Enregistré","ok"); render(); return true;
+  }catch(_){ return false; }
 }
 /* Modification en direct : on regroupe les frappes et on enregistre 1,2 s après la dernière. */
 const attente={};
@@ -438,16 +466,17 @@ function construireModes(){
 /* Graines et envies sont rangées comme des zones à part : « Stock de graines » et « Liste de souhaits ». */
 const groupeDe=p=>p.zone||A_CLASSER;
 /* L'état est un tag court pris dans une liste fixe ; le détail libre va dans etat_detail. */
-const ETATS={plantes:["semis","en croissance","en forme","à récolter","à surveiller"],graines:["jamais essayé","déjà essayé"],envies:["à acheter"]};
-const ETAT_CLASSE={"semis":"ok","en croissance":"ok","en forme":"ok","à récolter":"warn","à surveiller":"warn"};
+const ETATS={plantes:["semis","en croissance","en forme","à récolter","à surveiller","fin de vie"],graines:["jamais essayé","déjà essayé"],envies:["à acheter"]};
+const ETAT_CLASSE={"semis":"ok","en croissance":"ok","en forme":"ok","à récolter":"warn","à surveiller":"warn","fin de vie":"bad"};
 const etatClasse=e=>ETAT_CLASSE[e]??"";
 const aSurveiller=p=>p.etat==="à surveiller";
 /* Bilans : ce qui a marché ou non, gardés dans bilans.csv et rattachés à une fiche de Graines et envies. */
 const RESULTATS={"réussi":"ok","mitigé":"warn","raté":"bad"};
 /* Un bilan apparaît sur toutes les fiches de la même plante (ex. un bilan « Tomates » sur chaque variété de tomate). */
 const bilansDe=nom=>{ const r=racine(nom); return S.bilans.filter(b=>b.fiche===nom||racine(b.fiche)===r||racine(b.plante)===r); };
-const dernierBilan=p=>{ const b=bilansDe(p.nom).at(-1); return b?`<span class="pill ${RESULTATS[b.resultat]??""}">${esc(b.resultat)}</span>`:""; };
-const racine=n=>n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\(.*?\)/g,"").trim().split(/[\s\/,]+/)[0].slice(0,5);
+const dernierBilan=p=>{ const b=bilansDe(p.nom).filter(b=>b.resultat).at(-1); return b?`<span class="pill ${RESULTATS[b.resultat]??""}">${esc(b.resultat)}</span>`:""; };
+const racine=n=>{ const t=n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\(.*?\)/g,"").trim();
+  return /senteur/.test(t)?"senteur":t.split(/[\s\/,]+/)[0].slice(0,5); };  // le pois de senteur est une fleur, pas un petit pois
 const nomCourt=n=>n.replace(/\s*\(.*?\)\s*/g," ").replace(/\b20\d\d\b/g,"").trim();
 const fichesProjets=()=>S.plantes.filter(x=>MODES.projets.includes(groupeDe(x)));
 const ficheProche=nom=>{ const r=racine(nom); return fichesProjets().find(x=>racine(x.nom)===r)?.nom||""; };
@@ -498,13 +527,17 @@ function ongletsDe(m){
 }
 const nbTaches=p=>S.taches.filter(t=>t.plante===p.nom&&!FERMEES.includes(t.statut)).length;
 /* Tri : d'abord les plantes qui ont des tâches à faire, puis les états inquiétants, puis l'ordre du fichier. */
-const RANG_ETAT={"à surveiller":0,"à récolter":1};
-const rangEtat=p=>RANG_ETAT[p.etat]??2;
+const RANG_ETAT={"à surveiller":0,"fin de vie":1,"à récolter":2};
+const rangEtat=p=>RANG_ETAT[p.etat]??3;
 const parTaches=r=>r.map(x=>({...x,n:nbTaches(x.p)})).sort((a,b)=>(b.n>0)-(a.n>0)||b.n-a.n||rangEtat(a.p)-rangEtat(b.p));
+/* Graines : les déjà essayées d'abord (réussi, mitigé, raté, puis sans bilan), ensuite les jamais essayées. */
+const RANG_BILAN={"réussi":0,"mitigé":1,"raté":2};
+const rangGraine=p=>{ const b=bilansDe(p.nom).filter(b=>b.resultat).at(-1); return b?RANG_BILAN[b.resultat]??3:p.etat==="déjà essayé"?3:4; };
+const trier=(r,z)=>z==="Stock de graines"?r.map(x=>({...x,n:0})).sort((a,b)=>rangGraine(a.p)-rangGraine(b.p)):parTaches(r);
 const ligne=({p,i,n})=>`
     <button class="row" data-edit-plante="${i}">
       <span class="t">${esc(p.nom)}</span>
-      <span class="tags">${sensibleLimaces(p)?'<span class="pill slug">limaces</span>':""}<span class="pill ${etatClasse(p.etat)}">${esc(p.etat)}</span>${dernierBilan(p)}${n?`<span class="pill plante">${n} tâche${n>1?"s":""}</span>`:""}</span>
+      <span class="tags">${sensibleLimaces(p)?'<span class="pill slug">limaces</span>':""}${groupeDe(p)==="Stock de graines"&&dernierBilan(p)||`<span class="pill ${etatClasse(p.etat)}">${esc(p.etat)}</span>${dernierBilan(p)}`}${n?`<span class="pill plante">${n} tâche${n>1?"s":""}</span>`:""}</span>
       ${p.etat_detail?`<span class="detail">${esc(p.etat_detail)}</span>`:""}
       ${p.besoins_eau||p.ensoleillement?`<span class="meta">${[p.besoins_eau&&"eau "+esc(p.besoins_eau),esc(p.ensoleillement)].filter(Boolean).join(" · ")}</span>`:""}
     </button>`;
@@ -519,8 +552,8 @@ function renderPlantes(){
   const zs=zonesOnglet(groupe), toutes=S.plantes.map((p,i)=>({p,i}));
   const vide=`<p class="empty">Rien ici pour l'instant.</p>`;
   $("#list-plantes").innerHTML=zs.length>1
-    ? zs.map(z=>{ const r=parTaches(toutes.filter(({p})=>groupeDe(p)===z)); return `<p class="group-h">${esc(z)}</p>${r.length?r.map(ligne).join(""):vide}`; }).join("")
-    : (r=>r.length?r.map(ligne).join(""):vide)(parTaches(toutes.filter(({p})=>groupeDe(p)===groupe)));
+    ? zs.map(z=>{ const r=trier(toutes.filter(({p})=>groupeDe(p)===z),z); return `<p class="group-h">${esc(z)}</p>${r.length?r.map(ligne).join(""):vide}`; }).join("")
+    : (r=>r.length?r.map(ligne).join(""):vide)(trier(toutes.filter(({p})=>groupeDe(p)===groupe),groupe));
   for(const k of ["jardin","interieur"]){
     const ps=S.plantes.filter(p=>MODES[k].includes(groupeDe(p))), alerte=ps.filter(aSurveiller).length;
     $("#n-"+k).textContent=ps.length;
