@@ -34,6 +34,9 @@ body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--f-body);margin:0}
 header{display:flex;justify-content:flex-end}
 h1{font:700 clamp(1.7rem,4vw,2.3rem)/1.1 var(--f-display);margin:0;letter-spacing:-.01em}
 .sub{color:var(--muted);margin:4px 0 0;font-size:.95rem}
+.gear{appearance:none;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer}
+.gear:hover{color:var(--ink);border-color:var(--accent)}
+header{min-height:40px}
 .sync{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .syncst{font:500 .72rem var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
 .syncst.ok{color:var(--ok)}.syncst.busy{color:var(--warn)}.syncst.bad{color:var(--bad)}
@@ -69,6 +72,10 @@ textarea{min-height:90px;resize:vertical}
 .task{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:2px 12px;align-items:start}
 .task input[type=checkbox]{width:20px;height:20px;margin-top:2px;accent-color:var(--accent)}
 .task.done .t{text-decoration:line-through;color:var(--muted)}
+.task .t{transition:color .3s}
+.task.leaving{overflow:hidden;pointer-events:none}
+.task.leaving input[type=checkbox]{animation:coche .35s ease-out}
+@keyframes coche{0%{transform:scale(1)}45%{transform:scale(1.35)}100%{transform:scale(1)}}
 .task .meta{grid-column:2/-1}
 .prio{width:4px;border-radius:2px;align-self:stretch}
 .group-h{font:600 .78rem var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:18px 0 4px}
@@ -102,7 +109,10 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 .check input{width:auto;accent-color:var(--accent)}
 .actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:12px}
 .actions div{display:flex;gap:8px}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:.92rem;opacity:0;transition:opacity .2s;pointer-events:none}
+.fab{position:fixed;right:max(16px,calc((100vw - 1080px)/2 + 16px));bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:5;appearance:none;border:0;border-radius:999px;padding:14px 22px;background:var(--accent);color:var(--on-accent);font:600 1rem var(--f-body);cursor:pointer;box-shadow:0 6px 18px rgba(10,30,20,.28)}
+.fab:hover{filter:brightness(1.08)}
+#v-taches{padding-bottom:72px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:.92rem;opacity:0;transition:opacity .2s;pointer-events:none}
 .toast.on{opacity:1}
 .csvbox{font:.78rem/1.45 var(--f-mono);min-height:280px;white-space:pre}
 @media (max-width:560px){.pill{white-space:normal}.row .tags{min-width:0}.fields{grid-template-columns:1fr}.row:not(.task){grid-template-columns:minmax(0,1fr)}.task .tags{grid-column:2/-1}.row .tags{justify-content:flex-start}}
@@ -133,23 +143,31 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
   <header>
     <div class="sync">
       <span id="sync" class="syncst" aria-live="polite"></span>
-      <button class="btn" data-tab="connexion">Réglages</button>
+      <button class="gear" id="btn-reglages" data-tab="connexion" aria-label="Réglages" title="Réglages" hidden>
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
     </div>
   </header>
 
   <!-- ACCUEIL -->
   <section id="v-accueil" class="home" hidden>
-    <button class="card" data-tab="plantes">
-      <span class="card-k">Au jardin et à l'intérieur</span>
-      <span class="card-t">Plantes</span>
-      <span class="card-n" id="n-plantes"></span>
-      <span class="card-s" id="s-plantes"></span>
+    <button class="card" data-tab="jardin">
+      <span class="card-k">Potager, serre, pleine terre</span>
+      <span class="card-t">Jardin</span>
+      <span class="card-n" id="n-jardin"></span>
+      <span class="card-s" id="s-jardin"></span>
     </button>
-    <button class="card" data-tab="projets">
-      <span class="card-k">À semer ou à acheter</span>
-      <span class="card-t">Graines et envies</span>
-      <span class="card-n" id="n-projets"></span>
-      <span class="card-s" id="s-projets"></span>
+    <button class="card" data-tab="terrasses">
+      <span class="card-k">Pots et bacs</span>
+      <span class="card-t">Terrasses</span>
+      <span class="card-n" id="n-terrasses"></span>
+      <span class="card-s" id="s-terrasses"></span>
+    </button>
+    <button class="card" data-tab="interieur">
+      <span class="card-k">Plantes vertes de la maison</span>
+      <span class="card-t">Intérieur</span>
+      <span class="card-n" id="n-interieur"></span>
+      <span class="card-s" id="s-interieur"></span>
     </button>
     <button class="card" data-tab="taches">
       <span class="card-k">À faire</span>
@@ -162,6 +180,12 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
       <span class="card-t">Contexte</span>
       <span class="card-n" id="n-contexte"></span>
       <span class="card-s">Les infos durables sur le jardin</span>
+    </button>
+    <button class="card" data-tab="projets">
+      <span class="card-k">À semer ou à acheter</span>
+      <span class="card-t">Graines et envies</span>
+      <span class="card-n" id="n-projets"></span>
+      <span class="card-s" id="s-projets"></span>
     </button>
   </section>
 
@@ -213,10 +237,10 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
   <section id="v-taches" hidden>
     <div class="toolbar">
       <input type="search" id="q-taches" placeholder="Chercher une tâche…" aria-label="Chercher une tâche">
-      <button class="btn primary" id="add-tache">Ajouter une tâche</button>
     </div>
     <div class="chips" id="chips-taches"></div>
     <div id="list-taches"></div>
+    <button class="fab" id="add-tache">+ Ajouter une tâche</button>
   </section>
 
   <!-- CONTEXTE -->
@@ -231,7 +255,7 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 <script>
 const S = {plantes: [], taches: [], contexte: []};
 const COLS = {plantes:["nom","emplacement","etat","besoins_eau","ensoleillement","notes"], taches:["tache","priorite","responsable","statut","notes"]};
-let tab = "plantes", groupe = "Tous", mode = "plantes", statutF = "ouvertes";
+let tab = "accueil", groupe = "Tous", mode = "jardin", statutF = "ouvertes";
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const aujourdhui = () => new Date().toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit"});
@@ -368,13 +392,16 @@ async function demarrer(){
 function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),3500)}
 
 /* ---------- Règles métier tirées de CLAUDE.md ---------- */
-const MODES={plantes:["Jardin et terrasses","Intérieur"],projets:["Stock de graines","Liste de souhaits"]};
+const MODES={jardin:["Jardin"],terrasses:["Terrasses"],interieur:["Intérieur"],projets:["Stock de graines","Liste de souhaits"]};
+const VRAIES=["Jardin","Terrasses","Intérieur"];
+/* Classement d'après le début de l'emplacement : « terrasse + jardin » compte comme terrasse, « jardin/terrasse » comme jardin. */
 function groupeDe(p){
   const e=p.emplacement.toLowerCase();
-  if(e.startsWith("intérieur")) return "Intérieur";
+  if(e.startsWith("intérieur")||e.startsWith("boutures")) return "Intérieur";
   if(e.startsWith("stock graines")) return "Stock de graines";
   if(e.startsWith("liste de souhaits")) return "Liste de souhaits";
-  return "Jardin et terrasses";
+  if(e.startsWith("terrasse")||e.startsWith("coin terrasse")) return "Terrasses";
+  return "Jardin";
 }
 function etatClasse(e){
   e=e.toLowerCase();
@@ -392,6 +419,7 @@ function sensibleLimaces(p){
 function renderPlantes(){
   const groupes=MODES[mode];
   const dansMode=p=>groupes.includes(groupeDe(p));
+  $("#chips-plantes").hidden=groupes.length<2;
   $("#chips-plantes").innerHTML=["Tous",...groupes].map(g=>{
     const n=g==="Tous"?S.plantes.filter(dansMode).length:S.plantes.filter(p=>groupeDe(p)===g).length;
     return `<button class="chip" aria-pressed="${g===groupe}" data-g="${esc(g)}">${esc(g)}<span>${n}</span></button>`}).join("");
@@ -408,18 +436,19 @@ function renderPlantes(){
       <span class="tags">${sensibleLimaces(p)?'<span class="pill slug">limaces</span>':""}<span class="pill ${etatClasse(p.etat)}">${esc(p.etat)}</span></span>
       <span class="meta">${esc(p.emplacement)} · eau ${esc(p.besoins_eau)} · ${esc(p.ensoleillement)}</span>
     </button>`).join(""):`<p class="empty">Aucune plante ne correspond. Change le filtre ou ajoute-la.</p>`;
-  const vraies=S.plantes.filter(p=>MODES.plantes.includes(groupeDe(p)));
-  const alerte=vraies.filter(p=>etatClasse(p.etat)==="bad").length;
-  $("#n-plantes").textContent=vraies.length;
-  $("#s-plantes").innerHTML=alerte?`<b>${alerte} à surveiller</b> · ${vraies.filter(p=>groupeDe(p)==="Intérieur").length} à l'intérieur`:"Tout va bien";
+  for(const [k,g] of [["jardin","Jardin"],["terrasses","Terrasses"],["interieur","Intérieur"]]){
+    const ps=S.plantes.filter(p=>groupeDe(p)===g), alerte=ps.filter(p=>etatClasse(p.etat)==="bad").length;
+    $("#n-"+k).textContent=ps.length;
+    $("#s-"+k).innerHTML=alerte?`<b>${alerte} à surveiller</b>`:"Rien à signaler";
+  }
   const nG=S.plantes.filter(p=>groupeDe(p)==="Stock de graines").length, nE=S.plantes.filter(p=>groupeDe(p)==="Liste de souhaits").length;
   $("#n-projets").textContent=nG+nE;
   $("#s-projets").textContent=`${nG} sachets de graines · ${nE} envies`;
-  $("#add-plante").textContent=mode==="plantes"?"Ajouter une plante":"Ajouter des graines ou une envie";
-  $("#q-plantes").placeholder=mode==="plantes"?"Chercher une plante, un emplacement, une note…":"Chercher une graine ou une envie…";
+  $("#add-plante").textContent=mode!=="projets"?"Ajouter une plante":"Ajouter des graines ou une envie";
+  $("#q-plantes").placeholder=mode!=="projets"?"Chercher une plante, un emplacement, une note…":"Chercher une graine ou une envie…";
 }
 function editPlante(i){
-  const isNew=i==null, p=isNew?{nom:"",emplacement:mode==="projets"?(groupe==="Liste de souhaits"?"liste de souhaits":"stock graines"):"",etat:mode==="projets"?(groupe==="Liste de souhaits"?"non acheté":"non semé"):"",besoins_eau:"",ensoleillement:"",notes:""}:S.plantes[i];
+  const isNew=i==null, p=isNew?{nom:"",emplacement:mode==="projets"?(groupe==="Liste de souhaits"?"liste de souhaits":"stock graines"):{terrasses:"terrasse",interieur:"intérieur"}[mode]||"",etat:mode==="projets"?(groupe==="Liste de souhaits"?"non acheté":"non semé"):"",besoins_eau:"",ensoleillement:"",notes:""}:S.plantes[i];
   const projet=!isNew&&MODES.projets.includes(groupeDe(p));
   const opts=(k)=>[...new Set(S.plantes.map(x=>x[k]))].filter(Boolean).slice(0,60).map(v=>`<option value="${esc(v)}">`).join("");
   openDlg(`
@@ -456,7 +485,7 @@ function editPlante(i){
   ["#p-nom","#p-etat","#p-emp"].forEach(s=>$(s).addEventListener("input",upd));
   $("#promo")&&($("#promo").onclick=()=>{ const seme=groupeDe(p)==="Stock de graines";
     $("#p-etat").value=seme?"semis":"actif"; $("#p-emp").value=""; $("#p-emp").placeholder="Où exactement ? zone + repère (ex. serre, bac gauche)";
-    $("#p-date").checked=true; $("#p-emp").focus(); upd(); toast("Indique l'emplacement puis enregistre : elle passera dans Plantes"); });
+    $("#p-date").checked=true; $("#p-emp").focus(); upd(); toast("Indique l'emplacement puis enregistre : elle passera dans Jardin, Terrasses ou Intérieur selon l'emplacement"); });
 }
 
 /* ---------- Tâches ---------- */
@@ -477,12 +506,12 @@ function purgerFaites(){
   return avant-S.taches.length;
 }
 function renderTaches(){
-  const filtres=[["ouvertes","Ouvertes"],["fait","Faites ces 30 jours"],["toutes","Toutes"]];
-  const cnt=k=>k==="toutes"?S.taches.length:k==="fait"?S.taches.filter(t=>FERMEES.includes(t.statut)).length:S.taches.filter(t=>!FERMEES.includes(t.statut)).length;
+  const filtres=[["ouvertes","Ouvertes"],["fait","Faites ces 30 jours"]];
+  const cnt=k=>k==="fait"?S.taches.filter(t=>FERMEES.includes(t.statut)).length:S.taches.filter(t=>!FERMEES.includes(t.statut)).length;
   $("#chips-taches").innerHTML=filtres.map(([k,l])=>`<button class="chip" aria-pressed="${k===statutF}" data-s="${k}">${l}<span>${cnt(k)}</span></button>`).join("");
   const q=$("#q-taches").value.toLowerCase();
   const rows=S.taches.map((t,i)=>({t,i})).filter(({t})=>
-    (statutF==="toutes"||(statutF==="fait"?FERMEES.includes(t.statut):!FERMEES.includes(t.statut))) &&
+    (statutF==="fait"?FERMEES.includes(t.statut):!FERMEES.includes(t.statut)) &&
     (!q||Object.values(t).join(" ").toLowerCase().includes(q)));
   const prios=[...PRIO,...new Set(rows.map(r=>r.t.priorite).filter(p=>!PRIO.includes(p)))];
   let html="";
@@ -494,7 +523,7 @@ function renderTaches(){
       return `<div class="row task ${done?"done":""}" data-edit-tache="${i}">
         <input type="checkbox" data-done="${i}" ${t.statut==="fait"?"checked":""} aria-label="Marquer « ${esc(t.tache)} » comme faite">
         <span class="t">${esc(t.tache)}</span>
-        <span class="tags"><span class="pill">${esc(t.responsable)}</span><span class="pill ${cls}">${esc(t.statut)}</span></span>
+        <span class="tags"><span class="pill ${cls}">${esc(t.statut)}</span></span>
         <span class="meta">${t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")} · `:""}${esc(t.notes)||"&nbsp;"}</span></div>`}).join("")+`</div>`;
   }
   $("#list-taches").innerHTML=html||`<p class="empty">Rien ici. Bonne nouvelle, ou un filtre trop strict.</p>`;
@@ -505,22 +534,20 @@ function renderTaches(){
 function editTache(i){
   const isNew=i==null, t=isNew?{tache:"",priorite:"bientôt",responsable:"moi",statut:"à faire",notes:""}:S.taches[i];
   const sel=(id,vals,v)=>`<select id="${id}">${[...new Set([...vals,v])].map(x=>`<option ${x===v?"selected":""}>${esc(x)}</option>`).join("")}</select>`;
-  const statuts=[...new Set(S.taches.map(x=>x.statut))], resp=[...new Set(S.taches.map(x=>x.responsable))];
+  const statuts=[...new Set(S.taches.map(x=>x.statut))];
   openDlg(`
     <h2>${isNew?"Nouvelle tâche":"Modifier la tâche"}</h2>
     <div class="fields">
       <label class="f full">Tâche <code>tache</code><input id="t-nom" required value="${esc(t.tache)}"></label>
       <label class="f">Priorité <code>priorite</code>${sel("t-prio",PRIO,t.priorite)}</label>
       <label class="f">Statut <code>statut</code>${sel("t-stat",statuts,t.statut)}</label>
-      <label class="f full">Responsable <code>responsable</code><input id="t-resp" list="dl-resp" value="${esc(t.responsable)}"></label>
       <label class="f full">Notes <code>notes</code><textarea id="t-notes">${esc(t.notes)}</textarea></label>
     </div>
-    <datalist id="dl-resp">${resp.map(r=>`<option value="${esc(r)}">`).join("")}</datalist>
     <div class="actions">
       <div>${isNew?"":`<button type="button" class="btn danger" id="del">Supprimer</button>`}</div>
       <div><button type="button" class="btn" id="cancel">Annuler</button><button class="btn primary" id="save">${isNew?"Ajouter":"Enregistrer"}</button></div>
     </div>`, ()=>{
-      const n={tache:$("#t-nom").value.trim(),priorite:$("#t-prio").value,responsable:$("#t-resp").value.trim()||"moi",statut:$("#t-stat").value,notes:$("#t-notes").value.trim()};
+      const n={tache:$("#t-nom").value.trim(),priorite:$("#t-prio").value,responsable:t.responsable||"moi",statut:$("#t-stat").value,notes:$("#t-notes").value.trim()};
       if(!n.tache){toast("Décris la tâche en quelques mots");return false}
       if(n.statut==="fait"&&(isNew||t.statut!=="fait")) marquerFait(n,true);
       if(isNew) S.taches.unshift(n); else Object.assign(t,n);
@@ -556,7 +583,7 @@ function renderContexte(){
       <div class="sec-edit">
         <label class="f">Titre de la section<input id="c-titre" value="${esc(s.titre)}"></label>
         <label class="f">Contenu (Markdown)<textarea id="c-contenu">${esc(s.contenu)}</textarea></label>
-        <p class="hint">Pas de tableau de plantes ici : l'inventaire vit dans l'onglet Plantes.</p>
+        <p class="hint">Pas de tableau de plantes ici : l'inventaire vit dans Jardin, Terrasses et Intérieur.</p>
         <div class="actions"><div></div>
         <div><button class="btn" data-cancel-sec>Annuler</button><button class="btn primary" data-save-sec="${i}">Enregistrer</button></div></div>
       </div>
@@ -582,14 +609,15 @@ function openDlg(html,onSave,onDelete){
 
 /* ---------- Navigation ---------- */
 function render(){ renderPlantes(); renderTaches(); renderContexte(); }
-const TITRES={plantes:"Plantes",projets:"Graines et envies",taches:"Tâches",contexte:"Contexte",connexion:"Réglages"};
+const TITRES={jardin:"Jardin",terrasses:"Terrasses",interieur:"Intérieur",projets:"Graines et envies",taches:"Tâches",contexte:"Contexte",connexion:"Réglages"};
 function setTab(t,push=true){ if(!TITRES[t]) t="accueil"; if(!charge) t="connexion"; tab=t;
   if(t==="connexion"){ $("#c-token").value=cfg.token; $("#c-repo").value=cfg.repo; $("#c-branch").value=cfg.branch;
     $("#invite").hidden=!charge; if(charge) $("#invite-link").value=lienInvitation(); }
-  const vue=(t==="plantes"||t==="projets")?"plantes":t;
+  const vue=MODES[t]?"plantes":t;
   if(vue==="plantes"&&mode!==t){mode=t;groupe="Tous";$("#f-etat").value="";renderPlantes()}
   ["accueil","plantes","taches","contexte","connexion"].forEach(k=>$("#v-"+k).hidden=k!==vue);
-  $("#crumb").hidden=t==="accueil"||!charge; $("#crumb-t").textContent=TITRES[t]||"";
+  $("#crumb").hidden=t==="accueil"||!charge;
+  $("#btn-reglages").hidden=t!=="accueil"; $("#crumb-t").textContent=TITRES[t]||"";
   window.scrollTo(0,0);
   if(push){ try{ history.pushState(null,"",t==="accueil"?location.pathname:"#"+t) }catch(e){} } }
 window.addEventListener("popstate",()=>setTab(location.hash.slice(1),false));
@@ -600,7 +628,15 @@ document.addEventListener("click",e=>{
   if(ds.g) {groupe=ds.g; return renderPlantes()}
   if(ds.s) {statutF=ds.s; return renderTaches()}
   if(ds.editPlante!=null) return editPlante(+ds.editPlante);
-  if(ds.done!=null){ const t=S.taches[+ds.done]; marquerFait(t,el.checked); renderTaches(); return sauver("taches",`Tâches : « ${t.tache} » ${el.checked?"faite":"rouverte"}`); }
+  if(ds.done!=null){ const t=S.taches[+ds.done], row=el.closest(".task"); marquerFait(t,el.checked);
+    sauver("taches",`Tâches : « ${t.tache} » ${el.checked?"faite":"rouverte"}`);
+    /* La case se coche, la tâche se barre, puis elle quitte la liste en se repliant. */
+    if(matchMedia("(prefers-reduced-motion: reduce)").matches||!row.animate) return renderTaches();
+    row.classList.toggle("done",el.checked); row.classList.add("leaving");
+    const h=row.offsetHeight+"px";
+    row.animate([{opacity:1,height:h},{opacity:1,height:h,offset:.5},{opacity:0,height:"0px",paddingTop:"0px",paddingBottom:"0px",borderTopWidth:"0px",borderBottomWidth:"0px",marginTop:"-8px"}],{duration:1000,easing:"ease-in",fill:"forwards"})
+      .finished.then(renderTaches,renderTaches);
+    return; }
   if(ds.editTache!=null) return editTache(+ds.editTache);
   if(ds.editSec!=null){ e.preventDefault(); editingSec=+ds.editSec; return renderContexte(); }
   if(ds.saveSec!=null){ const s=S.contexte[+ds.saveSec]; s.titre=$("#c-titre").value.trim()||s.titre; s.contenu=$("#c-contenu").value.replace(/\s+$/,""); editingSec=null; renderContexte(); return sauver("contexte",`Contexte : modifier « ${s.titre} »`); }
