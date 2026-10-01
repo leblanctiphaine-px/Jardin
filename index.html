@@ -116,6 +116,7 @@ dialog.plein .dlg{max-width:640px;margin:0 auto;padding-bottom:40px}
 .row .detail{grid-column:1/-1;font-size:.92rem;color:var(--ink);min-width:0}
 .liees{display:grid;gap:8px;border-top:1px solid var(--line);padding-top:12px}
 .liees .group-h{margin:0}
+.bilans{list-style:none;margin:0;padding:0;display:grid;gap:6px}.bilans li{font-size:.9rem}.bilans .meta{display:block;font-size:.8rem;color:var(--muted)}
 .pill.plante{background:var(--accent-soft);color:var(--accent)}
 .dlg h2{padding-right:44px;font:700 1.3rem var(--f-display);margin:0}
 .fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -262,14 +263,14 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 <div class="toast" id="toast" role="status"></div>
 
 <script>
-const S = {plantes: [], taches: [], contexte: []};
-const COLS = {plantes:["nom","zone","etat","etat_detail","besoins_eau","ensoleillement","notes"], taches:["tache","priorite","responsable","statut","notes","plante"]};
+const S = {plantes: [], taches: [], contexte: [], bilans: []};
+const COLS = {plantes:["nom","zone","etat","etat_detail","besoins_eau","ensoleillement","notes"], taches:["tache","priorite","responsable","statut","notes","plante"], bilans:["date","plante","resultat","pourquoi","fiche"]};
 let tab = "accueil", groupe = "", mode = "jardin", statutF = "ouvertes";
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
 /* ---------- GitHub : lecture et écriture des fichiers du dépôt ---------- */
-const PATHS={plantes:"plantes.csv",taches:"taches.csv",contexte:"contexte-jardin.md"};
+const PATHS={plantes:"plantes.csv",taches:"taches.csv",contexte:"contexte-jardin.md",bilans:"bilans.csv"};
 const CFG_KEY="jardin-cfg";
 let cfg={token:"",repo:"leblanctiphaine-px/Jardin",branch:"main"};
 try{Object.assign(cfg,JSON.parse(localStorage.getItem(CFG_KEY)||"{}"))}catch(e){}
@@ -359,7 +360,8 @@ function ecrireMD(){
 const serialiser=k=>k==="contexte"?ecrireMD():ecrireCSV(k);
 
 async function charger(k){
-  const j=await gh(`/repos/${cfg.repo}/contents/${PATHS[k]}?ref=${encodeURIComponent(cfg.branch)}`);
+  let j; try{ j=await gh(`/repos/${cfg.repo}/contents/${PATHS[k]}?ref=${encodeURIComponent(cfg.branch)}`); }
+  catch(e){ if(e.status!==404||k!=="bilans") throw e; fichiers[k]={sha:undefined,texte:""}; S[k]=lireCSV(k,""); return; }  // bilans.csv est créé au premier bilan
   const texte=b64dec(j.content);
   fichiers[k]={sha:j.sha,texte};
   S[k]=k==="contexte"?lireMD(texte):lireCSV(k,texte);
@@ -438,6 +440,38 @@ const ETATS={plantes:["semis","en croissance","en forme","à récolter","à surv
 const ETAT_CLASSE={"semis":"ok","en croissance":"ok","en forme":"ok","à récolter":"warn","à surveiller":"warn"};
 const etatClasse=e=>ETAT_CLASSE[e]??"";
 const aSurveiller=p=>p.etat==="à surveiller";
+/* Bilans : ce qui a marché ou non, gardés dans bilans.csv et rattachés à une fiche de Graines et envies. */
+const RESULTATS={"réussi":"ok","mitigé":"warn","raté":"bad"};
+/* Un bilan apparaît sur toutes les fiches de la même plante (ex. un bilan « Tomates » sur chaque variété de tomate). */
+const bilansDe=nom=>{ const r=racine(nom); return S.bilans.filter(b=>b.fiche===nom||racine(b.fiche)===r||racine(b.plante)===r); };
+const dernierBilan=p=>{ const b=bilansDe(p.nom).at(-1); return b?`<span class="pill ${RESULTATS[b.resultat]??""}">${esc(b.resultat)}</span>`:""; };
+const racine=n=>n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\(.*?\)/g,"").trim().split(/[\s\/,]+/)[0].slice(0,5);
+const nomCourt=n=>n.replace(/\s*\(.*?\)\s*/g," ").replace(/\b20\d\d\b/g,"").trim();
+const fichesProjets=()=>S.plantes.filter(x=>MODES.projets.includes(groupeDe(x)));
+const ficheProche=nom=>{ const r=racine(nom); return fichesProjets().find(x=>racine(x.nom)===r)?.nom||""; };
+const listeBilans=bs=>bs.map(b=>`<li><span class="pill ${RESULTATS[b.resultat]??""}">${esc(b.resultat)}</span> ${esc(b.pourquoi||"")} <span class="meta">${esc(b.plante)} · ${esc(b.date)}</span></li>`).join("");
+function demanderBilan(p){
+  const proche=ficheProche(p.nom), neuf=nomCourt(p.nom);
+  openDlg(`
+    <h2>Comment ça s'est passé ?</h2>
+    <p class="hint">${esc(p.nom)} est retirée. Le bilan reste dans Graines et envies pour la prochaine fois. Il s'enregistre en fermant.</p>
+    <div class="f full"><span>Résultat</span><div class="etats" id="b-res" role="radiogroup" aria-label="Résultat">${Object.entries(RESULTATS).map(([r,c])=>`<button type="button" role="radio" class="chip etat ${c}" aria-pressed="false" data-r="${r}">${r}</button>`).join("")}</div></div>
+    <label class="f full">Pourquoi ?<textarea id="b-pq" placeholder="ex. mangée par les limaces, trop chaud en serre, super récolte…"></textarea></label>
+    <label class="f full">Garder le bilan sur<select id="b-fiche">${fichesProjets().map(x=>`<option ${x.nom===proche?"selected":""}>${esc(x.nom)}</option>`).join("")}<option value="" ${proche?"":"selected"}>Nouvelle envie « ${esc(neuf)} »</option></select></label>`);
+  $("#b-res").onclick=e=>{ const b=e.target.closest("[data-r]"); if(!b) return; $("#b-res").querySelectorAll("[data-r]").forEach(x=>x.setAttribute("aria-pressed",x===b)); };
+  $("#dlg").onclose=()=>{
+    const res=$("#b-res [aria-pressed=true]")?.dataset.r||"", pq=$("#b-pq").value.trim();
+    if(res||pq){
+      let fiche=$("#b-fiche").value;
+      if(!fiche){ fiche=neuf; if(!S.plantes.some(x=>x.nom===fiche)){
+        S.plantes.push({nom:fiche,zone:"Liste de souhaits",etat:"à acheter",etat_detail:"",besoins_eau:p.besoins_eau,ensoleillement:p.ensoleillement,notes:""});
+        sauver("plantes",`Plantes : ajouter l'envie ${fiche}`); } }
+      S.bilans.push({date:dateJour(),plante:p.nom,resultat:res,pourquoi:pq,fiche});
+      sauver("bilans",`Bilans : ${p.nom}${res?" ("+res+")":""}`); render(); toast(`Bilan gardé sur « ${fiche} »`);
+    }
+    viderAttente();
+  };
+}
 /* Listes fermées : la précision éventuelle va dans la description. Intérieur : note de lumière sur 5 (légende dans le contexte). */
 const EAUX=["faible","moyen","élevé","très élevé"], SOLEILS={"Extérieur":["plein soleil","mi-ombre","ombre"],"Intérieur (lumière sur 5)":["1/5","2/5","3/5","4/5","5/5"]};
 const choix=(liste,v)=>`<option value="">—</option>`+liste.map(x=>`<option ${x===v?"selected":""}>${esc(x)}</option>`).join("")+(v&&!liste.includes(v)?`<option selected>${esc(v)}</option>`:"");
@@ -461,7 +495,7 @@ function renderPlantes(){
   $("#list-plantes").innerHTML=rows.length?rows.map(({p,i})=>`
     <button class="row" data-edit-plante="${i}">
       <span class="t">${esc(p.nom)}</span>
-      <span class="tags">${sensibleLimaces(p)?'<span class="pill slug">limaces</span>':""}<span class="pill ${etatClasse(p.etat)}">${esc(p.etat)}</span></span>
+      <span class="tags">${sensibleLimaces(p)?'<span class="pill slug">limaces</span>':""}<span class="pill ${etatClasse(p.etat)}">${esc(p.etat)}</span>${dernierBilan(p)}</span>
       ${p.etat_detail?`<span class="detail">${esc(p.etat_detail)}</span>`:""}
       ${p.besoins_eau||p.ensoleillement?`<span class="meta">${[p.besoins_eau&&"eau "+esc(p.besoins_eau),esc(p.ensoleillement)].filter(Boolean).join(" · ")}</span>`:""}
     </button>`).join(""):`<p class="empty">Rien ici pour l'instant.</p>`;
@@ -496,10 +530,12 @@ function editPlante(i){
     </div>
     <p class="callout" id="p-slug" hidden>Plante sensible aux limaces : prévoir cloche, granulés au phosphate de fer ou piège à bière.</p>
     <div class="liees" id="p-taches" hidden></div>
+    <div class="liees" id="p-bilans" hidden></div>
     <div class="actions">
       <div><button type="button" class="btn danger" id="del" ${p?"":"hidden"}>Supprimer</button>${projet?`<button type="button" class="btn" id="promo">${groupeDe(p)==="Stock de graines"?"Je l'ai semée":"Je l'ai achetée"}</button>`:""}</div>
     </div>`,
-    {confirmer:false, plein:true, onDelete:()=>{ S.plantes.splice(S.plantes.indexOf(p),1); render(); sauver("plantes",`Plantes : supprimer ${p.nom}`); }});
+    {confirmer:false, plein:true, onDelete:()=>{ const vraie=!MODES.projets.includes(groupeDe(p)); S.plantes.splice(S.plantes.indexOf(p),1); render(); sauver("plantes",`Plantes : supprimer ${p.nom}`);
+      if(vraie) $("#dlg").addEventListener("close",()=>demanderBilan(p),{once:true}); }});
   const lire=()=>({nom:$("#p-nom").value.trim(),zone:$("#p-zone-l").hidden?base.zone:$("#p-zone").value,etat:$("#p-etat [aria-pressed=true]")?.dataset.etat??base.etat,etat_detail:$("#p-detail").value.trim(),
     besoins_eau:$("#p-eau").value,ensoleillement:$("#p-sol").value,notes:$("#p-notes").value.trim()});
   const upd=()=>$("#p-slug").hidden=!sensibleLimaces(lire());
@@ -524,10 +560,20 @@ function editPlante(i){
       if(ancien!==n.nom&&S.taches.some(t=>t.plante===ancien)){ S.taches.forEach(t=>{if(t.plante===ancien)t.plante=n.nom}); renderTaches(); sauverBientot("taches",`Tâches : suivre le nouveau nom « ${n.nom} »`); } }
     $("#p-titre").textContent=n.nom; renderPlantes(); sauverBientot("plantes",message);
   };
-  $("#dlg-form").oninput=e=>{ if(!e.target.closest("#p-taches")) maj(); };
+  $("#dlg-form").oninput=e=>{ if(!e.target.closest("#p-taches,#p-bilans")) maj(); };
   $("#p-etat").onclick=e=>{ const b=e.target.closest("[data-etat]"); if(!b) return;
     $("#p-etat").querySelectorAll("[data-etat]").forEach(x=>x.setAttribute("aria-pressed",x===b)); maj(); };
-  upd(); liees();
+  const bilans=()=>{
+    const box=$("#p-bilans"); if(!p||!MODES.projets.includes(groupeDe(p))){box.hidden=true;return} box.hidden=false;
+    const bs=bilansDe(p.nom); let res="";
+    box.innerHTML=`<p class="group-h">Ce qui a marché ou non · ${bs.length}</p>${bs.length?`<ul class="bilans">${listeBilans(bs)}</ul>`:""}
+      <div class="etats" id="pb-res" role="radiogroup" aria-label="Résultat">${Object.entries(RESULTATS).map(([r,c])=>`<button type="button" role="radio" class="chip etat ${c}" aria-pressed="false" data-r="${r}">${r}</button>`).join("")}</div>
+      <input id="pb-pq" placeholder="+ Pourquoi ? (Entrée pour ajouter le bilan)" aria-label="Nouveau bilan">`;
+    $("#pb-res").onclick=e=>{ const b=e.target.closest("[data-r]"); if(!b) return; res=b.dataset.r; $("#pb-res").querySelectorAll("[data-r]").forEach(x=>x.setAttribute("aria-pressed",x===b)); $("#pb-pq").focus(); };
+    $("#pb-pq").onkeydown=e=>{ if(e.key!=="Enter") return; e.preventDefault(); const pq=e.target.value.trim(); if(!res&&!pq) return;
+      S.bilans.push({date:dateJour(),plante:p.nom,resultat:res,pourquoi:pq,fiche:p.nom}); sauver("bilans",`Bilans : ${p.nom}${res?" ("+res+")":""}`); renderPlantes(); bilans(); };
+  };
+  upd(); liees(); bilans();
   $("#promo")&&($("#promo").onclick=()=>{ const seme=groupeDe(p)==="Stock de graines";
     $("#p-etat").innerHTML=ETATS.plantes.map(e=>`<button type="button" role="radio" class="chip etat ${etatClasse(e)}" aria-pressed="${e===(seme?"semis":"en forme")}" data-etat="${e}">${e}</button>`).join(""); $("#p-zone").value=""; $("#p-zone-l").hidden=false;
     $("#p-notes").value=($("#p-notes").value.trim()?$("#p-notes").value.trim()+" — ":"")+`${seme?"semé":"planté"} le ${dateJour()}`;
