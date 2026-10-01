@@ -579,13 +579,13 @@ function editPlante(i){
       <div class="duo full"><label class="f">Eau<select id="p-eau">${choix(EAUX,base.besoins_eau)}</select></label>
         <label class="f">Soleil<select id="p-sol"><option value="">—</option>${Object.entries(SOLEILS).map(([g,l])=>`<optgroup label="${g}">${l.map(x=>`<option ${x===base.ensoleillement?"selected":""}>${x}</option>`).join("")}</optgroup>`).join("")}${base.ensoleillement&&!Object.values(SOLEILS).flat().includes(base.ensoleillement)?`<option selected>${esc(base.ensoleillement)}</option>`:""}</select></label></div>
       <label class="f full" id="p-zone-l" ${projet||(nouveau&&mode==="projets")?"hidden":""}>Zone<select id="p-zone">${["",...VRAIES.filter(z=>z!==A_CLASSER)].map(z=>`<option value="${esc(z)}" ${z===(base.zone||"")?"selected":""}>${z?esc(z):"À classer"}</option>`).join("")}</select></label>
+      <label class="f full">Description (pour la reconnaître, soins, dates de plantation)<textarea id="p-notes">${esc(base.notes)}</textarea></label>
       <div class="f full"><span>État</span><div class="etats" id="p-etat" role="radiogroup" aria-label="État">${etatsPour(base).map(e=>`<button type="button" role="radio" class="chip etat ${etatClasse(e)}" aria-pressed="${e===base.etat}" data-etat="${esc(e)}">${esc(e)}</button>`).join("")}</div></div>
       <label class="f full" id="p-detail-l" ${projet||(nouveau&&mode==="projets")?"hidden":""}>Détail de l'état<input id="p-detail" value="${esc(base.etat_detail)}" placeholder="ex. feuilles jaunes depuis le déplacement"></label>
-      <label class="f full">Description (pour la reconnaître, soins, dates de plantation)<textarea id="p-notes">${esc(base.notes)}</textarea></label>
     </div>
+    <div class="liees" id="p-bilans" hidden></div>
     <p class="callout" id="p-slug" hidden>Plante sensible aux limaces : prévoir cloche, granulés au phosphate de fer ou piège à bière.</p>
     <div class="liees" id="p-taches" hidden></div>
-    <div class="liees" id="p-bilans" hidden></div>
     <div class="actions">
       <div><button type="button" class="btn danger" id="del" ${p?"":"hidden"}>Supprimer</button>${projet&&groupeDe(p)==="Liste de souhaits"?`<button type="button" class="btn" id="promo">Je l'ai achetée</button>`:""}</div>
     </div>`,
