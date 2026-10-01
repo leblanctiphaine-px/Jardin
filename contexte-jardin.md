@@ -42,6 +42,7 @@ Goutte-à-goutte (tuyaux bleus) installé sur plusieurs zones ; arrosage manuel 
 | Jardin de devant | Petit espace en pleine terre entre la maison et le mur côté rue. Moins de soleil direct qu'on pourrait croire malgré l'orientation devant — végétation dense qui s'ombre elle-même. En cours de restructuration. | Pas d'arrosage régulier prévu : risque de stress hydrique | Arbustes rustiques, plantes ne nécessitant pas d'arrosage fréquent |
 | Jardin de derrière | Arbustes, vivaces, pleine terre | Goutte-à-goutte là où il est installé, arrosage manuel par forte chaleur. Risque élevé de stress hydrique (oublis fréquents) : éviter les pots très sensibles à la sécheresse | Framboisier, olivier, roses |
 | Intérieur | Lumière indirecte | Zone la plus surveillée, arrosage fiable. Mardi et vendredi minimum, plus souvent en été | Pothos, pachira, dracaena, curcuma |
+| Pépinière | Meuble à l'intérieur où démarrent les semis | Arroser souvent, terreau humide sans détremper | Semis avant repiquage |
 
 ---
 
