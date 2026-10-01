@@ -99,6 +99,9 @@ textarea{min-height:90px;resize:vertical}
 /* Dialog */
 dialog{border:1px solid var(--line);border-radius:12px;padding:0;background:var(--surface);color:var(--ink);width:min(640px,calc(100vw - 32px));max-height:calc(100vh - 32px)}
 dialog::backdrop{background:rgba(10,20,15,.45)}
+/* Fiche plante : plein écran, contenu centré sur grand écran. */
+dialog.plein{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;margin:0;border:0;border-radius:0;background:var(--bg)}
+dialog.plein .dlg{max-width:640px;margin:0 auto;padding-bottom:40px}
 .dlg{display:grid;gap:12px;padding:20px}
 .dlg{position:relative}
 .close{position:absolute;top:10px;right:10px;appearance:none;border:0;background:none;color:var(--muted);font:400 1.8rem/1 var(--f-body);width:40px;height:40px;border-radius:50%;cursor:pointer}
@@ -500,7 +503,7 @@ function editPlante(i){
     <div class="actions">
       <div><button type="button" class="btn danger" id="del" ${p?"":"hidden"}>Supprimer</button>${projet?`<button type="button" class="btn" id="promo">${groupeDe(p)==="Stock de graines"?"Je l'ai semée":"Je l'ai achetée"}</button>`:""}</div>
     </div>`,
-    {confirmer:false, onDelete:()=>{ S.plantes.splice(S.plantes.indexOf(p),1); render(); sauver("plantes",`Plantes : supprimer ${p.nom}`); }});
+    {confirmer:false, plein:true, onDelete:()=>{ S.plantes.splice(S.plantes.indexOf(p),1); render(); sauver("plantes",`Plantes : supprimer ${p.nom}`); }});
   const lire=()=>({nom:$("#p-nom").value.trim(),zone:$("#p-zone").value,emplacement:$("#p-emp").value.trim(),etat:$("#p-etat [aria-pressed=true]")?.dataset.etat??base.etat,etat_detail:$("#p-detail").value.trim(),
     besoins_eau:$("#p-eau").value.trim(),ensoleillement:$("#p-sol").value.trim(),notes:$("#p-notes").value.trim()});
   const upd=()=>$("#p-slug").hidden=!sensibleLimaces(lire());
@@ -655,8 +658,8 @@ function renderContexte(){
 }
 
 /* ---------- Fenêtre ---------- */
-function openDlg(html,{onDelete,confirmer=true}={}){
-  const d=$("#dlg"), f=$("#dlg-form");
+function openDlg(html,{onDelete,confirmer=true,plein=false}={}){
+  const d=$("#dlg"), f=$("#dlg-form"); d.classList.toggle("plein",plein);
   f.innerHTML=`<button type="button" class="close" id="close" aria-label="Fermer">×</button>`+html;
   f.oninput=null; f.onsubmit=e=>{e.preventDefault(); d.close()};
   $("#close").onclick=()=>d.close();
