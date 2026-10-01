@@ -5,7 +5,7 @@ Base de données + suivi du jardin et des plantes d'intérieur de la colocation 
 ## Où ranger quoi
 
 - **`plantes.csv`** — LA liste de référence de toutes les plantes (jardin **et** intérieur), une ligne par plante/lot. Colonnes : `nom,emplacement,etat,besoins_eau,ensoleillement,notes`. Le champ `notes` doit inclure une courte description permettant de reconnaître la plante (feuillage, port, couleur) en plus des infos de soin/historique.
-- **`taches.csv`** — liste des tâches (jardin et intérieur), avec priorité, responsable et statut. Colonnes : `tache,priorite,responsable,statut,notes`.
+- **`taches.csv`** — liste des tâches (jardin et intérieur), avec priorité, responsable et statut. Colonnes : `tache,priorite,responsable,statut,notes`. Quand une tâche passe à « fait », noter la date dans `notes` (`fait le JJ/MM/AAAA`) ; les tâches faites sont supprimées au bout d'un mois maximum (l'historique reste dans git).
 - **`contexte-jardin.md`** — contexte général et durable : zones du jardin, type de sol, système d'arrosage, nuisibles connus (limaces), collaborateurs (qui fait quoi), préférences alimentaires des colocs, conseils de saison. Pas un inventaire de plantes — n'y ajoute pas de tableau de plantes, ça va dans `plantes.csv`.
 - **`README.txt`** — présentation du projet (objectifs généraux). Rarement à modifier.
 - **`photos/`** — photos du jardin par zone.
