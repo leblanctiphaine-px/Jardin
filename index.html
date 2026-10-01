@@ -118,6 +118,7 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 .conn p{margin:0}
 .conn a{color:var(--accent)}
 #conn-err{color:var(--bad)}
+.invite-t{font:700 1.15rem/1.25 var(--f-display);margin:0}
 .crumb{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:20px}
 .crumb h2{font:700 1.5rem/1.2 var(--f-display);margin:0}
 .back{appearance:none;background:none;border:1px solid var(--line);border-radius:6px;padding:6px 12px;font:600 .9rem var(--f-body);color:var(--ink);cursor:pointer}
@@ -169,6 +170,11 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
     </button>
   </section>
 
+  <div class="crumb" id="crumb" hidden>
+    <button class="back" data-tab="accueil">← Accueil</button>
+    <h2 id="crumb-t"></h2>
+  </div>
+
   <!-- CONNEXION -->
   <section id="v-connexion" hidden>
     <form class="sec conn" id="conn-form">
@@ -177,7 +183,7 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
       <label class="f">Jeton GitHub
         <input id="c-token" type="password" autocomplete="off" placeholder="github_pat_…" required>
       </label>
-      <p class="hint">Crée un jeton « fine-grained » sur <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a> : choisis seulement le dépôt du jardin, et dans « Repository permissions » mets <b>Contents</b> sur <b>Read and write</b>. Le jeton reste dans ce navigateur.</p>
+      <p class="hint">Crée un jeton « fine-grained » sur <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a> : choisis seulement le dépôt du jardin, et dans « Repository permissions » mets <b>Contents</b> sur <b>Read and write</b>. Choisis la durée de validité la plus longue : si le jeton expire, les liens d'invitation ne marchent plus. Le jeton reste dans ce navigateur.</p>
       <div class="fields">
         <label class="f">Dépôt<input id="c-repo" required></label>
         <label class="f">Branche<input id="c-branch" required></label>
@@ -187,12 +193,15 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
         <div><button class="btn primary">Se connecter</button></div>
       </div>
     </form>
+    <div class="sec conn" id="invite" hidden>
+      <h2 class="invite-t">Inviter les colocs</h2>
+      <p>Envoie ce lien en privé (message, groupe de la coloc). En l'ouvrant une fois, la personne peut consulter et modifier le carnet, sans compte GitHub.</p>
+      <label class="f">Lien d'invitation<input id="invite-link" readonly></label>
+      <div class="actions"><div></div><div><button type="button" class="btn primary" id="invite-copy">Copier le lien</button></div></div>
+      <p class="hint">Ce lien contient ton jeton : toute personne qui l'a peut modifier les fichiers. Ne le publie pas en ligne. Pour couper l'accès à tout le monde, supprime le jeton sur <a href="https://github.com/settings/personal-access-tokens" target="_blank" rel="noopener">GitHub</a>, puis crée-en un nouveau et renvoie un lien.</p>
+    </div>
   </section>
 
-  <div class="crumb" id="crumb" hidden>
-    <button class="back" data-tab="accueil">← Accueil</button>
-    <h2 id="crumb-t"></h2>
-  </div>
 
   <!-- PLANTES -->
   <section id="v-plantes" hidden>
@@ -237,6 +246,11 @@ const PATHS={plantes:"plantes.csv",taches:"taches.csv",contexte:"contexte-jardin
 const CFG_KEY="jardin-cfg";
 let cfg={token:"",repo:"leblanctiphaine-px/Jardin",branch:"main"};
 try{Object.assign(cfg,JSON.parse(localStorage.getItem(CFG_KEY)||"{}"))}catch(e){}
+/* Lien d'invitation : #jeton=… est lu une fois, gardé dans ce navigateur puis retiré de l'adresse. */
+{ const m=location.hash.match(/^#jeton=([^&]+)/);
+  if(m){ cfg.token=decodeURIComponent(m[1]); try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(e){}
+    history.replaceState(null,"",location.pathname+location.search); } }
+const lienInvitation=()=>location.origin+location.pathname+"#jeton="+encodeURIComponent(cfg.token);
 const fichiers={};   // k -> {sha, texte, entete, preambule}
 let charge=false;
 
@@ -574,7 +588,8 @@ function openDlg(html,onSave,onDelete){
 function render(){ renderPlantes(); renderTaches(); renderContexte(); }
 const TITRES={plantes:"Plantes",projets:"Graines et envies",taches:"Tâches",contexte:"Contexte",connexion:"Réglages"};
 function setTab(t,push=true){ if(!TITRES[t]) t="accueil"; if(!charge) t="connexion"; tab=t;
-  if(t==="connexion"){ $("#c-token").value=cfg.token; $("#c-repo").value=cfg.repo; $("#c-branch").value=cfg.branch; }
+  if(t==="connexion"){ $("#c-token").value=cfg.token; $("#c-repo").value=cfg.repo; $("#c-branch").value=cfg.branch;
+    $("#invite").hidden=!charge; if(charge) $("#invite-link").value=lienInvitation(); }
   const vue=(t==="plantes"||t==="projets")?"plantes":t;
   if(vue==="plantes"&&mode!==t){mode=t;groupe="Tous";$("#f-etat").value="";renderPlantes()}
   ["accueil","plantes","taches","contexte","connexion"].forEach(k=>$("#v-"+k).hidden=k!==vue);
@@ -602,7 +617,10 @@ $("#q-taches").oninput=renderTaches;
 $("#conn-form").onsubmit=e=>{ e.preventDefault();
   cfg={token:$("#c-token").value.trim(),repo:$("#c-repo").value.trim().replace(/^https:\/\/github\.com\//,"").replace(/\/$/,""),branch:$("#c-branch").value.trim()||"main"};
   try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(_){}
-  history.replaceState(null,"",location.pathname); demarrer(); };
+  history.replaceState(null,"",location.pathname); $("#invite-copy").onclick=()=>{ const i=$("#invite-link");
+  const repli=()=>{ i.select(); toast("Lien sélectionné : copie-le avec Ctrl+C ou un appui long"); };
+  navigator.clipboard?.writeText(i.value).then(()=>toast("Lien copié"),repli) ?? repli(); };
+demarrer(); };
 $("#c-forget").onclick=()=>{ cfg.token=""; try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(_){} charge=false; $("#btn-reload").hidden=true; setSync("",""); setTab("connexion"); toast("Jeton oublié sur cet appareil"); };
 $("#btn-reload").onclick=()=>{ chaine.then(demarrer); };
 demarrer();
