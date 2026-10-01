@@ -9,6 +9,7 @@ Base de données + suivi du jardin et des plantes d'intérieur de la colocation 
 - **`contexte-jardin.md`** — contexte général et durable : zones du jardin, type de sol, système d'arrosage, nuisibles connus (limaces), collaborateurs (qui fait quoi), préférences alimentaires des colocs, conseils de saison. Pas un inventaire de plantes — n'y ajoute pas de tableau de plantes, ça va dans `plantes.csv`.
 - **`README.txt`** — présentation du projet (objectifs généraux). Rarement à modifier.
 - **`photos/`** — photos du jardin par zone.
+- **`index.html`** — le Carnet du jardin : interface web (GitHub Pages) pour gérer `plantes.csv`, `taches.csv` et `contexte-jardin.md`. Chaque modification faite dans l'interface devient un commit sur `main`. Si tu changes les colonnes d'un CSV ou la structure en sections `##` du contexte, mets l'interface à jour.
 
 ## Réflexe à chaque action sur une plante
 

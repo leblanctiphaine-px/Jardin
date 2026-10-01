@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carnet du jardin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout : en-tête avec onglets par fichier, barre d'outils, liste dense de fiches, éditeur en fenêtre */
+:root{
+  --bg:#f3f5f1; --surface:#ffffff; --ink:#1c2620; --muted:#5d6b62; --line:#d9e0d8;
+  --accent:#1f5f4a; --accent-soft:#e1ece6; --on-accent:#ffffff;
+  --ok:#2f7a3d; --ok-soft:#e3f1e2; --warn:#9a6a05; --warn-soft:#fbf0d6; --bad:#a63a2b; --bad-soft:#f8e3df;
+  --idle:#6b7280; --idle-soft:#eceeec;
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Source Sans 3",ui-sans-serif,system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121815; --surface:#1a221e; --ink:#e3ebe5; --muted:#9aa89f; --line:#2c3831;
+  --accent:#7cc4a4; --accent-soft:#1f3a2f; --on-accent:#0d1a14;
+  --ok:#7fcf8a; --ok-soft:#1d3322; --warn:#e3b54f; --warn-soft:#3a2f14; --bad:#f08a78; --bad-soft:#3d1f1a;
+  --idle:#a3aab0; --idle-soft:#262d29; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121815; --surface:#1a221e; --ink:#e3ebe5; --muted:#9aa89f; --line:#2c3831;
+  --accent:#7cc4a4; --accent-soft:#1f3a2f; --on-accent:#0d1a14;
+  --ok:#7fcf8a; --ok-soft:#1d3322; --warn:#e3b54f; --warn-soft:#3a2f14; --bad:#f08a78; --bad-soft:#3d1f1a;
+  --idle:#a3aab0; --idle-soft:#262d29; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--f-body);margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:20px 64px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px}
+h1{font:700 clamp(1.7rem,4vw,2.3rem)/1.1 var(--f-display);margin:0;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:4px 0 0;font-size:.95rem}
+.sync{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.syncst{font:500 .72rem var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.syncst.ok{color:var(--ok)}.syncst.busy{color:var(--warn)}.syncst.bad{color:var(--bad)}
+.proto{font:500 .72rem var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--warn);background:var(--warn-soft);padding:4px 8px;border-radius:4px}
+nav.tabs{display:flex;gap:4px;margin-top:20px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{appearance:none;background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;font:600 1rem var(--f-body);color:var(--muted);cursor:pointer;white-space:nowrap}
+.tab small{font:400 .75rem var(--f-mono);margin-left:6px;color:var(--muted)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.file{font:400 .78rem var(--f-mono);color:var(--muted);margin:14px 0 0}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:18px 0 14px}
+.toolbar input[type=search]{flex:1 1 220px;min-width:0}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%}
+textarea{min-height:90px;resize:vertical}
+.toolbar input{width:auto}
+.btn{appearance:none;font:600 .92rem var(--f-body);border-radius:6px;padding:8px 14px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);white-space:nowrap}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn.danger.armed{background:var(--bad);color:var(--surface)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chip{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;padding:4px 12px;font:500 .85rem var(--f-body);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--ink)}
+.chip span{font:400 .72rem var(--f-mono);margin-left:4px}
+.list{display:grid;gap:8px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;min-width:0;gap:4px 16px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;cursor:pointer;text-align:left;width:100%;font:inherit;color:inherit}
+.row:hover{border-color:var(--accent)}
+.row .t{font-weight:600;min-width:0}
+.row .meta{color:var(--muted);font-size:.88rem;grid-column:1/-1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:start}
+.pill{font:500 .72rem var(--f-mono);padding:2px 8px;border-radius:4px;white-space:nowrap;background:var(--idle-soft);color:var(--idle)}
+.pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.bad{background:var(--bad-soft);color:var(--bad)}
+.pill.slug{background:var(--bad-soft);color:var(--bad)}
+.task{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:2px 12px;align-items:start}
+.task input[type=checkbox]{width:20px;height:20px;margin-top:2px;accent-color:var(--accent)}
+.task.done .t{text-decoration:line-through;color:var(--muted)}
+.task .meta{grid-column:2/-1}
+.prio{width:4px;border-radius:2px;align-self:stretch}
+.group-h{font:600 .78rem var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:18px 0 4px}
+.empty{color:var(--muted);padding:24px;text-align:center;border:1px dashed var(--line);border-radius:8px}
+/* Contexte */
+.sec{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.sec-h{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.sec h2{font:700 1.15rem/1.25 var(--f-display);margin:0;text-wrap:balance}
+.sec .md{font-size:.95rem;overflow-x:auto}
+.md h3{font:600 1rem var(--f-body);margin:12px 0 4px}
+.md p{margin:6px 0} .md ul{margin:6px 0;padding-left:20px}
+.md table{border-collapse:collapse;font-size:.85rem;margin:8px 0}
+.md td,.md th{border:1px solid var(--line);padding:4px 8px;text-align:left;vertical-align:top}
+.md code{font:.85em var(--f-mono);background:var(--accent-soft);padding:0 4px;border-radius:3px}
+.sec-edit{display:grid;gap:8px;margin-top:10px}
+.sec-edit textarea{min-height:220px;font:.85rem/1.5 var(--f-mono)}
+details.sec summary{cursor:pointer;list-style:none}
+details.sec summary::-webkit-details-marker{display:none}
+/* Dialog */
+dialog{border:1px solid var(--line);border-radius:12px;padding:0;background:var(--surface);color:var(--ink);width:min(640px,calc(100vw - 32px));max-height:calc(100vh - 32px)}
+dialog::backdrop{background:rgba(10,20,15,.45)}
+.dlg{display:grid;gap:12px;padding:20px}
+.dlg h2{font:700 1.3rem var(--f-display);margin:0}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fields .full{grid-column:1/-1}
+label.f{display:grid;gap:4px;font-size:.85rem;font-weight:600;color:var(--muted);min-width:0}
+label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
+.hint{font-size:.85rem;color:var(--muted);margin:0}
+.callout{font-size:.88rem;padding:8px 12px;border-radius:6px;background:var(--bad-soft);color:var(--bad)}
+.check{display:flex;gap:8px;align-items:center;font-size:.9rem}
+.check input{width:auto;accent-color:var(--accent)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:12px}
+.actions div{display:flex;gap:8px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:.92rem;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+.csvbox{font:.78rem/1.45 var(--f-mono);min-height:280px;white-space:pre}
+@media (max-width:560px){.pill{white-space:normal}.row .tags{min-width:0}.fields{grid-template-columns:1fr}.row:not(.task){grid-template-columns:minmax(0,1fr)}.task .tags{grid-column:2/-1}.row .tags{justify-content:flex-start}}
+.home{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:24px}
+.card{appearance:none;display:grid;gap:4px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;cursor:pointer;color:inherit;font:inherit;min-width:0}
+.card:hover{border-color:var(--accent)}
+.card-k{font:500 .72rem var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.card-t{font:700 1.5rem/1.15 var(--f-display)}
+.card-n{font:500 2.2rem/1.1 var(--f-display);color:var(--accent);font-variant-numeric:tabular-nums;margin-top:6px}
+.card-s{font-size:.92rem;color:var(--muted)}
+.card-s b{color:var(--bad);font-weight:600}
+.conn{display:grid;gap:12px;margin-top:24px;max-width:640px}
+.conn p{margin:0}
+.conn a{color:var(--accent)}
+#conn-err{color:var(--bad)}
+.crumb{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:20px}
+.crumb h2{font:700 1.5rem/1.2 var(--f-display);margin:0}
+.back{appearance:none;background:none;border:1px solid var(--line);border-radius:6px;padding:6px 12px;font:600 .9rem var(--f-body);color:var(--ink);cursor:pointer}
+.back:hover{border-color:var(--accent)}
+@media (max-width:560px){.home{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Carnet du jardin</h1>
+      <p class="sub">Plantes, tâches et contexte de la coloc, au même endroit.</p>
+    </div>
+    <div class="sync">
+      <span id="sync" class="syncst" aria-live="polite"></span>
+      <button class="btn" id="btn-reload" hidden>Recharger</button>
+      <button class="btn" data-tab="connexion">Réglages</button>
+    </div>
+  </header>
+
+  <!-- ACCUEIL -->
+  <section id="v-accueil" class="home" hidden>
+    <button class="card" data-tab="plantes">
+      <span class="card-k">Au jardin et à l'intérieur</span>
+      <span class="card-t">Plantes</span>
+      <span class="card-n" id="n-plantes"></span>
+      <span class="card-s" id="s-plantes"></span>
+    </button>
+    <button class="card" data-tab="projets">
+      <span class="card-k">À semer ou à acheter</span>
+      <span class="card-t">Graines et envies</span>
+      <span class="card-n" id="n-projets"></span>
+      <span class="card-s" id="s-projets"></span>
+    </button>
+    <button class="card" data-tab="taches">
+      <span class="card-k">À faire</span>
+      <span class="card-t">Tâches</span>
+      <span class="card-n" id="n-taches"></span>
+      <span class="card-s" id="s-taches"></span>
+    </button>
+    <button class="card" data-tab="contexte">
+      <span class="card-k">Sol, arrosage, limaces, colocs</span>
+      <span class="card-t">Contexte</span>
+      <span class="card-n" id="n-contexte"></span>
+      <span class="card-s">Les infos durables sur le jardin</span>
+    </button>
+  </section>
+
+  <!-- CONNEXION -->
+  <section id="v-connexion" hidden>
+    <form class="sec conn" id="conn-form">
+      <p class="hint" id="conn-err" hidden></p>
+      <p>Le carnet lit et écrit directement les fichiers du dépôt GitHub. Chaque modification devient un commit, donc rien ne se perd.</p>
+      <label class="f">Jeton GitHub
+        <input id="c-token" type="password" autocomplete="off" placeholder="github_pat_…" required>
+      </label>
+      <p class="hint">Crée un jeton « fine-grained » sur <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a> : choisis seulement le dépôt du jardin, et dans « Repository permissions » mets <b>Contents</b> sur <b>Read and write</b>. Le jeton reste dans ce navigateur.</p>
+      <div class="fields">
+        <label class="f">Dépôt<input id="c-repo" required></label>
+        <label class="f">Branche<input id="c-branch" required></label>
+      </div>
+      <div class="actions">
+        <div><button type="button" class="btn danger" id="c-forget">Oublier le jeton</button></div>
+        <div><button class="btn primary">Se connecter</button></div>
+      </div>
+    </form>
+  </section>
+
+  <div class="crumb" id="crumb" hidden>
+    <button class="back" data-tab="accueil">← Accueil</button>
+    <h2 id="crumb-t"></h2>
+  </div>
+
+  <!-- PLANTES -->
+  <section id="v-plantes" hidden>
+    <div class="toolbar">
+      <input type="search" id="q-plantes" placeholder="Chercher une plante, un emplacement, une note…" aria-label="Chercher une plante">
+      <select id="f-etat" aria-label="Filtrer par état" style="width:auto;max-width:220px"></select>
+      <button class="btn primary" id="add-plante">Ajouter une plante</button>
+    </div>
+    <div class="chips" id="chips-plantes"></div>
+    <div class="list" id="list-plantes"></div>
+  </section>
+
+  <!-- TACHES -->
+  <section id="v-taches" hidden>
+    <div class="toolbar">
+      <input type="search" id="q-taches" placeholder="Chercher une tâche…" aria-label="Chercher une tâche">
+      <button class="btn primary" id="add-tache">Ajouter une tâche</button>
+    </div>
+    <div class="chips" id="chips-taches"></div>
+    <div id="list-taches"></div>
+  </section>
+
+  <!-- CONTEXTE -->
+  <section id="v-contexte" hidden style="margin-top:18px">
+    <div class="list" id="list-contexte"></div>
+  </section>
+</div>
+
+<dialog id="dlg"><form class="dlg" id="dlg-form" method="dialog"></form></dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const S = {plantes: [], taches: [], contexte: []};
+const COLS = {plantes:["nom","emplacement","etat","besoins_eau","ensoleillement","notes"], taches:["tache","priorite","responsable","statut","notes"]};
+let tab = "plantes", groupe = "Tous", mode = "plantes", statutF = "ouvertes";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const aujourdhui = () => new Date().toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit"});
+
+/* ---------- GitHub : lecture et écriture des fichiers du dépôt ---------- */
+const PATHS={plantes:"plantes.csv",taches:"taches.csv",contexte:"contexte-jardin.md"};
+const CFG_KEY="jardin-cfg";
+let cfg={token:"",repo:"leblanctiphaine-px/Jardin",branch:"main"};
+try{Object.assign(cfg,JSON.parse(localStorage.getItem(CFG_KEY)||"{}"))}catch(e){}
+const fichiers={};   // k -> {sha, texte, entete, preambule}
+let charge=false;
+
+async function gh(path,opts={}){
+  let r;
+  try{ r=await fetch("https://api.github.com"+path,{cache:"no-store",...opts,headers:{
+    Authorization:`Bearer ${cfg.token}`,Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"}}); }
+  catch(e){ const err=new Error("réseau"); err.status=0; throw err; }
+  if(!r.ok){ const err=new Error(r.statusText); err.status=r.status; throw err; }
+  return r.json();
+}
+function msgErreur(e){
+  return ({0:"Pas de connexion à GitHub. Vérifie ta connexion internet.",
+    401:"GitHub refuse le jeton. Il a peut-être expiré : crée-en un nouveau dans Réglages.",
+    403:"Ce jeton n'a pas le droit d'écrire dans le dépôt. Donne-lui « Contents : Read and write ».",
+    404:"Dépôt, branche ou fichier introuvable. Vérifie le nom du dépôt et la branche dans Réglages."})[e.status]
+    ||`GitHub a répondu une erreur (${e.status}). Réessaie avec « Recharger ».`;
+}
+const b64dec=s=>new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g,"")),c=>c.charCodeAt(0)));
+const b64enc=s=>{const b=new TextEncoder().encode(s);let x="";for(let i=0;i<b.length;i+=0x8000)x+=String.fromCharCode(...b.subarray(i,i+0x8000));return btoa(x)};
+const cache=(o,k,v)=>Object.defineProperty(o,k,{value:v,writable:true,enumerable:false});
+
+/* CSV : les lignes non modifiées sont réécrites à l'identique pour garder des diffs propres. */
+function parseCSV(text){
+  const recs=[]; let i=0; const n=text.length;
+  while(i<n){
+    const start=i, fields=[]; let f="", q=false;
+    for(;;){
+      const c=text[i];
+      if(q){
+        if(i>=n){q=false;continue}
+        if(c==='"'){ if(text[i+1]==='"'){f+='"';i+=2;continue} q=false;i++;continue }
+        f+=c;i++;continue;
+      }
+      if(i>=n||c==="\n"||c==="\r"){
+        fields.push(f); const raw=text.slice(start,i);
+        if(c==="\r"&&text[i+1]==="\n") i+=2; else if(i<n) i++;
+        if(raw!=="") recs.push({fields,raw}); break;
+      }
+      if(c==='"'){q=true;i++;continue}
+      if(c===","){fields.push(f);f="";i++;continue}
+      f+=c;i++;
+    }
+  }
+  return recs;
+}
+const csvCell=v=>/[",\r\n]/.test(v)?`"${v.replace(/"/g,'""')}"`:v;
+const signature=(k,r)=>JSON.stringify(COLS[k].map(c=>r[c]??""));
+function lireCSV(k,texte){
+  const recs=parseCSV(texte); fichiers[k].entete=recs[0]?.raw??COLS[k].join(",");
+  return recs.slice(1).map(({fields,raw})=>{
+    const o={}; COLS[k].forEach((c,j)=>o[c]=fields[j]??"");
+    cache(o,"_raw",raw); cache(o,"_sig",signature(k,o)); return o;
+  });
+}
+function ecrireCSV(k){
+  return [fichiers[k].entete,...S[k].map(r=>r._raw!=null&&r._sig===signature(k,r)?r._raw:COLS[k].map(c=>csvCell(r[c]??"")).join(","))].join("\n")+"\n";
+}
+/* Contexte : une fiche par section « ## », séparateurs « --- » conservés. */
+function lireMD(texte){
+  const idx=[...texte.matchAll(/^## /gm)].map(m=>m.index);
+  fichiers.contexte.preambule=texte.slice(0,idx[0]??texte.length);
+  return idx.map((d,j)=>{
+    const chunk=texte.slice(d,idx[j+1]??texte.length), nl=chunk.indexOf("\n");
+    const titre=(nl<0?chunk.slice(3):chunk.slice(3,nl)).trim(), corps=nl<0?"":chunk.slice(nl+1);
+    const sep=(corps.match(/\s*\n-{3,}[ \t]*\s*$/)||corps.match(/\s*$/))[0], tete=corps.match(/^\n*/)[0];
+    const s={titre,contenu:corps.slice(tete.length,corps.length-sep.length)};
+    cache(s,"_raw",chunk); cache(s,"_tete",tete); cache(s,"_sep",sep); cache(s,"_sig",s.titre+"\u0000"+s.contenu); return s;
+  });
+}
+function ecrireMD(){
+  return fichiers.contexte.preambule+S.contexte.map(s=>s._raw!=null&&s._sig===s.titre+"\u0000"+s.contenu?s._raw
+    :`## ${s.titre}\n${s._tete||"\n"}${s.contenu}${s._sep||"\n"}`).join("");
+}
+const serialiser=k=>k==="contexte"?ecrireMD():ecrireCSV(k);
+
+async function charger(k){
+  const j=await gh(`/repos/${cfg.repo}/contents/${PATHS[k]}?ref=${encodeURIComponent(cfg.branch)}`);
+  const texte=b64dec(j.content);
+  fichiers[k]={sha:j.sha,texte};
+  S[k]=k==="contexte"?lireMD(texte):lireCSV(k,texte);
+}
+function setSync(txt,cls){const e=$("#sync");e.textContent=txt;e.className="syncst "+(cls||"")}
+let chaine=Promise.resolve();
+/* Les écritures passent une par une : chaque commit repart du sha renvoyé par le précédent. */
+function sauver(k,message){
+  setSync("Enregistrement…","busy");
+  chaine=chaine.then(async()=>{
+    const texte=serialiser(k);
+    if(texte===fichiers[k].texte){setSync("À jour","ok");return}
+    try{
+      const r=await gh(`/repos/${cfg.repo}/contents/${PATHS[k]}`,{method:"PUT",body:JSON.stringify({message,content:b64enc(texte),sha:fichiers[k].sha,branch:cfg.branch})});
+      fichiers[k].sha=r.content.sha; fichiers[k].texte=texte; setSync("Enregistré","ok");
+    }catch(e){
+      if(e.status===409){ setSync("Conflit","bad"); toast("Le fichier a changé ailleurs entre-temps. Je recharge : refais ta modification.");
+        try{await charger(k)}catch(_){} render(); }
+      else { setSync("Non enregistré","bad"); toast(msgErreur(e)); }
+    }
+  });
+  return chaine;
+}
+async function demarrer(){
+  if(!cfg.token){ charge=false; return setTab("connexion",false); }
+  setSync("Chargement…","busy");
+  try{
+    await Promise.all(Object.keys(PATHS).map(charger));
+  }catch(e){
+    charge=false; setSync("Hors ligne","bad");
+    $("#conn-err").textContent=msgErreur(e); $("#conn-err").hidden=false;
+    return setTab("connexion",false);
+  }
+  charge=true; $("#conn-err").hidden=true; $("#btn-reload").hidden=false; setSync("À jour","ok");
+  const purgees=purgerFaites();
+  render();
+  if(purgees){ sauver("taches",`Tâches : retirer ${purgees} tâche(s) faite(s) depuis plus d'un mois`); toast(`${purgees} tâche(s) faite(s) il y a plus d'un mois retirée(s)`); }
+  setTab(location.hash.slice(1),false);
+}
+
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),3500)}
+
+/* ---------- Règles métier tirées de CLAUDE.md ---------- */
+const MODES={plantes:["Jardin et terrasses","Intérieur"],projets:["Stock de graines","Liste de souhaits"]};
+function groupeDe(p){
+  const e=p.emplacement.toLowerCase();
+  if(e.startsWith("intérieur")) return "Intérieur";
+  if(e.startsWith("stock graines")) return "Stock de graines";
+  if(e.startsWith("liste de souhaits")) return "Liste de souhaits";
+  return "Jardin et terrasses";
+}
+function etatClasse(e){
+  e=e.toLowerCase();
+  if(/limace|stress|brûl|étiol|replanter|perdu|mort|surveiller|à rempoter/.test(e)) return "bad";
+  if(/actif|croissance|germination|semis|repiqu/.test(e)) return "ok";
+  if(/non semé|non acheté/.test(e)) return "";
+  return "warn";
+}
+const SENSIBLES=/laitue|salade|basilic|poireau|haricot|épinard|chou/i;
+function sensibleLimaces(p){
+  return groupeDe(p)!=="Intérieur" && (SENSIBLES.test(p.nom) || /semis|germination|repiqu/i.test(p.etat));
+}
+
+/* ---------- Plantes ---------- */
+function renderPlantes(){
+  const groupes=MODES[mode];
+  const dansMode=p=>groupes.includes(groupeDe(p));
+  $("#chips-plantes").innerHTML=["Tous",...groupes].map(g=>{
+    const n=g==="Tous"?S.plantes.filter(dansMode).length:S.plantes.filter(p=>groupeDe(p)===g).length;
+    return `<button class="chip" aria-pressed="${g===groupe}" data-g="${esc(g)}">${esc(g)}<span>${n}</span></button>`}).join("");
+  const etats=[...new Set(S.plantes.filter(dansMode).map(p=>p.etat))].sort();
+  const cur=$("#f-etat").value;
+  $("#f-etat").innerHTML=`<option value="">Tous les états</option>`+etats.map(e=>`<option ${e===cur?"selected":""}>${esc(e)}</option>`).join("");
+  const q=$("#q-plantes").value.toLowerCase(), fe=$("#f-etat").value;
+  const rows=S.plantes.map((p,i)=>({p,i})).filter(({p})=>
+    (groupe==="Tous"?dansMode(p):groupeDe(p)===groupe) && (!fe||p.etat===fe) &&
+    (!q||Object.values(p).join(" ").toLowerCase().includes(q)));
+  $("#list-plantes").innerHTML=rows.length?rows.map(({p,i})=>`
+    <button class="row" data-edit-plante="${i}">
+      <span class="t">${esc(p.nom)}</span>
+      <span class="tags">${sensibleLimaces(p)?'<span class="pill slug">limaces</span>':""}<span class="pill ${etatClasse(p.etat)}">${esc(p.etat)}</span></span>
+      <span class="meta">${esc(p.emplacement)} · eau ${esc(p.besoins_eau)} · ${esc(p.ensoleillement)}</span>
+    </button>`).join(""):`<p class="empty">Aucune plante ne correspond. Change le filtre ou ajoute-la.</p>`;
+  const vraies=S.plantes.filter(p=>MODES.plantes.includes(groupeDe(p)));
+  const alerte=vraies.filter(p=>etatClasse(p.etat)==="bad").length;
+  $("#n-plantes").textContent=vraies.length;
+  $("#s-plantes").innerHTML=alerte?`<b>${alerte} à surveiller</b> · ${vraies.filter(p=>groupeDe(p)==="Intérieur").length} à l'intérieur`:"Tout va bien";
+  const nG=S.plantes.filter(p=>groupeDe(p)==="Stock de graines").length, nE=S.plantes.filter(p=>groupeDe(p)==="Liste de souhaits").length;
+  $("#n-projets").textContent=nG+nE;
+  $("#s-projets").textContent=`${nG} sachets de graines · ${nE} envies`;
+  $("#add-plante").textContent=mode==="plantes"?"Ajouter une plante":"Ajouter des graines ou une envie";
+  $("#q-plantes").placeholder=mode==="plantes"?"Chercher une plante, un emplacement, une note…":"Chercher une graine ou une envie…";
+}
+function editPlante(i){
+  const isNew=i==null, p=isNew?{nom:"",emplacement:mode==="projets"?(groupe==="Liste de souhaits"?"liste de souhaits":"stock graines"):"",etat:mode==="projets"?(groupe==="Liste de souhaits"?"non acheté":"non semé"):"",besoins_eau:"",ensoleillement:"",notes:""}:S.plantes[i];
+  const projet=!isNew&&MODES.projets.includes(groupeDe(p));
+  const opts=(k)=>[...new Set(S.plantes.map(x=>x[k]))].filter(Boolean).slice(0,60).map(v=>`<option value="${esc(v)}">`).join("");
+  openDlg(`
+    <h2>${isNew?"Nouvelle plante":esc(p.nom)}</h2>
+    <div class="fields">
+      <label class="f full">Nom <code>nom</code><input id="p-nom" required value="${esc(p.nom)}"></label>
+      <label class="f full">Emplacement précis (zone + repère) <code>emplacement</code><input id="p-emp" list="dl-emp" value="${esc(p.emplacement)}"></label>
+      <label class="f">État <code>etat</code><input id="p-etat" list="dl-etat" value="${esc(p.etat)}"></label>
+      <label class="f">Besoins en eau <code>besoins_eau</code><input id="p-eau" list="dl-eau" value="${esc(p.besoins_eau)}"></label>
+      <label class="f full">Ensoleillement <code>ensoleillement</code><input id="p-sol" list="dl-sol" value="${esc(p.ensoleillement)}"></label>
+      <label class="f full">Notes (description pour la reconnaître + soins et historique) <code>notes</code><textarea id="p-notes">${esc(p.notes)}</textarea></label>
+    </div>
+    <datalist id="dl-emp">${opts("emplacement")}</datalist><datalist id="dl-etat">${opts("etat")}</datalist>
+    <datalist id="dl-eau">${opts("besoins_eau")}</datalist><datalist id="dl-sol">${opts("ensoleillement")}</datalist>
+    <p class="callout" id="p-slug" ${sensibleLimaces(p)?"":"hidden"}>Plante sensible aux limaces : prévoir cloche, granulés au phosphate de fer ou piège à bière.</p>
+    <label class="check"><input type="checkbox" id="p-date" checked> Si l'état ou l'emplacement change, ajouter la date du jour dans les notes</label>
+    <div class="actions">
+      <div>${isNew?"":`<button type="button" class="btn danger" id="del">Supprimer</button>`}${projet?`<button type="button" class="btn" id="promo">${groupeDe(p)==="Stock de graines"?"Je l'ai semée":"Je l'ai achetée"}</button>`:""}</div>
+      <div><button type="button" class="btn" value="cancel" id="cancel">Annuler</button><button class="btn primary" id="save">${isNew?"Ajouter":"Enregistrer"}</button></div>
+    </div>`, ()=>{
+      const n={nom:$("#p-nom").value.trim(),emplacement:$("#p-emp").value.trim(),etat:$("#p-etat").value.trim(),
+        besoins_eau:$("#p-eau").value.trim(),ensoleillement:$("#p-sol").value.trim(),notes:$("#p-notes").value.trim()};
+      if(!n.nom){toast("Donne un nom à la plante");return false}
+      if($("#p-date").checked){
+        const ch=[];
+        if(isNew) ch.push(`ajoutée (${n.emplacement||"emplacement à préciser"})`);
+        else{ if(n.etat!==p.etat) ch.push(`état : ${n.etat}`); if(n.emplacement!==p.emplacement) ch.push(`déplacée : ${n.emplacement}`); }
+        if(ch.length) n.notes=(n.notes?n.notes+" — ":"")+`${aujourdhui()} ${ch.join(", ")}`;
+      }
+      if(isNew) S.plantes.unshift(n); else Object.assign(p,n);
+      render(); sauver("plantes",`Plantes : ${isNew?"ajouter":"modifier"} ${n.nom}`); return true;
+    }, ()=>{ S.plantes.splice(S.plantes.indexOf(p),1); render(); sauver("plantes",`Plantes : supprimer ${p.nom}`); });
+  const upd=()=>$("#p-slug").hidden=!sensibleLimaces({nom:$("#p-nom").value,etat:$("#p-etat").value,emplacement:$("#p-emp").value});
+  ["#p-nom","#p-etat","#p-emp"].forEach(s=>$(s).addEventListener("input",upd));
+  $("#promo")&&($("#promo").onclick=()=>{ const seme=groupeDe(p)==="Stock de graines";
+    $("#p-etat").value=seme?"semis":"actif"; $("#p-emp").value=""; $("#p-emp").placeholder="Où exactement ? zone + repère (ex. serre, bac gauche)";
+    $("#p-date").checked=true; $("#p-emp").focus(); upd(); toast("Indique l'emplacement puis enregistre : elle passera dans Plantes"); });
+}
+
+/* ---------- Tâches ---------- */
+const PRIO=["urgent","bientôt","récurrent","réflexion"];
+const PRIO_COL={urgent:"var(--bad)",bientôt:"var(--warn)",récurrent:"var(--accent)",réflexion:"var(--idle)"};
+const FERMEES=["fait","abandonné"];
+const GARDE_JOURS=30, TAG_FAIT=/\s*(—\s*)?fait le (\d{2})\/(\d{2})\/(\d{4})/;
+function dateFait(t){const m=t.notes.match(TAG_FAIT);return m?new Date(+m[4],+m[3]-1,+m[2]):null}
+function marquerFait(t,on){
+  t.notes=t.notes.replace(TAG_FAIT,"").trim();
+  if(on){t.statut="fait";t.notes=(t.notes?t.notes+" — ":"")+"fait le "+new Date().toLocaleDateString("fr-FR")}
+  else if(t.statut==="fait") t.statut="à faire";
+}
+/* Une tâche faite reste visible 30 jours, puis elle est retirée du fichier (git garde l'historique). */
+function purgerFaites(){
+  const limite=Date.now()-GARDE_JOURS*864e5, avant=S.taches.length;
+  S.taches=S.taches.filter(t=>t.statut!=="fait"||(dateFait(t)?.getTime()??0)>=limite);
+  return avant-S.taches.length;
+}
+function renderTaches(){
+  const filtres=[["ouvertes","Ouvertes"],["fait","Faites ces 30 jours"],["toutes","Toutes"]];
+  const cnt=k=>k==="toutes"?S.taches.length:k==="fait"?S.taches.filter(t=>FERMEES.includes(t.statut)).length:S.taches.filter(t=>!FERMEES.includes(t.statut)).length;
+  $("#chips-taches").innerHTML=filtres.map(([k,l])=>`<button class="chip" aria-pressed="${k===statutF}" data-s="${k}">${l}<span>${cnt(k)}</span></button>`).join("");
+  const q=$("#q-taches").value.toLowerCase();
+  const rows=S.taches.map((t,i)=>({t,i})).filter(({t})=>
+    (statutF==="toutes"||(statutF==="fait"?FERMEES.includes(t.statut):!FERMEES.includes(t.statut))) &&
+    (!q||Object.values(t).join(" ").toLowerCase().includes(q)));
+  const prios=[...PRIO,...new Set(rows.map(r=>r.t.priorite).filter(p=>!PRIO.includes(p)))];
+  let html="";
+  for(const pr of prios){
+    const g=rows.filter(r=>r.t.priorite===pr); if(!g.length) continue;
+    html+=`<p class="group-h">${esc(pr)} · ${g.length}</p><div class="list">`+g.map(({t,i})=>{
+      const done=FERMEES.includes(t.statut);
+      const cls=t.statut==="fait"?"ok":t.statut==="à faire"?"warn":"";
+      return `<div class="row task ${done?"done":""}" data-edit-tache="${i}">
+        <input type="checkbox" data-done="${i}" ${t.statut==="fait"?"checked":""} aria-label="Marquer « ${esc(t.tache)} » comme faite">
+        <span class="t">${esc(t.tache)}</span>
+        <span class="tags"><span class="pill">${esc(t.responsable)}</span><span class="pill ${cls}">${esc(t.statut)}</span></span>
+        <span class="meta">${t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")} · `:""}${esc(t.notes)||"&nbsp;"}</span></div>`}).join("")+`</div>`;
+  }
+  $("#list-taches").innerHTML=html||`<p class="empty">Rien ici. Bonne nouvelle, ou un filtre trop strict.</p>`;
+  const ouv=S.taches.filter(t=>!FERMEES.includes(t.statut)), urg=ouv.filter(t=>t.priorite==="urgent").length;
+  $("#n-taches").textContent=ouv.length;
+  $("#s-taches").innerHTML=(urg?`<b>${urg} urgentes</b> · `:"")+"tâches ouvertes";
+}
+function editTache(i){
+  const isNew=i==null, t=isNew?{tache:"",priorite:"bientôt",responsable:"moi",statut:"à faire",notes:""}:S.taches[i];
+  const sel=(id,vals,v)=>`<select id="${id}">${[...new Set([...vals,v])].map(x=>`<option ${x===v?"selected":""}>${esc(x)}</option>`).join("")}</select>`;
+  const statuts=[...new Set(S.taches.map(x=>x.statut))], resp=[...new Set(S.taches.map(x=>x.responsable))];
+  openDlg(`
+    <h2>${isNew?"Nouvelle tâche":"Modifier la tâche"}</h2>
+    <div class="fields">
+      <label class="f full">Tâche <code>tache</code><input id="t-nom" required value="${esc(t.tache)}"></label>
+      <label class="f">Priorité <code>priorite</code>${sel("t-prio",PRIO,t.priorite)}</label>
+      <label class="f">Statut <code>statut</code>${sel("t-stat",statuts,t.statut)}</label>
+      <label class="f full">Responsable <code>responsable</code><input id="t-resp" list="dl-resp" value="${esc(t.responsable)}"></label>
+      <label class="f full">Notes <code>notes</code><textarea id="t-notes">${esc(t.notes)}</textarea></label>
+    </div>
+    <datalist id="dl-resp">${resp.map(r=>`<option value="${esc(r)}">`).join("")}</datalist>
+    <div class="actions">
+      <div>${isNew?"":`<button type="button" class="btn danger" id="del">Supprimer</button>`}</div>
+      <div><button type="button" class="btn" id="cancel">Annuler</button><button class="btn primary" id="save">${isNew?"Ajouter":"Enregistrer"}</button></div>
+    </div>`, ()=>{
+      const n={tache:$("#t-nom").value.trim(),priorite:$("#t-prio").value,responsable:$("#t-resp").value.trim()||"moi",statut:$("#t-stat").value,notes:$("#t-notes").value.trim()};
+      if(!n.tache){toast("Décris la tâche en quelques mots");return false}
+      if(n.statut==="fait"&&(isNew||t.statut!=="fait")) marquerFait(n,true);
+      if(isNew) S.taches.unshift(n); else Object.assign(t,n);
+      render(); sauver("taches",`Tâches : ${isNew?"ajouter":"modifier"} « ${n.tache} »`); return true;
+    }, ()=>{ S.taches.splice(S.taches.indexOf(t),1); render(); sauver("taches",`Tâches : supprimer « ${t.tache} »`); });
+}
+
+/* ---------- Contexte ---------- */
+function md(src){
+  const inline=s=>esc(s).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/`(.+?)`/g,"<code>$1</code>");
+  const out=[]; let list=false, table=null;
+  const flush=()=>{ if(list){out.push("</ul>");list=false} if(table){out.push("<table>"+table.join("")+"</table>");table=null} };
+  for(const raw of src.split("\n")){
+    const l=raw.trim();
+    if(/^\|/.test(l)){ if(/^\|[\s|:-]+\|$/.test(l)) continue; if(list){out.push("</ul>");list=false}
+      const cells=l.replace(/^\||\|$/g,"").split("|"); const tag=table?"td":"th"; table=table||[];
+      table.push("<tr>"+cells.map(c=>`<${tag}>${inline(c.trim())}</${tag}>`).join("")+"</tr>"); continue; }
+    if(table){out.push("<table>"+table.join("")+"</table>");table=null}
+    if(/^[-*] /.test(l)){ if(!list){out.push("<ul>");list=true} out.push(`<li>${inline(l.slice(2))}</li>`); continue; }
+    flush();
+    if(/^###? /.test(l)) out.push(`<h3>${inline(l.replace(/^#+ /,""))}</h3>`);
+    else if(/^-{3,}$/.test(l)||!l) continue;
+    else out.push(`<p>${inline(l)}</p>`);
+  }
+  flush(); return out.join("");
+}
+let editingSec=null;
+function renderContexte(){
+  const q="";
+  const rows=S.contexte.map((s,i)=>({s,i}));
+  $("#list-contexte").innerHTML=rows.length?rows.map(({s,i})=>editingSec===i?`
+    <div class="sec">
+      <div class="sec-edit">
+        <label class="f">Titre de la section<input id="c-titre" value="${esc(s.titre)}"></label>
+        <label class="f">Contenu (Markdown)<textarea id="c-contenu">${esc(s.contenu)}</textarea></label>
+        <p class="hint">Pas de tableau de plantes ici : l'inventaire vit dans l'onglet Plantes.</p>
+        <div class="actions"><div></div>
+        <div><button class="btn" data-cancel-sec>Annuler</button><button class="btn primary" data-save-sec="${i}">Enregistrer</button></div></div>
+      </div>
+    </div>`:`
+    <details class="sec" ${q||i<2?"open":""}>
+      <summary class="sec-h"><h2>${esc(s.titre)}</h2><button class="btn" data-edit-sec="${i}">Modifier</button></summary>
+      <div class="md">${md(s.contenu)}</div>
+    </details>`).join(""):`<p class="empty">Aucune section ne parle de « ${esc(q)} ».</p>`;
+  $("#n-contexte").textContent=S.contexte.length;
+  if(editingSec!=null) $("#c-titre")?.focus();
+}
+
+/* ---------- Fenêtre ---------- */
+function openDlg(html,onSave,onDelete){
+  const d=$("#dlg"), f=$("#dlg-form"); f.innerHTML=html;
+  f.onsubmit=e=>{e.preventDefault(); if(onSave&&onSave()!==false) d.close()};
+  $("#cancel")&&($("#cancel").onclick=()=>d.close());
+  const del=$("#del");
+  if(del) del.onclick=()=>{ if(!del.classList.contains("armed")){del.classList.add("armed");del.textContent="Confirmer la suppression";return}
+    onDelete(); d.close(); };
+  d.showModal();
+}
+
+/* ---------- Navigation ---------- */
+function render(){ renderPlantes(); renderTaches(); renderContexte(); }
+const TITRES={plantes:"Plantes",projets:"Graines et envies",taches:"Tâches",contexte:"Contexte",connexion:"Réglages"};
+function setTab(t,push=true){ if(!TITRES[t]) t="accueil"; if(!charge) t="connexion"; tab=t;
+  if(t==="connexion"){ $("#c-token").value=cfg.token; $("#c-repo").value=cfg.repo; $("#c-branch").value=cfg.branch; }
+  const vue=(t==="plantes"||t==="projets")?"plantes":t;
+  if(vue==="plantes"&&mode!==t){mode=t;groupe="Tous";$("#f-etat").value="";renderPlantes()}
+  ["accueil","plantes","taches","contexte","connexion"].forEach(k=>$("#v-"+k).hidden=k!==vue);
+  $("#crumb").hidden=t==="accueil"||!charge; $("#crumb-t").textContent=TITRES[t]||"";
+  window.scrollTo(0,0);
+  if(push){ try{ history.pushState(null,"",t==="accueil"?location.pathname:"#"+t) }catch(e){} } }
+window.addEventListener("popstate",()=>setTab(location.hash.slice(1),false));
+document.addEventListener("click",e=>{
+  const el=e.target.closest("[data-tab],[data-g],[data-s],[data-edit-plante],[data-done],[data-edit-tache],[data-edit-sec],[data-save-sec],[data-cancel-sec],#add-plante,#add-tache");
+  if(!el) return; const ds=el.dataset;
+  if(ds.tab) return setTab(ds.tab);
+  if(ds.g) {groupe=ds.g; return renderPlantes()}
+  if(ds.s) {statutF=ds.s; return renderTaches()}
+  if(ds.editPlante!=null) return editPlante(+ds.editPlante);
+  if(ds.done!=null){ const t=S.taches[+ds.done]; marquerFait(t,el.checked); renderTaches(); return sauver("taches",`Tâches : « ${t.tache} » ${el.checked?"faite":"rouverte"}`); }
+  if(ds.editTache!=null) return editTache(+ds.editTache);
+  if(ds.editSec!=null){ e.preventDefault(); editingSec=+ds.editSec; return renderContexte(); }
+  if(ds.saveSec!=null){ const s=S.contexte[+ds.saveSec]; s.titre=$("#c-titre").value.trim()||s.titre; s.contenu=$("#c-contenu").value.replace(/\s+$/,""); editingSec=null; renderContexte(); return sauver("contexte",`Contexte : modifier « ${s.titre} »`); }
+  if(ds.cancelSec!=null){ editingSec=null; return renderContexte(); }
+  if(el.id==="add-plante") return editPlante(null);
+  if(el.id==="add-tache") return editTache(null);
+});
+$("#q-plantes").oninput=renderPlantes; $("#f-etat").onchange=renderPlantes;
+$("#q-taches").oninput=renderTaches;
+$("#conn-form").onsubmit=e=>{ e.preventDefault();
+  cfg={token:$("#c-token").value.trim(),repo:$("#c-repo").value.trim().replace(/^https:\/\/github\.com\//,"").replace(/\/$/,""),branch:$("#c-branch").value.trim()||"main"};
+  try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(_){}
+  history.replaceState(null,"",location.pathname); demarrer(); };
+$("#c-forget").onclick=()=>{ cfg.token=""; try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(_){} charge=false; $("#btn-reload").hidden=true; setSync("",""); setTab("connexion"); toast("Jeton oublié sur cet appareil"); };
+$("#btn-reload").onclick=()=>{ chaine.then(demarrer); };
+demarrer();
+</script>
+</body>
+</html>
