@@ -627,7 +627,7 @@ const ligneTache=({t,i})=>{
   return `<div class="row task ${done?"done":""}" data-edit-tache="${i}">
         <input type="checkbox" data-done="${i}" ${t.statut==="fait"?"checked":""} aria-label="Marquer « ${esc(t.tache)} » comme ${done?"à refaire":"faite"}">
         <span class="t">${esc(t.tache)}</span>
-        <span class="tags">${t.plante?`<span class="pill plante">${esc(t.plante)}</span>`:""}${done||t.statut==="à faire"?"":`<span class="pill">${esc(t.statut)}</span>`}</span>
+        <span class="tags">${t.plante?`<span class="pill plante">${esc(t.plante)}</span>`:""}</span>
         <span class="meta">${t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")} · `:""}${esc(t.notes)||"&nbsp;"}</span></div>`; };
 function renderTaches(){
   const toutes=S.taches.map((t,i)=>({t,i}));
