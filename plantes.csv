@@ -1,6 +1,6 @@
 nom,zone,etat,etat_detail,besoins_eau,ensoleillement,notes
 Figuier,Jardin de derrière,en croissance,,,,planté le 01/10/2026
-Haricots,Potager mi-ombre,à surveiller,"mangés par les limaces, à resemer",moyen,plein soleil,premier semis détruit par limaces — resemer avec protection granulés + cloche
+Haricots,Potager mi-ombre,à surveiller,,moyen,plein soleil,
 Framboisier,Jardin de derrière,en forme,,faible,plein soleil,branches au-dessus à éclaircir pour plus de lumière
 Aubergine,Serre,fin de vie,réfléchir à déraciner,élevé,plein soleil,pépinière — légèrement stressée mais récupérable — repiquer dans les 10 jours en plein soleil sol chaud
 Basilic (5 plants),Serre,en forme,,moyen,plein soleil,"serre (x2) + terrasse (x2) + intérieur (x1) — bien installé — 2 en serre, 2 en terrasse, 1 intérieur. Stock graines supplémentaires disponibles. À récolter régulièrement (stimule la pousse, évite la montée en graine)"
@@ -37,10 +37,10 @@ Chou Brocoli Calabrese Vert,Stock de graines,jamais essayé,,moyen,plein soleil,
 Radis Rond Écarlate,Stock de graines,déjà essayé,,moyen,mi-ombre,"semis mars-sept, récolte avril-oct — convient pot/bac (Invivo)"
 Radis Noir Long Poids d'Horloge,Stock de graines,déjà essayé,,moyen,mi-ombre,"semis mai-octobre, récolte 4 mois après — légume d'autrefois reproductible (Vilmorin)"
 Carottes 10 variétés,Stock de graines,déjà essayé,,moyen,plein soleil,"sachet kraft — semis toute saison, semer en lignes"
-Rhubarbe Géante Victoria,Stock de graines,jamais essayé,,moyen,mi-ombre,"grainetier bio Ferme de Sainte Marthe — vivace, prévoir emplacement permanent"
+Rhubarbe Géante Victoria,Stock de graines,déjà essayé,,moyen,mi-ombre,"grainetier bio Ferme de Sainte Marthe — vivace, prévoir emplacement permanent"
 Oignon Rouge Pâle de Niort,Stock de graines,jamais essayé,,faible,plein soleil,"bio & reproductible (Kokopelli) — semis fév-mai, récolte juil-sept, 500 plants"
 Betterave de Détroit,Stock de graines,déjà essayé,,moyen,plein soleil,"semis mars-juin, récolte juin-novembre (Invivo) — déjà semé en serre"
-Mâche Ronde Maraîchère,Stock de graines,jamais essayé,,moyen,mi-ombre,"semis août-septembre, récolte 2 mois après — précoce résistante mildiou (Vilmorin)"
+Mâche Ronde Maraîchère,Stock de graines,déjà essayé,,moyen,mi-ombre,"semis août-septembre, récolte 2 mois après — précoce résistante mildiou (Vilmorin)"
 Épinard Géant d'Hiver,Stock de graines,jamais essayé,,moyen,mi-ombre,"semis juillet-septembre, récolte 2-3 mois — rustique et productif (Vilmorin)"
 Tomate-Cerise Scarlet Starfire / Starfire Isis,Stock de graines,déjà essayé,,élevé,plein soleil,"bio & reproductible (Kokopelli) — variété mi-saison, production Isère, 33+ plants"
 Tomate Fireworks,Stock de graines,déjà essayé,,élevé,plein soleil,"bio & reproductible (Kokopelli) — variété précoce, production Ariège"
