@@ -34,6 +34,9 @@ body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--f-body);margin:0}
 header{display:flex;justify-content:flex-end}
 h1{font:700 clamp(1.7rem,4vw,2.3rem)/1.1 var(--f-display);margin:0;letter-spacing:-.01em}
 .sub{color:var(--muted);margin:4px 0 0;font-size:.95rem}
+.gear{appearance:none;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer}
+.gear:hover{color:var(--ink);border-color:var(--accent)}
+header{min-height:40px}
 .sync{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .syncst{font:500 .72rem var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
 .syncst.ok{color:var(--ok)}.syncst.busy{color:var(--warn)}.syncst.bad{color:var(--bad)}
@@ -140,7 +143,9 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
   <header>
     <div class="sync">
       <span id="sync" class="syncst" aria-live="polite"></span>
-      <button class="btn" data-tab="connexion">Réglages</button>
+      <button class="gear" id="btn-reglages" data-tab="connexion" aria-label="Réglages" title="Réglages" hidden>
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
     </div>
   </header>
 
@@ -611,7 +616,8 @@ function setTab(t,push=true){ if(!TITRES[t]) t="accueil"; if(!charge) t="connexi
   const vue=MODES[t]?"plantes":t;
   if(vue==="plantes"&&mode!==t){mode=t;groupe="Tous";$("#f-etat").value="";renderPlantes()}
   ["accueil","plantes","taches","contexte","connexion"].forEach(k=>$("#v-"+k).hidden=k!==vue);
-  $("#crumb").hidden=t==="accueil"||!charge; $("#crumb-t").textContent=TITRES[t]||"";
+  $("#crumb").hidden=t==="accueil"||!charge;
+  $("#btn-reglages").hidden=t!=="accueil"; $("#crumb-t").textContent=TITRES[t]||"";
   window.scrollTo(0,0);
   if(push){ try{ history.pushState(null,"",t==="accueil"?location.pathname:"#"+t) }catch(e){} } }
 window.addEventListener("popstate",()=>setTab(location.hash.slice(1),false));
