@@ -36,9 +36,10 @@ h1{font:700 clamp(1.7rem,4vw,2.3rem)/1.1 var(--f-display);margin:0;letter-spacin
 .sub{color:var(--muted);margin:4px 0 0;font-size:.95rem}
 .gear{appearance:none;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer}
 .gear:hover{color:var(--ink);border-color:var(--accent)}
-header{min-height:40px}
 .sync{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.syncst{font:500 .72rem var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+/* Indicateur d'enregistrement flottant : il ne prend pas de place quand il est vide. */
+.syncst{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:6;padding:4px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font:500 .72rem var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.syncst:empty{display:none}
 .syncst.ok{color:var(--ok)}.syncst.busy{color:var(--warn)}.syncst.bad{color:var(--bad)}
 .proto{font:500 .72rem var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--warn);background:var(--warn-soft);padding:4px 8px;border-radius:4px}
 nav.tabs{display:flex;gap:4px;margin-top:20px;border-bottom:1px solid var(--line);overflow-x:auto}
@@ -129,10 +130,10 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 .conn a{color:var(--accent)}
 #conn-err{color:var(--bad)}
 .invite-t{font:700 1.15rem/1.25 var(--f-display);margin:0}
-.crumb{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:20px}
+.crumb{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
 .crumb h2{font:700 1.5rem/1.2 var(--f-display);margin:0}
-.back{appearance:none;background:none;border:1px solid var(--line);border-radius:6px;padding:6px 12px;font:600 .9rem var(--f-body);color:var(--ink);cursor:pointer}
-.back:hover{border-color:var(--accent)}
+.back{appearance:none;background:none;border:0;padding:4px;margin-left:-8px;display:grid;place-items:center;color:var(--ink);cursor:pointer;border-radius:6px}
+.back:hover{color:var(--accent)}
 @media (max-width:560px){.home{grid-template-columns:minmax(0,1fr)}}
 @media (prefers-reduced-motion:reduce){.toast{transition:none}}
 </style>
@@ -157,15 +158,9 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
       <span class="card-n" id="n-jardin"></span>
       <span class="card-s" id="s-jardin"></span>
     </button>
-    <button class="card" data-tab="terrasses">
-      <span class="card-k">Pots et bacs</span>
-      <span class="card-t">Terrasses</span>
-      <span class="card-n" id="n-terrasses"></span>
-      <span class="card-s" id="s-terrasses"></span>
-    </button>
     <button class="card" data-tab="interieur">
-      <span class="card-k">Plantes vertes de la maison</span>
-      <span class="card-t">Intérieur</span>
+      <span class="card-k">Pots de la maison et des terrasses</span>
+      <span class="card-t">Intérieur et terrasses</span>
       <span class="card-n" id="n-interieur"></span>
       <span class="card-s" id="s-interieur"></span>
     </button>
@@ -190,7 +185,9 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
   </section>
 
   <div class="crumb" id="crumb" hidden>
-    <button class="back" data-tab="accueil">← Accueil</button>
+    <button class="back" data-tab="accueil" aria-label="Retour à l'accueil" title="Accueil">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
     <h2 id="crumb-t"></h2>
   </div>
 
@@ -234,10 +231,7 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
   </section>
 
   <!-- TACHES -->
-  <section id="v-taches" hidden>
-    <div class="toolbar">
-      <input type="search" id="q-taches" placeholder="Chercher une tâche…" aria-label="Chercher une tâche">
-    </div>
+  <section id="v-taches" hidden style="margin-top:18px">
     <div class="chips" id="chips-taches"></div>
     <div id="list-taches"></div>
     <button class="fab" id="add-tache">+ Ajouter une tâche</button>
@@ -392,7 +386,7 @@ async function demarrer(){
 function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),3500)}
 
 /* ---------- Règles métier tirées de CLAUDE.md ---------- */
-const MODES={jardin:["Jardin"],terrasses:["Terrasses"],interieur:["Intérieur"],projets:["Stock de graines","Liste de souhaits"]};
+const MODES={jardin:["Jardin"],interieur:["Intérieur","Terrasses"],projets:["Stock de graines","Liste de souhaits"]};
 const VRAIES=["Jardin","Terrasses","Intérieur"];
 /* Classement d'après le début de l'emplacement : « terrasse + jardin » compte comme terrasse, « jardin/terrasse » comme jardin. */
 function groupeDe(p){
@@ -436,8 +430,8 @@ function renderPlantes(){
       <span class="tags">${sensibleLimaces(p)?'<span class="pill slug">limaces</span>':""}<span class="pill ${etatClasse(p.etat)}">${esc(p.etat)}</span></span>
       <span class="meta">${esc(p.emplacement)} · eau ${esc(p.besoins_eau)} · ${esc(p.ensoleillement)}</span>
     </button>`).join(""):`<p class="empty">Aucune plante ne correspond. Change le filtre ou ajoute-la.</p>`;
-  for(const [k,g] of [["jardin","Jardin"],["terrasses","Terrasses"],["interieur","Intérieur"]]){
-    const ps=S.plantes.filter(p=>groupeDe(p)===g), alerte=ps.filter(p=>etatClasse(p.etat)==="bad").length;
+  for(const k of ["jardin","interieur"]){
+    const ps=S.plantes.filter(p=>MODES[k].includes(groupeDe(p))), alerte=ps.filter(p=>etatClasse(p.etat)==="bad").length;
     $("#n-"+k).textContent=ps.length;
     $("#s-"+k).innerHTML=alerte?`<b>${alerte} à surveiller</b>`:"Rien à signaler";
   }
@@ -448,7 +442,7 @@ function renderPlantes(){
   $("#q-plantes").placeholder=mode!=="projets"?"Chercher une plante, un emplacement, une note…":"Chercher une graine ou une envie…";
 }
 function editPlante(i){
-  const isNew=i==null, p=isNew?{nom:"",emplacement:mode==="projets"?(groupe==="Liste de souhaits"?"liste de souhaits":"stock graines"):{terrasses:"terrasse",interieur:"intérieur"}[mode]||"",etat:mode==="projets"?(groupe==="Liste de souhaits"?"non acheté":"non semé"):"",besoins_eau:"",ensoleillement:"",notes:""}:S.plantes[i];
+  const isNew=i==null, p=isNew?{nom:"",emplacement:mode==="projets"?(groupe==="Liste de souhaits"?"liste de souhaits":"stock graines"):{Terrasses:"terrasse",Intérieur:"intérieur"}[groupe]||"",etat:mode==="projets"?(groupe==="Liste de souhaits"?"non acheté":"non semé"):"",besoins_eau:"",ensoleillement:"",notes:""}:S.plantes[i];
   const projet=!isNew&&MODES.projets.includes(groupeDe(p));
   const opts=(k)=>[...new Set(S.plantes.map(x=>x[k]))].filter(Boolean).slice(0,60).map(v=>`<option value="${esc(v)}">`).join("");
   openDlg(`
@@ -480,12 +474,12 @@ function editPlante(i){
       }
       if(isNew) S.plantes.unshift(n); else Object.assign(p,n);
       render(); sauver("plantes",`Plantes : ${isNew?"ajouter":"modifier"} ${n.nom}`); return true;
-    }, ()=>{ S.plantes.splice(S.plantes.indexOf(p),1); render(); sauver("plantes",`Plantes : supprimer ${p.nom}`); });
+    }, ()=>{ S.plantes.splice(S.plantes.indexOf(p),1); render(); sauver("plantes",`Plantes : supprimer ${p.nom}`); }, false);
   const upd=()=>$("#p-slug").hidden=!sensibleLimaces({nom:$("#p-nom").value,etat:$("#p-etat").value,emplacement:$("#p-emp").value});
   ["#p-nom","#p-etat","#p-emp"].forEach(s=>$(s).addEventListener("input",upd));
   $("#promo")&&($("#promo").onclick=()=>{ const seme=groupeDe(p)==="Stock de graines";
     $("#p-etat").value=seme?"semis":"actif"; $("#p-emp").value=""; $("#p-emp").placeholder="Où exactement ? zone + repère (ex. serre, bac gauche)";
-    $("#p-date").checked=true; $("#p-emp").focus(); upd(); toast("Indique l'emplacement puis enregistre : elle passera dans Jardin, Terrasses ou Intérieur selon l'emplacement"); });
+    $("#p-date").checked=true; $("#p-emp").focus(); upd(); toast("Indique l'emplacement puis enregistre : elle passera dans Jardin ou Intérieur et terrasses selon l'emplacement"); });
 }
 
 /* ---------- Tâches ---------- */
@@ -509,7 +503,7 @@ function renderTaches(){
   const filtres=[["ouvertes","Ouvertes"],["fait","Faites ces 30 jours"]];
   const cnt=k=>k==="fait"?S.taches.filter(t=>FERMEES.includes(t.statut)).length:S.taches.filter(t=>!FERMEES.includes(t.statut)).length;
   $("#chips-taches").innerHTML=filtres.map(([k,l])=>`<button class="chip" aria-pressed="${k===statutF}" data-s="${k}">${l}<span>${cnt(k)}</span></button>`).join("");
-  const q=$("#q-taches").value.toLowerCase();
+  const q="";
   const rows=S.taches.map((t,i)=>({t,i})).filter(({t})=>
     (statutF==="fait"?FERMEES.includes(t.statut):!FERMEES.includes(t.statut)) &&
     (!q||Object.values(t).join(" ").toLowerCase().includes(q)));
@@ -583,7 +577,7 @@ function renderContexte(){
       <div class="sec-edit">
         <label class="f">Titre de la section<input id="c-titre" value="${esc(s.titre)}"></label>
         <label class="f">Contenu (Markdown)<textarea id="c-contenu">${esc(s.contenu)}</textarea></label>
-        <p class="hint">Pas de tableau de plantes ici : l'inventaire vit dans Jardin, Terrasses et Intérieur.</p>
+        <p class="hint">Pas de tableau de plantes ici : l'inventaire vit dans Jardin et Intérieur et terrasses.</p>
         <div class="actions"><div></div>
         <div><button class="btn" data-cancel-sec>Annuler</button><button class="btn primary" data-save-sec="${i}">Enregistrer</button></div></div>
       </div>
@@ -597,19 +591,19 @@ function renderContexte(){
 }
 
 /* ---------- Fenêtre ---------- */
-function openDlg(html,onSave,onDelete){
+function openDlg(html,onSave,onDelete,confirmer=true){
   const d=$("#dlg"), f=$("#dlg-form"); f.innerHTML=html;
   f.onsubmit=e=>{e.preventDefault(); if(onSave&&onSave()!==false) d.close()};
   $("#cancel")&&($("#cancel").onclick=()=>d.close());
   const del=$("#del");
-  if(del) del.onclick=()=>{ if(!del.classList.contains("armed")){del.classList.add("armed");del.textContent="Confirmer la suppression";return}
+  if(del) del.onclick=()=>{ if(confirmer&&!del.classList.contains("armed")){del.classList.add("armed");del.textContent="Confirmer la suppression";return}
     onDelete(); d.close(); };
   d.showModal();
 }
 
 /* ---------- Navigation ---------- */
 function render(){ renderPlantes(); renderTaches(); renderContexte(); }
-const TITRES={jardin:"Jardin",terrasses:"Terrasses",interieur:"Intérieur",projets:"Graines et envies",taches:"Tâches",contexte:"Contexte",connexion:"Réglages"};
+const TITRES={jardin:"Jardin",interieur:"Intérieur et terrasses",projets:"Graines et envies",taches:"Tâches",contexte:"Contexte",connexion:"Réglages"};
 function setTab(t,push=true){ if(!TITRES[t]) t="accueil"; if(!charge) t="connexion"; tab=t;
   if(t==="connexion"){ $("#c-token").value=cfg.token; $("#c-repo").value=cfg.repo; $("#c-branch").value=cfg.branch;
     $("#invite").hidden=!charge; if(charge) $("#invite-link").value=lienInvitation(); }
@@ -617,7 +611,7 @@ function setTab(t,push=true){ if(!TITRES[t]) t="accueil"; if(!charge) t="connexi
   if(vue==="plantes"&&mode!==t){mode=t;groupe="Tous";$("#f-etat").value="";renderPlantes()}
   ["accueil","plantes","taches","contexte","connexion"].forEach(k=>$("#v-"+k).hidden=k!==vue);
   $("#crumb").hidden=t==="accueil"||!charge;
-  $("#btn-reglages").hidden=t!=="accueil"; $("#crumb-t").textContent=TITRES[t]||"";
+  $("#btn-reglages").hidden=t!=="accueil"; $("header").hidden=t!=="accueil"; $("#crumb-t").textContent=TITRES[t]||"";
   window.scrollTo(0,0);
   if(push){ try{ history.pushState(null,"",t==="accueil"?location.pathname:"#"+t) }catch(e){} } }
 window.addEventListener("popstate",()=>setTab(location.hash.slice(1),false));
@@ -645,7 +639,7 @@ document.addEventListener("click",e=>{
   if(el.id==="add-tache") return editTache(null);
 });
 $("#q-plantes").oninput=renderPlantes; $("#f-etat").onchange=renderPlantes;
-$("#q-taches").oninput=renderTaches;
+
 $("#conn-form").onsubmit=e=>{ e.preventDefault();
   cfg={token:$("#c-token").value.trim(),repo:$("#c-repo").value.trim().replace(/^https:\/\/github\.com\//,"").replace(/\/$/,""),branch:$("#c-branch").value.trim()||"main"};
   try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(_){}
