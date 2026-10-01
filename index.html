@@ -116,6 +116,7 @@ dialog.plein .dlg{max-width:640px;margin:0 auto;padding-bottom:40px}
 .row .detail{grid-column:1/-1;font-size:.92rem;color:var(--ink);min-width:0}
 .liees{display:grid;gap:8px;border-top:1px solid var(--line);padding-top:12px}
 .liees .group-h{margin:0}
+.fermees{margin-top:28px}.fermees summary{cursor:pointer;font-size:.85rem;color:var(--muted);padding:6px 0}.fermees .list{opacity:.75;margin-top:6px}
 .sugg{display:flex;flex-wrap:wrap;gap:6px;margin-top:-6px}
 .bilans{list-style:none;margin:0;padding:0;display:grid;gap:6px}.bilans li{font-size:.9rem}.bilans .meta{display:block;font-size:.8rem;color:var(--muted)}
 .pill.plante{background:var(--accent-soft);color:var(--accent)}
@@ -249,7 +250,6 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 
   <!-- TACHES -->
   <section id="v-taches" hidden style="margin-top:18px">
-    <div class="chips" id="chips-taches"></div>
     <div id="list-taches"></div>
     <button class="fab" id="add-tache">+ Ajouter une tâche</button>
   </section>
@@ -266,7 +266,7 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 <script>
 const S = {plantes: [], taches: [], contexte: [], bilans: []};
 const COLS = {plantes:["nom","zone","etat","etat_detail","besoins_eau","ensoleillement","notes"], taches:["tache","priorite","responsable","statut","notes","plante"], bilans:["date","plante","resultat","pourquoi","fiche"]};
-let tab = "accueil", groupe = "", mode = "jardin", statutF = "ouvertes";
+let tab = "accueil", groupe = "", mode = "jardin";
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
@@ -611,28 +611,28 @@ function purgerFaites(){
   S.taches=S.taches.filter(t=>t.statut!=="fait"||(dateFait(t)?.getTime()??0)>=limite);
   return avant-S.taches.length;
 }
+/* Tâches ouvertes par priorité ; les tâches faites dans une section repliée tout en bas. */
+let fermeesOuvertes=false;
+const ligneTache=({t,i})=>{
+  const done=FERMEES.includes(t.statut);
+  return `<div class="row task ${done?"done":""}" data-edit-tache="${i}">
+        <input type="checkbox" data-done="${i}" ${t.statut==="fait"?"checked":""} aria-label="Marquer « ${esc(t.tache)} » comme ${done?"à refaire":"faite"}">
+        <span class="t">${esc(t.tache)}</span>
+        <span class="tags">${t.plante?`<span class="pill plante">${esc(t.plante)}</span>`:""}${done||t.statut==="à faire"?"":`<span class="pill">${esc(t.statut)}</span>`}</span>
+        <span class="meta">${t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")} · `:""}${esc(t.notes)||"&nbsp;"}</span></div>`; };
 function renderTaches(){
-  const filtres=[["ouvertes","Ouvertes"],["fait","Faites ces 30 jours"]];
-  const cnt=k=>k==="fait"?S.taches.filter(t=>FERMEES.includes(t.statut)).length:S.taches.filter(t=>!FERMEES.includes(t.statut)).length;
-  $("#chips-taches").innerHTML=filtres.map(([k,l])=>`<button class="chip" aria-pressed="${k===statutF}" data-s="${k}">${l}<span>${cnt(k)}</span></button>`).join("");
-  const q="";
-  const rows=S.taches.map((t,i)=>({t,i})).filter(({t})=>
-    (statutF==="fait"?FERMEES.includes(t.statut):!FERMEES.includes(t.statut)) &&
-    (!q||Object.values(t).join(" ").toLowerCase().includes(q)));
+  const toutes=S.taches.map((t,i)=>({t,i}));
+  const rows=toutes.filter(({t})=>!FERMEES.includes(t.statut)), faites=toutes.filter(({t})=>FERMEES.includes(t.statut));
   const prios=[...PRIO,...new Set(rows.map(r=>r.t.priorite).filter(p=>!PRIO.includes(p)))];
   let html="";
   for(const pr of prios){
     const g=rows.filter(r=>r.t.priorite===pr); if(!g.length) continue;
-    html+=`<p class="group-h">${esc(pr)} · ${g.length}</p><div class="list">`+g.map(({t,i})=>{
-      const done=FERMEES.includes(t.statut);
-      const cls=t.statut==="fait"?"ok":t.statut==="à faire"?"warn":"";
-      return `<div class="row task ${done?"done":""}" data-edit-tache="${i}">
-        <input type="checkbox" data-done="${i}" ${t.statut==="fait"?"checked":""} aria-label="Marquer « ${esc(t.tache)} » comme faite">
-        <span class="t">${esc(t.tache)}</span>
-        <span class="tags">${t.plante?`<span class="pill plante">${esc(t.plante)}</span>`:""}<span class="pill ${cls}">${esc(t.statut)}</span></span>
-        <span class="meta">${t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")} · `:""}${esc(t.notes)||"&nbsp;"}</span></div>`}).join("")+`</div>`;
+    html+=`<p class="group-h">${esc(pr)} · ${g.length}</p><div class="list">`+g.map(ligneTache).join("")+`</div>`;
   }
-  $("#list-taches").innerHTML=html||`<p class="empty">Rien ici. Bonne nouvelle, ou un filtre trop strict.</p>`;
+  if(!html) html=`<p class="empty">Aucune tâche ouverte. Bonne nouvelle !</p>`;
+  if(faites.length) html+=`<details class="fermees" ${fermeesOuvertes?"open":""}><summary>Faites ces 30 jours · ${faites.length}</summary><div class="list">${faites.map(ligneTache).join("")}</div></details>`;
+  $("#list-taches").innerHTML=html;
+  $("#list-taches .fermees")?.addEventListener("toggle",e=>fermeesOuvertes=e.target.open);
   const ouv=S.taches.filter(t=>!FERMEES.includes(t.statut)), urg=ouv.filter(t=>t.priorite==="urgent").length;
   $("#n-taches").textContent=ouv.length;
   $("#s-taches").innerHTML=(urg?`<b>${urg} urgentes</b> · `:"")+"tâches ouvertes";
@@ -752,7 +752,6 @@ document.addEventListener("click",e=>{
   if(!el) return; const ds=el.dataset;
   if(ds.tab) return setTab(ds.tab);
   if(ds.g) {groupe=ds.g; return renderPlantes()}
-  if(ds.s) {statutF=ds.s; return renderTaches()}
   if(ds.editPlante!=null) return editPlante(+ds.editPlante);
   if(ds.done!=null){ const t=S.taches[+ds.done], row=el.closest(".task"); marquerFait(t,el.checked);
     sauver("taches",`Tâches : « ${t.tache} » ${el.checked?"faite":"rouverte"}`);
