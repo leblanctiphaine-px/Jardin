@@ -425,7 +425,7 @@ function zonesDuContexte(){
   return sec.contenu.split("\n").map(l=>l.trim()).filter(l=>l.startsWith("|")&&!/^\|[\s|:-]+\|$/.test(l)).slice(1)
     .map(l=>l.replace(/^\|/,"").split("|")[0].trim()).filter(Boolean);
 }
-const estInterieur=z=>/intérieur|terrasse/i.test(z);
+const estInterieur=z=>/intérieur|terrasse|pépinière/i.test(z);
 function construireModes(){
   const zones=zonesDuContexte();
   const toutes=[...zones,...new Set(S.plantes.map(p=>p.zone).filter(z=>z&&!zones.includes(z)&&!MODES.projets.includes(z)))];
@@ -483,24 +483,34 @@ function sensibleLimaces(p){
 }
 
 /* ---------- Plantes ---------- */
-function renderPlantes(){
-  const nb=g=>S.plantes.filter(p=>groupeDe(p)===g).length;
-  const groupes=MODES[mode].filter(g=>g!==A_CLASSER||nb(g)>0);
-  const dansMode=p=>groupes.includes(groupeDe(p));
-  if(!groupes.includes(groupe)) groupe=groupes.find(g=>nb(g)>0)||groupes[0];
-  $("#chips-plantes").hidden=groupes.length<2;
-  $("#chips-plantes").innerHTML=groupes.map(g=>{
-    const n=nb(g);
-    return `<button class="chip" aria-pressed="${g===groupe}" data-g="${esc(g)}">${esc(g)}<span>${n}</span></button>`}).join("");
-  const rows=S.plantes.map((p,i)=>({p,i})).filter(({p})=>
-    groupeDe(p)===groupe);
-  $("#list-plantes").innerHTML=rows.length?rows.map(({p,i})=>`
+/* Un onglet couvre une zone, sauf « Terrasses » qui regroupe les deux terrasses en deux sections. */
+const TERRASSES="Terrasses";
+const zonesOnglet=g=>g===TERRASSES?MODES.interieur.filter(z=>/terrasse/i.test(z)):[g];
+function ongletsDe(m){
+  if(m!=="interieur") return MODES[m];
+  const t=MODES.interieur.filter(z=>/terrasse/i.test(z));
+  return [...MODES.interieur.filter(z=>!t.includes(z)),...(t.length?[TERRASSES]:[])];
+}
+const ligne=({p,i})=>`
     <button class="row" data-edit-plante="${i}">
       <span class="t">${esc(p.nom)}</span>
       <span class="tags">${sensibleLimaces(p)?'<span class="pill slug">limaces</span>':""}<span class="pill ${etatClasse(p.etat)}">${esc(p.etat)}</span>${dernierBilan(p)}</span>
       ${p.etat_detail?`<span class="detail">${esc(p.etat_detail)}</span>`:""}
       ${p.besoins_eau||p.ensoleillement?`<span class="meta">${[p.besoins_eau&&"eau "+esc(p.besoins_eau),esc(p.ensoleillement)].filter(Boolean).join(" · ")}</span>`:""}
-    </button>`).join(""):`<p class="empty">Rien ici pour l'instant.</p>`;
+    </button>`;
+function renderPlantes(){
+  const nb=g=>S.plantes.filter(p=>zonesOnglet(g).includes(groupeDe(p))).length;
+  const groupes=ongletsDe(mode).filter(g=>g!==A_CLASSER||nb(g)>0);
+  if(!groupes.includes(groupe)) groupe=groupes.find(g=>nb(g)>0)||groupes[0];
+  $("#chips-plantes").hidden=groupes.length<2;
+  $("#chips-plantes").innerHTML=groupes.map(g=>{
+    const n=nb(g);
+    return `<button class="chip" aria-pressed="${g===groupe}" data-g="${esc(g)}">${esc(g)}<span>${n}</span></button>`}).join("");
+  const zs=zonesOnglet(groupe), toutes=S.plantes.map((p,i)=>({p,i}));
+  const vide=`<p class="empty">Rien ici pour l'instant.</p>`;
+  $("#list-plantes").innerHTML=zs.length>1
+    ? zs.map(z=>{ const r=toutes.filter(({p})=>groupeDe(p)===z); return `<p class="group-h">${esc(z)}</p>${r.length?r.map(ligne).join(""):vide}`; }).join("")
+    : (r=>r.length?r.map(ligne).join(""):vide)(toutes.filter(({p})=>groupeDe(p)===groupe));
   for(const k of ["jardin","interieur"]){
     const ps=S.plantes.filter(p=>MODES[k].includes(groupeDe(p))), alerte=ps.filter(aSurveiller).length;
     $("#n-"+k).textContent=ps.length;
@@ -515,7 +525,7 @@ const etatsPour=p=>{ const l=ETATS[MODES.projets.includes(groupeDe(p))?"projets"
 function editPlante(i){
   let p=i==null?null:S.plantes[i];
   const nouveau=!p, projet=p&&MODES.projets.includes(groupeDe(p));
-  const base=p||{nom:"",zone:groupe===A_CLASSER?"":groupe,
+  const base=p||{nom:"",zone:groupe===A_CLASSER?"":zonesOnglet(groupe)[0]||"",
     etat:mode==="projets"?(groupe==="Liste de souhaits"?"à acheter":"à semer"):"en croissance",etat_detail:"",besoins_eau:"",ensoleillement:"",
     notes:mode==="projets"?"":`planté le ${dateJour()}`};
   let message=p?`Plantes : modifier ${p.nom}`:"";
