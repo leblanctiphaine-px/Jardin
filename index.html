@@ -457,11 +457,13 @@ function demanderBilan(p){
     <p class="hint">${esc(p.nom)} est retirée. Le bilan reste dans Graines et envies pour la prochaine fois. Il s'enregistre en fermant.</p>
     <div class="f full"><span>Résultat</span><div class="etats" id="b-res" role="radiogroup" aria-label="Résultat">${Object.entries(RESULTATS).map(([r,c])=>`<button type="button" role="radio" class="chip etat ${c}" aria-pressed="false" data-r="${r}">${r}</button>`).join("")}</div></div>
     <label class="f full">Pourquoi ?<textarea id="b-pq" placeholder="ex. mangée par les limaces, trop chaud en serre, super récolte…"></textarea></label>
-    <label class="f full">Garder le bilan sur<select id="b-fiche">${fichesProjets().map(x=>`<option ${x.nom===proche?"selected":""}>${esc(x.nom)}</option>`).join("")}<option value="" ${proche?"":"selected"}>Nouvelle envie « ${esc(neuf)} »</option></select></label>`);
+    <label class="f full">Garder le bilan sur<select id="b-fiche">${fichesProjets().map(x=>`<option ${x.nom===proche?"selected":""}>${esc(x.nom)}</option>`).join("")}<option value="" ${proche?"":"selected"}>Nouvelle envie « ${esc(neuf)} »</option></select></label>
+    <div class="actions"><div><button type="button" class="btn" id="b-rien">Rien à retenir (pas fait ou mal fait)</button></div></div>`);
+  let rien=false; $("#b-rien").onclick=()=>{ rien=true; $("#dlg").close(); };
   $("#b-res").onclick=e=>{ const b=e.target.closest("[data-r]"); if(!b) return; $("#b-res").querySelectorAll("[data-r]").forEach(x=>x.setAttribute("aria-pressed",x===b)); };
   $("#dlg").onclose=()=>{
     const res=$("#b-res [aria-pressed=true]")?.dataset.r||"", pq=$("#b-pq").value.trim();
-    if(res||pq){
+    if(!rien&&(res||pq)){
       let fiche=$("#b-fiche").value;
       if(!fiche){ fiche=neuf; if(!S.plantes.some(x=>x.nom===fiche)){
         S.plantes.push({nom:fiche,zone:"Liste de souhaits",etat:"à acheter",etat_detail:"",besoins_eau:p.besoins_eau,ensoleillement:p.ensoleillement,notes:""});
