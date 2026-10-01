@@ -31,7 +31,7 @@
 [hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--f-body);margin:0}
 .wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:20px 64px}
-header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px}
+header{display:flex;justify-content:flex-end}
 h1{font:700 clamp(1.7rem,4vw,2.3rem)/1.1 var(--f-display);margin:0;letter-spacing:-.01em}
 .sub{color:var(--muted);margin:4px 0 0;font-size:.95rem}
 .sync{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
@@ -131,10 +131,6 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 
 <div class="wrap">
   <header>
-    <div>
-      <h1>Carnet du jardin</h1>
-      <p class="sub">Plantes, tâches et contexte de la coloc, au même endroit.</p>
-    </div>
     <div class="sync">
       <span id="sync" class="syncst" aria-live="polite"></span>
       <button class="btn" data-tab="connexion">Réglages</button>
