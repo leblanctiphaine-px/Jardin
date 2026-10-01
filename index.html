@@ -99,7 +99,15 @@ details.sec summary::-webkit-details-marker{display:none}
 dialog{border:1px solid var(--line);border-radius:12px;padding:0;background:var(--surface);color:var(--ink);width:min(640px,calc(100vw - 32px));max-height:calc(100vh - 32px)}
 dialog::backdrop{background:rgba(10,20,15,.45)}
 .dlg{display:grid;gap:12px;padding:20px}
-.dlg h2{font:700 1.3rem var(--f-display);margin:0}
+.dlg{position:relative}
+.close{position:absolute;top:10px;right:10px;appearance:none;border:0;background:none;color:var(--muted);font:400 1.8rem/1 var(--f-body);width:40px;height:40px;border-radius:50%;cursor:pointer}
+.close:hover{color:var(--ink);background:var(--accent-soft)}
+.add-row{appearance:none;width:100%;margin-top:8px;padding:14px;border:1px dashed var(--line);border-radius:8px;background:none;color:var(--accent);font:600 .95rem var(--f-body);cursor:pointer}
+.add-row:hover{border-color:var(--accent);background:var(--accent-soft)}
+.liees{display:grid;gap:8px;border-top:1px solid var(--line);padding-top:12px}
+.liees .group-h{margin:0}
+.pill.plante{background:var(--accent-soft);color:var(--accent)}
+.dlg h2{padding-right:44px;font:700 1.3rem var(--f-display);margin:0}
 .fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .fields .full{grid-column:1/-1}
 label.f{display:grid;gap:4px;font-size:.85rem;font-weight:600;color:var(--muted);min-width:0}
@@ -220,14 +228,10 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 
 
   <!-- PLANTES -->
-  <section id="v-plantes" hidden>
-    <div class="toolbar">
-      <input type="search" id="q-plantes" placeholder="Chercher une plante, un emplacement, une note…" aria-label="Chercher une plante">
-      <select id="f-etat" aria-label="Filtrer par état" style="width:auto;max-width:220px"></select>
-      <button class="btn primary" id="add-plante">Ajouter une plante</button>
-    </div>
+  <section id="v-plantes" hidden style="margin-top:18px">
     <div class="chips" id="chips-plantes"></div>
     <div class="list" id="list-plantes"></div>
+    <button class="add-row" id="add-plante">+ Ajouter une plante</button>
   </section>
 
   <!-- TACHES -->
@@ -248,11 +252,10 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 
 <script>
 const S = {plantes: [], taches: [], contexte: []};
-const COLS = {plantes:["nom","emplacement","etat","besoins_eau","ensoleillement","notes"], taches:["tache","priorite","responsable","statut","notes"]};
-let tab = "accueil", groupe = "Tous", mode = "jardin", statutF = "ouvertes";
+const COLS = {plantes:["nom","emplacement","etat","besoins_eau","ensoleillement","notes"], taches:["tache","priorite","responsable","statut","notes","plante"]};
+let tab = "accueil", groupe = "", mode = "jardin", statutF = "ouvertes";
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const aujourdhui = () => new Date().toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit"});
 
 /* ---------- GitHub : lecture et écriture des fichiers du dépôt ---------- */
 const PATHS={plantes:"plantes.csv",taches:"taches.csv",contexte:"contexte-jardin.md"};
@@ -313,10 +316,14 @@ function parseCSV(text){
 const csvCell=v=>/[",\r\n]/.test(v)?`"${v.replace(/"/g,'""')}"`:v;
 const signature=(k,r)=>JSON.stringify(COLS[k].map(c=>r[c]??""));
 function lireCSV(k,texte){
-  const recs=parseCSV(texte); fichiers[k].entete=recs[0]?.raw??COLS[k].join(",");
+  const recs=parseCSV(texte), noms=recs[0]?.fields??COLS[k];
+  /* Si le fichier n'a pas encore toutes les colonnes, l'en-tête et les lignes sont réécrits au prochain enregistrement. */
+  const complet=COLS[k].every((c,j)=>noms[j]===c)&&noms.length===COLS[k].length;
+  fichiers[k].entete=complet?recs[0].raw:COLS[k].join(",");
   return recs.slice(1).map(({fields,raw})=>{
-    const o={}; COLS[k].forEach((c,j)=>o[c]=fields[j]??"");
-    cache(o,"_raw",raw); cache(o,"_sig",signature(k,o)); return o;
+    const o={}; COLS[k].forEach(c=>{const j=noms.indexOf(c); o[c]=j<0?"":fields[j]??""});
+    if(complet){ cache(o,"_raw",raw); cache(o,"_sig",signature(k,o)); }
+    return o;
   });
 }
 function ecrireCSV(k){
@@ -366,6 +373,17 @@ function sauver(k,message){
   });
   return chaine;
 }
+/* Modification en direct : on regroupe les frappes et on enregistre 1,2 s après la dernière. */
+const attente={};
+function sauverBientot(k,message){
+  setSync("Enregistrement…","busy"); clearTimeout(attente[k]?.h);
+  attente[k]={message,h:setTimeout(()=>{delete attente[k]; sauver(k,message)},1200)};
+}
+function viderAttente(){ for(const k of Object.keys(attente)){ clearTimeout(attente[k].h); const m=attente[k].message; delete attente[k]; sauver(k,m); } }
+addEventListener("pagehide",viderAttente);
+document.addEventListener("visibilitychange",()=>{ if(document.hidden) viderAttente(); });
+const dateJour=()=>new Date().toLocaleDateString("fr-FR");
+
 async function demarrer(){
   if(!cfg.token){ charge=false; return setTab("connexion",false); }
   setSync("Chargement…","busy");
@@ -413,23 +431,19 @@ function sensibleLimaces(p){
 function renderPlantes(){
   const groupes=MODES[mode];
   const dansMode=p=>groupes.includes(groupeDe(p));
+  if(!groupes.includes(groupe)) groupe=groupes[0];
   $("#chips-plantes").hidden=groupes.length<2;
-  $("#chips-plantes").innerHTML=["Tous",...groupes].map(g=>{
-    const n=g==="Tous"?S.plantes.filter(dansMode).length:S.plantes.filter(p=>groupeDe(p)===g).length;
+  $("#chips-plantes").innerHTML=groupes.map(g=>{
+    const n=S.plantes.filter(p=>groupeDe(p)===g).length;
     return `<button class="chip" aria-pressed="${g===groupe}" data-g="${esc(g)}">${esc(g)}<span>${n}</span></button>`}).join("");
-  const etats=[...new Set(S.plantes.filter(dansMode).map(p=>p.etat))].sort();
-  const cur=$("#f-etat").value;
-  $("#f-etat").innerHTML=`<option value="">Tous les états</option>`+etats.map(e=>`<option ${e===cur?"selected":""}>${esc(e)}</option>`).join("");
-  const q=$("#q-plantes").value.toLowerCase(), fe=$("#f-etat").value;
   const rows=S.plantes.map((p,i)=>({p,i})).filter(({p})=>
-    (groupe==="Tous"?dansMode(p):groupeDe(p)===groupe) && (!fe||p.etat===fe) &&
-    (!q||Object.values(p).join(" ").toLowerCase().includes(q)));
+    groupeDe(p)===groupe);
   $("#list-plantes").innerHTML=rows.length?rows.map(({p,i})=>`
     <button class="row" data-edit-plante="${i}">
       <span class="t">${esc(p.nom)}</span>
       <span class="tags">${sensibleLimaces(p)?'<span class="pill slug">limaces</span>':""}<span class="pill ${etatClasse(p.etat)}">${esc(p.etat)}</span></span>
       <span class="meta">${esc(p.emplacement)} · eau ${esc(p.besoins_eau)} · ${esc(p.ensoleillement)}</span>
-    </button>`).join(""):`<p class="empty">Aucune plante ne correspond. Change le filtre ou ajoute-la.</p>`;
+    </button>`).join(""):`<p class="empty">Rien ici pour l'instant.</p>`;
   for(const k of ["jardin","interieur"]){
     const ps=S.plantes.filter(p=>MODES[k].includes(groupeDe(p))), alerte=ps.filter(p=>etatClasse(p.etat)==="bad").length;
     $("#n-"+k).textContent=ps.length;
@@ -438,48 +452,65 @@ function renderPlantes(){
   const nG=S.plantes.filter(p=>groupeDe(p)==="Stock de graines").length, nE=S.plantes.filter(p=>groupeDe(p)==="Liste de souhaits").length;
   $("#n-projets").textContent=nG+nE;
   $("#s-projets").textContent=`${nG} sachets de graines · ${nE} envies`;
-  $("#add-plante").textContent=mode!=="projets"?"Ajouter une plante":"Ajouter des graines ou une envie";
-  $("#q-plantes").placeholder=mode!=="projets"?"Chercher une plante, un emplacement, une note…":"Chercher une graine ou une envie…";
+  $("#add-plante").textContent=mode!=="projets"?"+ Ajouter une plante":groupe==="Liste de souhaits"?"+ Ajouter une envie":"+ Ajouter des graines";
 }
 function editPlante(i){
-  const isNew=i==null, p=isNew?{nom:"",emplacement:mode==="projets"?(groupe==="Liste de souhaits"?"liste de souhaits":"stock graines"):{Terrasses:"terrasse",Intérieur:"intérieur"}[groupe]||"",etat:mode==="projets"?(groupe==="Liste de souhaits"?"non acheté":"non semé"):"",besoins_eau:"",ensoleillement:"",notes:""}:S.plantes[i];
-  const projet=!isNew&&MODES.projets.includes(groupeDe(p));
+  let p=i==null?null:S.plantes[i];
+  const nouveau=!p, projet=p&&MODES.projets.includes(groupeDe(p));
+  const base=p||{nom:"",emplacement:mode==="projets"?(groupe==="Liste de souhaits"?"liste de souhaits":"stock graines"):{Terrasses:"terrasse",Intérieur:"intérieur"}[groupe]||"",
+    etat:mode==="projets"?(groupe==="Liste de souhaits"?"non acheté":"non semé"):"actif",besoins_eau:"",ensoleillement:"",
+    notes:mode==="projets"?"":`planté le ${dateJour()}`};
   const opts=(k)=>[...new Set(S.plantes.map(x=>x[k]))].filter(Boolean).slice(0,60).map(v=>`<option value="${esc(v)}">`).join("");
+  let message=p?`Plantes : modifier ${p.nom}`:"";
   openDlg(`
-    <h2>${isNew?"Nouvelle plante":esc(p.nom)}</h2>
+    <h2 id="p-titre">${p?esc(p.nom):"Nouvelle plante"}</h2>
     <div class="fields">
-      <label class="f full">Nom <code>nom</code><input id="p-nom" required value="${esc(p.nom)}"></label>
-      <label class="f full">Emplacement précis (zone + repère) <code>emplacement</code><input id="p-emp" list="dl-emp" value="${esc(p.emplacement)}"></label>
-      <label class="f">État <code>etat</code><input id="p-etat" list="dl-etat" value="${esc(p.etat)}"></label>
-      <label class="f">Besoins en eau <code>besoins_eau</code><input id="p-eau" list="dl-eau" value="${esc(p.besoins_eau)}"></label>
-      <label class="f full">Ensoleillement <code>ensoleillement</code><input id="p-sol" list="dl-sol" value="${esc(p.ensoleillement)}"></label>
-      <label class="f full">Notes (description pour la reconnaître + soins et historique) <code>notes</code><textarea id="p-notes">${esc(p.notes)}</textarea></label>
+      <label class="f full">Nom<input id="p-nom" value="${esc(base.nom)}" ${nouveau?"autofocus":""}></label>
+      <label class="f full">Emplacement précis (zone + repère)<input id="p-emp" list="dl-emp" value="${esc(base.emplacement)}"></label>
+      <label class="f">État<input id="p-etat" list="dl-etat" value="${esc(base.etat)}"></label>
+      <label class="f">Besoins en eau<input id="p-eau" list="dl-eau" value="${esc(base.besoins_eau)}"></label>
+      <label class="f full">Ensoleillement<input id="p-sol" list="dl-sol" value="${esc(base.ensoleillement)}"></label>
+      <label class="f full">Notes (description pour la reconnaître, soins, dates de plantation)<textarea id="p-notes">${esc(base.notes)}</textarea></label>
     </div>
     <datalist id="dl-emp">${opts("emplacement")}</datalist><datalist id="dl-etat">${opts("etat")}</datalist>
     <datalist id="dl-eau">${opts("besoins_eau")}</datalist><datalist id="dl-sol">${opts("ensoleillement")}</datalist>
-    <p class="callout" id="p-slug" ${sensibleLimaces(p)?"":"hidden"}>Plante sensible aux limaces : prévoir cloche, granulés au phosphate de fer ou piège à bière.</p>
-    <label class="check"><input type="checkbox" id="p-date" checked> Si l'état ou l'emplacement change, ajouter la date du jour dans les notes</label>
+    <p class="callout" id="p-slug" hidden>Plante sensible aux limaces : prévoir cloche, granulés au phosphate de fer ou piège à bière.</p>
+    <div class="liees" id="p-taches" hidden></div>
     <div class="actions">
-      <div>${isNew?"":`<button type="button" class="btn danger" id="del">Supprimer</button>`}${projet?`<button type="button" class="btn" id="promo">${groupeDe(p)==="Stock de graines"?"Je l'ai semée":"Je l'ai achetée"}</button>`:""}</div>
-      <div><button type="button" class="btn" value="cancel" id="cancel">Annuler</button><button class="btn primary" id="save">${isNew?"Ajouter":"Enregistrer"}</button></div>
-    </div>`, ()=>{
-      const n={nom:$("#p-nom").value.trim(),emplacement:$("#p-emp").value.trim(),etat:$("#p-etat").value.trim(),
-        besoins_eau:$("#p-eau").value.trim(),ensoleillement:$("#p-sol").value.trim(),notes:$("#p-notes").value.trim()};
-      if(!n.nom){toast("Donne un nom à la plante");return false}
-      if($("#p-date").checked){
-        const ch=[];
-        if(isNew) ch.push(`ajoutée (${n.emplacement||"emplacement à préciser"})`);
-        else{ if(n.etat!==p.etat) ch.push(`état : ${n.etat}`); if(n.emplacement!==p.emplacement) ch.push(`déplacée : ${n.emplacement}`); }
-        if(ch.length) n.notes=(n.notes?n.notes+" — ":"")+`${aujourdhui()} ${ch.join(", ")}`;
-      }
-      if(isNew) S.plantes.unshift(n); else Object.assign(p,n);
-      render(); sauver("plantes",`Plantes : ${isNew?"ajouter":"modifier"} ${n.nom}`); return true;
-    }, ()=>{ S.plantes.splice(S.plantes.indexOf(p),1); render(); sauver("plantes",`Plantes : supprimer ${p.nom}`); }, false);
-  const upd=()=>$("#p-slug").hidden=!sensibleLimaces({nom:$("#p-nom").value,etat:$("#p-etat").value,emplacement:$("#p-emp").value});
-  ["#p-nom","#p-etat","#p-emp"].forEach(s=>$(s).addEventListener("input",upd));
+      <div><button type="button" class="btn danger" id="del" ${p?"":"hidden"}>Supprimer</button>${projet?`<button type="button" class="btn" id="promo">${groupeDe(p)==="Stock de graines"?"Je l'ai semée":"Je l'ai achetée"}</button>`:""}</div>
+    </div>`,
+    {confirmer:false, onDelete:()=>{ S.plantes.splice(S.plantes.indexOf(p),1); render(); sauver("plantes",`Plantes : supprimer ${p.nom}`); }});
+  const lire=()=>({nom:$("#p-nom").value.trim(),emplacement:$("#p-emp").value.trim(),etat:$("#p-etat").value.trim(),
+    besoins_eau:$("#p-eau").value.trim(),ensoleillement:$("#p-sol").value.trim(),notes:$("#p-notes").value.trim()});
+  const upd=()=>$("#p-slug").hidden=!sensibleLimaces(lire());
+  const liees=()=>{
+    const box=$("#p-taches"); if(!p){box.hidden=true;return} box.hidden=false;
+    const ts=S.taches.filter(t=>t.plante===p.nom&&!FERMEES.includes(t.statut));
+    box.innerHTML=`<p class="group-h">Tâches pour cette plante · ${ts.length}</p>`+
+      ts.map(t=>`<label class="check"><input type="checkbox" data-lie="${S.taches.indexOf(t)}"> ${esc(t.tache)}</label>`).join("")+
+      `<input id="p-tache-new" placeholder="+ Nouvelle tâche (Entrée pour l'ajouter)" aria-label="Nouvelle tâche pour cette plante">`;
+    box.querySelectorAll("[data-lie]").forEach(c=>c.onchange=()=>{ const t=S.taches[+c.dataset.lie]; marquerFait(t,true);
+      renderTaches(); sauver("taches",`Tâches : « ${t.tache} » faite`); liees(); });
+    $("#p-tache-new").onkeydown=e=>{ if(e.key!=="Enter") return; e.preventDefault();
+      const v=e.target.value.trim(); if(!v) return;
+      S.taches.unshift({tache:v,priorite:"bientôt",responsable:"moi",statut:"à faire",notes:"",plante:p.nom});
+      renderTaches(); sauver("taches",`Tâches : ajouter « ${v} »`); liees(); $("#p-tache-new").focus(); };
+  };
+  const maj=()=>{
+    upd(); const n=lire(); if(!n.nom) return;
+    if(!p){ p=n; S.plantes.unshift(p); message=`Plantes : ajouter ${n.nom}`; $("#del").hidden=false; liees(); }
+    else{ const ancien=p.nom; Object.assign(p,n);
+      message=message.startsWith("Plantes : ajouter")?`Plantes : ajouter ${n.nom}`:`Plantes : modifier ${n.nom}`;
+      if(ancien!==n.nom&&S.taches.some(t=>t.plante===ancien)){ S.taches.forEach(t=>{if(t.plante===ancien)t.plante=n.nom}); renderTaches(); sauverBientot("taches",`Tâches : suivre le nouveau nom « ${n.nom} »`); } }
+    $("#p-titre").textContent=n.nom; renderPlantes(); sauverBientot("plantes",message);
+  };
+  $("#dlg-form").oninput=e=>{ if(!e.target.closest("#p-taches")) maj(); };
+  upd(); liees();
   $("#promo")&&($("#promo").onclick=()=>{ const seme=groupeDe(p)==="Stock de graines";
-    $("#p-etat").value=seme?"semis":"actif"; $("#p-emp").value=""; $("#p-emp").placeholder="Où exactement ? zone + repère (ex. serre, bac gauche)";
-    $("#p-date").checked=true; $("#p-emp").focus(); upd(); toast("Indique l'emplacement puis enregistre : elle passera dans Jardin ou Intérieur et terrasses selon l'emplacement"); });
+    $("#p-etat").value=seme?"semis":"actif"; $("#p-emp").value="";
+    $("#p-notes").value=($("#p-notes").value.trim()?$("#p-notes").value.trim()+" — ":"")+`${seme?"semé":"planté"} le ${dateJour()}`;
+    $("#p-emp").placeholder="Où exactement ? zone + repère (ex. serre, bac gauche)"; $("#promo").remove(); $("#p-emp").focus(); maj();
+    toast("Indique l'emplacement : elle passera dans Jardin ou Intérieur et terrasses"); });
 }
 
 /* ---------- Tâches ---------- */
@@ -517,7 +548,7 @@ function renderTaches(){
       return `<div class="row task ${done?"done":""}" data-edit-tache="${i}">
         <input type="checkbox" data-done="${i}" ${t.statut==="fait"?"checked":""} aria-label="Marquer « ${esc(t.tache)} » comme faite">
         <span class="t">${esc(t.tache)}</span>
-        <span class="tags"><span class="pill ${cls}">${esc(t.statut)}</span></span>
+        <span class="tags">${t.plante?`<span class="pill plante">${esc(t.plante)}</span>`:""}<span class="pill ${cls}">${esc(t.statut)}</span></span>
         <span class="meta">${t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")} · `:""}${esc(t.notes)||"&nbsp;"}</span></div>`}).join("")+`</div>`;
   }
   $("#list-taches").innerHTML=html||`<p class="empty">Rien ici. Bonne nouvelle, ou un filtre trop strict.</p>`;
@@ -525,28 +556,34 @@ function renderTaches(){
   $("#n-taches").textContent=ouv.length;
   $("#s-taches").innerHTML=(urg?`<b>${urg} urgentes</b> · `:"")+"tâches ouvertes";
 }
-function editTache(i){
-  const isNew=i==null, t=isNew?{tache:"",priorite:"bientôt",responsable:"moi",statut:"à faire",notes:""}:S.taches[i];
+function editTache(i,plante=""){
+  let t=i==null?null:S.taches[i];
+  const base=t||{tache:"",priorite:"bientôt",responsable:"moi",statut:"à faire",notes:"",plante};
   const sel=(id,vals,v)=>`<select id="${id}">${[...new Set([...vals,v])].map(x=>`<option ${x===v?"selected":""}>${esc(x)}</option>`).join("")}</select>`;
-  const statuts=[...new Set(S.taches.map(x=>x.statut))];
+  const statuts=[...new Set(["à faire","en cours","fait",...S.taches.map(x=>x.statut)])];
+  const plantes=[...new Set(S.plantes.filter(p=>VRAIES.includes(groupeDe(p))).map(p=>p.nom))];
+  let message=t?`Tâches : modifier « ${t.tache} »`:"";
   openDlg(`
-    <h2>${isNew?"Nouvelle tâche":"Modifier la tâche"}</h2>
+    <h2>${t?"Tâche":"Nouvelle tâche"}</h2>
     <div class="fields">
-      <label class="f full">Tâche <code>tache</code><input id="t-nom" required value="${esc(t.tache)}"></label>
-      <label class="f">Priorité <code>priorite</code>${sel("t-prio",PRIO,t.priorite)}</label>
-      <label class="f">Statut <code>statut</code>${sel("t-stat",statuts,t.statut)}</label>
-      <label class="f full">Notes <code>notes</code><textarea id="t-notes">${esc(t.notes)}</textarea></label>
+      <label class="f full">Tâche<input id="t-nom" value="${esc(base.tache)}" ${t?"":"autofocus"}></label>
+      <label class="f">Priorité${sel("t-prio",PRIO,base.priorite)}</label>
+      <label class="f">Statut${sel("t-stat",statuts,base.statut)}</label>
+      <label class="f full">Plante liée<input id="t-plante" list="dl-plantes" value="${esc(base.plante)}" placeholder="Aucune"></label>
+      <label class="f full">Notes<textarea id="t-notes">${esc(base.notes)}</textarea></label>
     </div>
-    <div class="actions">
-      <div>${isNew?"":`<button type="button" class="btn danger" id="del">Supprimer</button>`}</div>
-      <div><button type="button" class="btn" id="cancel">Annuler</button><button class="btn primary" id="save">${isNew?"Ajouter":"Enregistrer"}</button></div>
-    </div>`, ()=>{
-      const n={tache:$("#t-nom").value.trim(),priorite:$("#t-prio").value,responsable:t.responsable||"moi",statut:$("#t-stat").value,notes:$("#t-notes").value.trim()};
-      if(!n.tache){toast("Décris la tâche en quelques mots");return false}
-      if(n.statut==="fait"&&(isNew||t.statut!=="fait")) marquerFait(n,true);
-      if(isNew) S.taches.unshift(n); else Object.assign(t,n);
-      render(); sauver("taches",`Tâches : ${isNew?"ajouter":"modifier"} « ${n.tache} »`); return true;
-    }, ()=>{ S.taches.splice(S.taches.indexOf(t),1); render(); sauver("taches",`Tâches : supprimer « ${t.tache} »`); });
+    <datalist id="dl-plantes">${plantes.map(n=>`<option value="${esc(n)}">`).join("")}</datalist>
+    <div class="actions"><div><button type="button" class="btn danger" id="del" ${t?"":"hidden"}>Supprimer</button></div></div>`,
+    {onDelete:()=>{ S.taches.splice(S.taches.indexOf(t),1); render(); sauver("taches",`Tâches : supprimer « ${t.tache} »`); }});
+  $("#dlg-form").oninput=()=>{
+    const n={tache:$("#t-nom").value.trim(),priorite:$("#t-prio").value,statut:$("#t-stat").value,notes:$("#t-notes").value.trim(),plante:$("#t-plante").value.trim()};
+    if(!n.tache) return;
+    const etaitFaite=t?.statut==="fait";
+    if(!t){ t={...n,responsable:"moi"}; S.taches.unshift(t); message=`Tâches : ajouter « ${n.tache} »`; $("#del").hidden=false; }
+    else{ Object.assign(t,n); message=message.startsWith("Tâches : ajouter")?`Tâches : ajouter « ${n.tache} »`:`Tâches : modifier « ${n.tache} »`; }
+    if(t.statut==="fait"&&!etaitFaite){ marquerFait(t,true); $("#t-notes").value=t.notes; }
+    renderTaches(); sauverBientot("taches",message);
+  };
 }
 
 /* ---------- Contexte ---------- */
@@ -578,8 +615,7 @@ function renderContexte(){
         <label class="f">Titre de la section<input id="c-titre" value="${esc(s.titre)}"></label>
         <label class="f">Contenu (Markdown)<textarea id="c-contenu">${esc(s.contenu)}</textarea></label>
         <p class="hint">Pas de tableau de plantes ici : l'inventaire vit dans Jardin et Intérieur et terrasses.</p>
-        <div class="actions"><div></div>
-        <div><button class="btn" data-cancel-sec>Annuler</button><button class="btn primary" data-save-sec="${i}">Enregistrer</button></div></div>
+        <div class="actions"><div></div><div><button class="btn" data-cancel-sec>Fermer</button></div></div>
       </div>
     </div>`:`
     <details class="sec" ${q||i<2?"open":""}>
@@ -587,17 +623,24 @@ function renderContexte(){
       <div class="md">${md(s.contenu)}</div>
     </details>`).join(""):`<p class="empty">Aucune section ne parle de « ${esc(q)} ».</p>`;
   $("#n-contexte").textContent=S.contexte.length;
-  if(editingSec!=null) $("#c-titre")?.focus();
+  if(editingSec!=null){ const s=S.contexte[editingSec];
+    $("#list-contexte .sec-edit").oninput=()=>{ s.titre=$("#c-titre").value.trim()||s.titre; s.contenu=$("#c-contenu").value.replace(/\s+$/,"");
+      sauverBientot("contexte",`Contexte : modifier « ${s.titre} »`); };
+    $("#c-contenu").focus(); }
 }
 
 /* ---------- Fenêtre ---------- */
-function openDlg(html,onSave,onDelete,confirmer=true){
-  const d=$("#dlg"), f=$("#dlg-form"); f.innerHTML=html;
-  f.onsubmit=e=>{e.preventDefault(); if(onSave&&onSave()!==false) d.close()};
-  $("#cancel")&&($("#cancel").onclick=()=>d.close());
+function openDlg(html,{onDelete,confirmer=true}={}){
+  const d=$("#dlg"), f=$("#dlg-form");
+  f.innerHTML=`<button type="button" class="close" id="close" aria-label="Fermer">×</button>`+html;
+  f.oninput=null; f.onsubmit=e=>{e.preventDefault(); d.close()};
+  $("#close").onclick=()=>d.close();
+  d.onclick=e=>{ if(e.target===d) d.close() };
+  d.onclose=viderAttente;
   const del=$("#del");
   if(del) del.onclick=()=>{ if(confirmer&&!del.classList.contains("armed")){del.classList.add("armed");del.textContent="Confirmer la suppression";return}
-    onDelete(); d.close(); };
+    for(const k of Object.keys(attente)){ clearTimeout(attente[k].h); delete attente[k]; }
+    d.onclose=null; onDelete(); d.close(); };
   d.showModal();
 }
 
@@ -608,7 +651,7 @@ function setTab(t,push=true){ if(!TITRES[t]) t="accueil"; if(!charge) t="connexi
   if(t==="connexion"){ $("#c-token").value=cfg.token; $("#c-repo").value=cfg.repo; $("#c-branch").value=cfg.branch;
     $("#invite").hidden=!charge; if(charge) $("#invite-link").value=lienInvitation(); }
   const vue=MODES[t]?"plantes":t;
-  if(vue==="plantes"&&mode!==t){mode=t;groupe="Tous";$("#f-etat").value="";renderPlantes()}
+  if(vue==="plantes"&&mode!==t){mode=t;groupe=MODES[t][0];renderPlantes()}
   ["accueil","plantes","taches","contexte","connexion"].forEach(k=>$("#v-"+k).hidden=k!==vue);
   $("#crumb").hidden=t==="accueil"||!charge;
   $("#btn-reglages").hidden=t!=="accueil"; $("header").hidden=t!=="accueil"; $("#crumb-t").textContent=TITRES[t]||"";
@@ -616,7 +659,7 @@ function setTab(t,push=true){ if(!TITRES[t]) t="accueil"; if(!charge) t="connexi
   if(push){ try{ history.pushState(null,"",t==="accueil"?location.pathname:"#"+t) }catch(e){} } }
 window.addEventListener("popstate",()=>setTab(location.hash.slice(1),false));
 document.addEventListener("click",e=>{
-  const el=e.target.closest("[data-tab],[data-g],[data-s],[data-edit-plante],[data-done],[data-edit-tache],[data-edit-sec],[data-save-sec],[data-cancel-sec],#add-plante,#add-tache");
+  const el=e.target.closest("[data-tab],[data-g],[data-s],[data-edit-plante],[data-done],[data-edit-tache],[data-edit-sec],[data-cancel-sec],#add-plante,#add-tache");
   if(!el) return; const ds=el.dataset;
   if(ds.tab) return setTab(ds.tab);
   if(ds.g) {groupe=ds.g; return renderPlantes()}
@@ -632,21 +675,20 @@ document.addEventListener("click",e=>{
       .finished.then(renderTaches,renderTaches);
     return; }
   if(ds.editTache!=null) return editTache(+ds.editTache);
-  if(ds.editSec!=null){ e.preventDefault(); editingSec=+ds.editSec; return renderContexte(); }
-  if(ds.saveSec!=null){ const s=S.contexte[+ds.saveSec]; s.titre=$("#c-titre").value.trim()||s.titre; s.contenu=$("#c-contenu").value.replace(/\s+$/,""); editingSec=null; renderContexte(); return sauver("contexte",`Contexte : modifier « ${s.titre} »`); }
-  if(ds.cancelSec!=null){ editingSec=null; return renderContexte(); }
+  if(ds.editSec!=null){ e.preventDefault(); viderAttente(); editingSec=+ds.editSec; return renderContexte(); }
+  if(ds.cancelSec!=null){ editingSec=null; viderAttente(); return renderContexte(); }
   if(el.id==="add-plante") return editPlante(null);
   if(el.id==="add-tache") return editTache(null);
 });
-$("#q-plantes").oninput=renderPlantes; $("#f-etat").onchange=renderPlantes;
+
 
 $("#conn-form").onsubmit=e=>{ e.preventDefault();
   cfg={token:$("#c-token").value.trim(),repo:$("#c-repo").value.trim().replace(/^https:\/\/github\.com\//,"").replace(/\/$/,""),branch:$("#c-branch").value.trim()||"main"};
   try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(_){}
-  history.replaceState(null,"",location.pathname); $("#invite-copy").onclick=()=>{ const i=$("#invite-link");
+  history.replaceState(null,"",location.pathname); demarrer(); };
+$("#invite-copy").onclick=()=>{ const i=$("#invite-link");
   const repli=()=>{ i.select(); toast("Lien sélectionné : copie-le avec Ctrl+C ou un appui long"); };
   navigator.clipboard?.writeText(i.value).then(()=>toast("Lien copié"),repli) ?? repli(); };
-demarrer(); };
 $("#c-forget").onclick=()=>{ cfg.token=""; try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(_){} charge=false; setSync("",""); setTab("connexion"); toast("Jeton oublié sur cet appareil"); };
 demarrer();
 </script>
