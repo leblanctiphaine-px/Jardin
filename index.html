@@ -122,6 +122,7 @@ dialog.plein .dlg{max-width:640px;margin:0 auto;padding-bottom:40px}
 .pill.plante{background:var(--accent-soft);color:var(--accent)}
 .dlg h2{padding-right:44px;font:700 1.3rem var(--f-display);margin:0}
 .fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fiche-info{border-left:3px solid var(--accent-soft);padding:2px 0 2px 12px;display:grid;gap:4px}.fiche-info p{margin:0}
 .duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
 .fields .full{grid-column:1/-1}
 label.f{display:grid;gap:4px;font-size:.85rem;font-weight:600;color:var(--muted);min-width:0}
@@ -266,7 +267,7 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 
 <script>
 const S = {plantes: [], taches: [], contexte: [], bilans: []};
-const COLS = {plantes:["nom","zone","etat","etat_detail","besoins_eau","ensoleillement","notes"], taches:["tache","priorite","responsable","statut","notes","plante"], bilans:["date","plante","resultat","pourquoi","fiche"]};
+const COLS = {plantes:["nom","zone","etat","etat_detail","besoins_eau","ensoleillement","notes","notes_perso"], taches:["tache","priorite","responsable","statut","notes","plante"], bilans:["date","plante","resultat","pourquoi","fiche"]};
 let tab = "accueil", groupe = "", mode = "jardin";
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -500,7 +501,7 @@ function demanderBilan(p){
     if(!rien&&(res||pq)){
       let fiche=$("#b-fiche").value;
       if(!fiche){ fiche=neuf; if(!S.plantes.some(x=>x.nom===fiche)){
-        S.plantes.push({nom:fiche,zone:"Liste de souhaits",etat:"à acheter",etat_detail:"",besoins_eau:p.besoins_eau,ensoleillement:p.ensoleillement,notes:""});
+        S.plantes.push({nom:fiche,zone:"Liste de souhaits",etat:"à acheter",etat_detail:"",besoins_eau:p.besoins_eau,ensoleillement:p.ensoleillement,notes:p.notes,notes_perso:""});
         sauver("plantes",`Plantes : ajouter l'envie ${fiche}`); } }
       S.bilans.push({date:dateJour(),plante:p.nom,resultat:res,pourquoi:pq,fiche}); essayee(fiche);
       sauver("bilans",`Bilans : ${p.nom}${res?" ("+res+")":""}`); render(); toast(`Bilan gardé sur « ${fiche} »`);
@@ -570,16 +571,15 @@ function editPlante(i){
   const nouveau=!p, projet=p&&MODES.projets.includes(groupeDe(p));
   const base=p||{nom:"",zone:groupe===A_CLASSER?"":zonesOnglet(groupe)[0]||"",
     etat:mode==="projets"?(groupe==="Liste de souhaits"?"à acheter":"jamais essayé"):"en croissance",etat_detail:"",besoins_eau:"",ensoleillement:"",
-    notes:mode==="projets"?"":`planté le ${dateJour()}`};
+    notes:"",notes_perso:mode==="projets"?"":`planté le ${dateJour()}`};
   let message=p?`Plantes : modifier ${p.nom}`:"";
   openDlg(`
     <h2 id="p-titre">${p?esc(p.nom):"Nouvelle plante"}</h2>
     <div class="fields">
       <label class="f full">Nom<input id="p-nom" value="${esc(base.nom)}" ${nouveau?"autofocus":""}></label>
-      <div class="duo full"><label class="f">Eau<select id="p-eau">${choix(EAUX,base.besoins_eau)}</select></label>
-        <label class="f">Soleil<select id="p-sol"><option value="">—</option>${Object.entries(SOLEILS).map(([g,l])=>`<optgroup label="${g}">${l.map(x=>`<option ${x===base.ensoleillement?"selected":""}>${x}</option>`).join("")}</optgroup>`).join("")}${base.ensoleillement&&!Object.values(SOLEILS).flat().includes(base.ensoleillement)?`<option selected>${esc(base.ensoleillement)}</option>`:""}</select></label></div>
+      <div class="full fiche-info" id="p-info"></div>
       <label class="f full" id="p-zone-l" ${projet||(nouveau&&mode==="projets")?"hidden":""}>Zone<select id="p-zone">${["",...VRAIES.filter(z=>z!==A_CLASSER)].map(z=>`<option value="${esc(z)}" ${z===(base.zone||"")?"selected":""}>${z?esc(z):"À classer"}</option>`).join("")}</select></label>
-      <label class="f full">Description (pour la reconnaître, soins, dates de plantation)<textarea id="p-notes">${esc(base.notes)}</textarea></label>
+      <label class="f full">Notes perso<textarea id="p-perso" placeholder="historique, emplacement précis, ce qu'on a remarqué…">${esc(base.notes_perso)}</textarea></label>
       <div class="f full"><span>État</span><div class="etats" id="p-etat" role="radiogroup" aria-label="État">${etatsPour(base).map(e=>`<button type="button" role="radio" class="chip etat ${etatClasse(e)}" aria-pressed="${e===base.etat}" data-etat="${esc(e)}">${esc(e)}</button>`).join("")}</div></div>
       <label class="f full" id="p-detail-l" ${projet||(nouveau&&mode==="projets")?"hidden":""}>Détail de l'état<input id="p-detail" value="${esc(base.etat_detail)}" placeholder="ex. feuilles jaunes depuis le déplacement"></label>
     </div>
@@ -592,7 +592,12 @@ function editPlante(i){
     {confirmer:false, plein:true, onDelete:()=>{ const vraie=!MODES.projets.includes(groupeDe(p)); S.plantes.splice(S.plantes.indexOf(p),1); render(); sauver("plantes",`Plantes : supprimer ${p.nom}`);
       if(vraie) $("#dlg").addEventListener("close",()=>demanderBilan(p),{once:true}); }});
   const lire=()=>({nom:$("#p-nom").value.trim(),zone:$("#p-zone-l").hidden?base.zone:$("#p-zone").value,etat:$("#p-etat [aria-pressed=true]")?.dataset.etat??base.etat,etat_detail:$("#p-detail").value.trim(),
-    besoins_eau:$("#p-eau").value,ensoleillement:$("#p-sol").value,notes:$("#p-notes").value.trim()});
+    besoins_eau:(p||base).besoins_eau,ensoleillement:(p||base).ensoleillement,notes:(p||base).notes,notes_perso:$("#p-perso").value.trim()});
+  /* Eau, soleil et description sont remplis par Claude (routine qui complète les plantes ajoutées) : lecture seule ici. */
+  const info=()=>{ const q=p||base, es=[q.besoins_eau&&"eau "+esc(q.besoins_eau),esc(q.ensoleillement)].filter(Boolean).join(" · ");
+    $("#p-info").innerHTML=q.notes||es?`${es?`<p class="meta">${es}</p>`:""}${q.notes?`<p>${esc(q.notes)}</p>`:""}`
+      :`<p class="meta">Claude complétera l'eau, le soleil et la description d'ici quelques heures.</p>`; };
+  info();
   const upd=()=>$("#p-slug").hidden=!sensibleLimaces(lire());
   const liees=()=>{
     const box=$("#p-taches"); if(!p||MODES.projets.includes(groupeDe(p))){box.hidden=true;return} box.hidden=false;  // pas de tâches pour les graines et envies
@@ -636,7 +641,7 @@ function editPlante(i){
   upd(); liees(); bilans();
   $("#promo")&&($("#promo").onclick=()=>{ const seme=groupeDe(p)==="Stock de graines";
     $("#p-etat").innerHTML=ETATS.plantes.map(e=>`<button type="button" role="radio" class="chip etat ${etatClasse(e)}" aria-pressed="${e===(seme?"semis":"en forme")}" data-etat="${e}">${e}</button>`).join(""); $("#p-zone").value=""; $("#p-zone-l").hidden=false; $("#p-detail-l").hidden=false;
-    $("#p-notes").value=($("#p-notes").value.trim()?$("#p-notes").value.trim()+" — ":"")+`${seme?"semé":"planté"} le ${dateJour()}`;
+    $("#p-perso").value=($("#p-perso").value.trim()?$("#p-perso").value.trim()+" — ":"")+`${seme?"semé":"planté"} le ${dateJour()}`;
     $("#promo").remove(); $("#p-zone").focus(); maj();
     toast("Choisis la zone : elle passera dans Jardin ou Intérieur et terrasses"); });
 }
