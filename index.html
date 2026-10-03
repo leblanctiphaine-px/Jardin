@@ -151,6 +151,7 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 .home{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:24px}
 .card{appearance:none;display:grid;gap:4px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;cursor:pointer;color:inherit;font:inherit;min-width:0}
 .card:hover{border-color:var(--accent)}
+.card.claude{text-decoration:none;background:var(--accent-soft);border-color:var(--accent-soft)}
 .card-k{font:500 .72rem var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
 .card-t{font:700 1.5rem/1.15 var(--f-display)}
 .card-n{font:500 2.2rem/1.1 var(--f-display);color:var(--accent);font-variant-numeric:tabular-nums;margin-top:6px}
@@ -207,6 +208,11 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
       <span class="card-n" id="n-contexte"></span>
       <span class="card-s">Les infos durables sur le jardin</span>
     </button>
+    <a class="card claude" href="https://claude.ai/code/project/chan_01TqBsirXojFXyLjmkSXSNzp" target="_blank" rel="noopener">
+      <span class="card-k">Une question, une photo ?</span>
+      <span class="card-t">💬 Demander à Claude</span>
+      <span class="card-s">Ouvre le projet Jardin : je mets ensuite le carnet à jour</span>
+    </a>
     <button class="card" data-tab="projets">
       <span class="card-k">Graines en stock et envies</span>
       <span class="card-t">Graines et envies</span>
@@ -282,6 +288,7 @@ const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;
 /* ---------- GitHub : lecture et écriture des fichiers du dépôt ---------- */
 const PATHS={plantes:"plantes.csv",taches:"taches.csv",contexte:"contexte-jardin.md",bilans:"bilans.csv"};
 const CFG_KEY="jardin-cfg";
+const LIEN_CLAUDE="https://claude.ai/code/project/chan_01TqBsirXojFXyLjmkSXSNzp";
 let cfg={token:"",repo:"leblanctiphaine-px/Jardin",branch:"main"};
 try{Object.assign(cfg,JSON.parse(localStorage.getItem(CFG_KEY)||"{}"))}catch(e){}
 /* Lien d'invitation : #jeton=… est lu une fois, gardé dans ce navigateur puis retiré de l'adresse. */
@@ -588,7 +595,7 @@ function editPlante(i){
     etat:mode==="projets"?(groupe==="Liste de souhaits"?"à acheter":"jamais essayé"):"en croissance",etat_detail:mode==="projets"?"":`planté le ${dateJour()}`,besoins_eau:"",ensoleillement:"",notes:""};
   let message=p?`Plantes : modifier ${p.nom}`:"";
   openDlg(`
-    <div class="titre-fiche"><h2 id="p-titre">${p?esc(p.nom):"Nouvelle plante"}</h2>${p?`<button type="button" class="btn mini" id="p-modif">✏️ Modifier</button>`:""}</div>
+    <div class="titre-fiche"><h2 id="p-titre">${p?esc(p.nom):"Nouvelle plante"}</h2>${p?`<button type="button" class="btn mini" id="p-modif">✏️ Modifier</button><button type="button" class="btn mini" id="p-claude">💬 Demander à Claude</button>`:""}</div>
     <div class="fields">
       <label class="f full edit-only">Nom<input id="p-nom" value="${esc(base.nom)}" ${nouveau?"autofocus":""}></label>
       <div class="full carte" id="p-info"></div>
@@ -616,6 +623,10 @@ function editPlante(i){
       (q.notes?`<p class="desc">${esc(q.notes)}</p>`:`<p class="attente">🌱 Claude complétera l'eau, le soleil et la description d'ici quelques heures.</p>`); };
   info();
   if(p) $("#dlg-form").classList.add("lecture");
+  /* Ouvre le projet Jardin dans Claude, avec le nom de la plante copié pour le coller dans la question. */
+  $("#p-claude")&&($("#p-claude").onclick=async()=>{ const q=`À propos de « ${p.nom} » (${groupeDe(p)}) : `;
+    try{ await navigator.clipboard.writeText(q); toast("Nom de la plante copié : colle-le dans ta question"); }catch(_){}
+    open(LIEN_CLAUDE,"_blank","noopener"); });
   $("#p-modif")&&($("#p-modif").onclick=()=>{ const l=$("#dlg-form").classList.toggle("lecture");
     $("#p-modif").textContent=l?"✏️ Modifier":"✓ Terminé"; if(!l) $("#p-nom").focus(); });
   const upd=()=>$("#p-slug").hidden=!sensibleLimaces(lire());
