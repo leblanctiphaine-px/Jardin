@@ -113,7 +113,7 @@ dialog.plein .dlg{max-width:640px;margin:0 auto;padding-bottom:40px}
 .chip.etat[aria-pressed="true"].warn{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
 .chip.etat[aria-pressed="true"].bad{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
 .f>span{font-size:.85rem;font-weight:600;color:var(--muted)}
-.row .detail{grid-column:1/-1;font-size:.92rem;color:var(--ink);min-width:0}
+.row .detail{grid-column:1/-1;font-size:.92rem;color:var(--ink);min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .liees{display:grid;gap:8px;border-top:1px solid var(--line);padding-top:12px}
 .liees .group-h{margin:0}
 .fermees{margin-top:28px}.fermees summary{cursor:pointer;font-size:.85rem;color:var(--muted);padding:6px 0}.fermees .list{opacity:.75;margin-top:6px}
@@ -267,7 +267,7 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 
 <script>
 const S = {plantes: [], taches: [], contexte: [], bilans: []};
-const COLS = {plantes:["nom","zone","etat","etat_detail","besoins_eau","ensoleillement","notes","notes_perso"], taches:["tache","priorite","responsable","statut","notes","plante"], bilans:["date","plante","resultat","pourquoi","fiche"]};
+const COLS = {plantes:["nom","zone","etat","etat_detail","besoins_eau","ensoleillement","notes"], taches:["tache","priorite","responsable","statut","notes","plante"], bilans:["date","plante","resultat","pourquoi","fiche"]};
 let tab = "accueil", groupe = "", mode = "jardin";
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -334,6 +334,8 @@ function lireCSV(k,texte){
   const recs=parseCSV(texte), noms=recs[0]?.fields??COLS[k];
   /* Si le fichier n'a pas encore toutes les colonnes, l'en-tête et les lignes sont réécrits au prochain enregistrement. */
   const complet=COLS[k].every((c,j)=>noms[j]===c)&&noms.length===COLS[k].length;
+  /* Le fichier a une colonne que cette page ne connaît pas : la page est périmée, on n'enregistre plus rien pour ne pas l'effacer. */
+  if(noms.some(c=>!COLS[k].includes(c))) perimee=true;
   fichiers[k].entete=complet?recs[0].raw:COLS[k].join(",");
   return recs.slice(1).map(({fields,raw})=>{
     const o={}; COLS[k].forEach(c=>{const j=noms.indexOf(c); o[c]=j<0?"":fields[j]??""});
@@ -373,7 +375,9 @@ async function charger(k){
 function setSync(txt,cls){const e=$("#sync");e.textContent=cls==="ok"?"":txt;e.className="syncst "+(cls||"")}
 let chaine=Promise.resolve();
 /* Les écritures passent une par une : chaque commit repart du sha renvoyé par le précédent. */
+let perimee=false;
 function sauver(k,message){
+  if(perimee){ setSync("Non enregistré","bad"); toast("Le carnet a été mis à jour : rafraîchis la page avant de modifier."); return chaine; }
   setSync("Enregistrement…","busy");
   chaine=chaine.then(async()=>{
     const texte=serialiser(k), objs=k==="contexte"?[]:S[k].slice(), sigs=objs.map(o=>signature(k,o));
@@ -395,11 +399,12 @@ function sauver(k,message){
 function fusion3(base,mien,distant){
   const L=t=>t.replace(/\n$/,"").split("\n"), b=L(base), m=L(mien), res=L(distant);
   const compte=a=>{const c=new Map;a.forEach(x=>c.set(x,(c.get(x)||0)+1));return c};
+  if(b[0]!==res[0]||m[0]!==res[0]) return null;  // en-tête différent (format changé) : pas de fusion, on recharge
   const cb=compte(b), cm=compte(m);
   for(const [x,n] of cb){ for(let r=n-(cm.get(x)||0);r>0;r--){ const j=res.indexOf(x); if(j>=0) res.splice(j,1); } }  // lignes retirées ou modifiées chez nous
-  let ancre=0; const vus=new Map;
+  let ancre=1; const vus=new Map;
   m.forEach((x,i)=>{ const n=(vus.get(x)||0)+1; vus.set(x,n);
-    if(n<=(cb.get(x)||0)){ const j=res.indexOf(x); if(j>=0) ancre=j+1; return; }  // ligne inchangée : sert de repère
+    if(n<=(cb.get(x)||0)){ const j=res.indexOf(x); if(j>=1) ancre=j+1; return; }  // ligne inchangée : sert de repère
     if(i===0) return;
     res.splice(ancre,0,x); ancre++; });  // ligne ajoutée ou modifiée chez nous : juste après la précédente
   return res.join("\n")+"\n";
@@ -407,7 +412,7 @@ function fusion3(base,mien,distant){
 async function fusionner(k,mien,message,objs,sigs){
   try{
     const j=await gh(`/repos/${cfg.repo}/contents/${PATHS[k]}?ref=${encodeURIComponent(cfg.branch)}`);
-    const texte=fusion3(fichiers[k].texte,mien,b64dec(j.content));
+    const texte=fusion3(fichiers[k].texte,mien,b64dec(j.content)); if(texte==null) return false;
     const r=await gh(`/repos/${cfg.repo}/contents/${PATHS[k]}`,{method:"PUT",body:JSON.stringify({message,content:b64enc(texte),sha:j.sha,branch:cfg.branch})});
     fichiers[k]={sha:r.content.sha,texte};
     /* On garde les objets d'origine (une fiche ouverte continue de s'enregistrer) ; ceux ajoutés pendant l'envoi restent en tête. */
@@ -466,7 +471,7 @@ function construireModes(){
 }
 /* Graines et envies sont rangées comme des zones à part : « Stock de graines » et « Liste de souhaits ». */
 const groupeDe=p=>p.zone||A_CLASSER;
-/* L'état est un tag court pris dans une liste fixe ; le détail libre va dans etat_detail. */
+/* L'état est un tag court pris dans une liste fixe ; les notes perso (historique, observations) vont dans etat_detail. */
 const ETATS={plantes:["semis","en croissance","en forme","à récolter","à surveiller","fin de vie"],graines:["jamais essayé","déjà essayé"],envies:["à acheter"]};
 const ETAT_CLASSE={"semis":"ok","en croissance":"ok","en forme":"ok","à récolter":"warn","à surveiller":"warn","fin de vie":"bad"};
 const etatClasse=e=>ETAT_CLASSE[e]??"";
@@ -501,7 +506,7 @@ function demanderBilan(p){
     if(!rien&&(res||pq)){
       let fiche=$("#b-fiche").value;
       if(!fiche){ fiche=neuf; if(!S.plantes.some(x=>x.nom===fiche)){
-        S.plantes.push({nom:fiche,zone:"Liste de souhaits",etat:"à acheter",etat_detail:"",besoins_eau:p.besoins_eau,ensoleillement:p.ensoleillement,notes:p.notes,notes_perso:""});
+        S.plantes.push({nom:fiche,zone:"Liste de souhaits",etat:"à acheter",etat_detail:"",besoins_eau:p.besoins_eau,ensoleillement:p.ensoleillement,notes:p.notes});
         sauver("plantes",`Plantes : ajouter l'envie ${fiche}`); } }
       S.bilans.push({date:dateJour(),plante:p.nom,resultat:res,pourquoi:pq,fiche}); essayee(fiche);
       sauver("bilans",`Bilans : ${p.nom}${res?" ("+res+")":""}`); render(); toast(`Bilan gardé sur « ${fiche} »`);
@@ -570,8 +575,7 @@ function editPlante(i){
   let p=i==null?null:S.plantes[i];
   const nouveau=!p, projet=p&&MODES.projets.includes(groupeDe(p));
   const base=p||{nom:"",zone:groupe===A_CLASSER?"":zonesOnglet(groupe)[0]||"",
-    etat:mode==="projets"?(groupe==="Liste de souhaits"?"à acheter":"jamais essayé"):"en croissance",etat_detail:"",besoins_eau:"",ensoleillement:"",
-    notes:"",notes_perso:mode==="projets"?"":`planté le ${dateJour()}`};
+    etat:mode==="projets"?(groupe==="Liste de souhaits"?"à acheter":"jamais essayé"):"en croissance",etat_detail:mode==="projets"?"":`planté le ${dateJour()}`,besoins_eau:"",ensoleillement:"",notes:""};
   let message=p?`Plantes : modifier ${p.nom}`:"";
   openDlg(`
     <h2 id="p-titre">${p?esc(p.nom):"Nouvelle plante"}</h2>
@@ -579,9 +583,8 @@ function editPlante(i){
       <label class="f full">Nom<input id="p-nom" value="${esc(base.nom)}" ${nouveau?"autofocus":""}></label>
       <div class="full fiche-info" id="p-info"></div>
       <label class="f full" id="p-zone-l" ${projet||(nouveau&&mode==="projets")?"hidden":""}>Zone<select id="p-zone">${["",...VRAIES.filter(z=>z!==A_CLASSER)].map(z=>`<option value="${esc(z)}" ${z===(base.zone||"")?"selected":""}>${z?esc(z):"À classer"}</option>`).join("")}</select></label>
-      <label class="f full">Notes perso<textarea id="p-perso" placeholder="historique, emplacement précis, ce qu'on a remarqué…">${esc(base.notes_perso)}</textarea></label>
       <div class="f full"><span>État</span><div class="etats" id="p-etat" role="radiogroup" aria-label="État">${etatsPour(base).map(e=>`<button type="button" role="radio" class="chip etat ${etatClasse(e)}" aria-pressed="${e===base.etat}" data-etat="${esc(e)}">${esc(e)}</button>`).join("")}</div></div>
-      <label class="f full" id="p-detail-l" ${projet||(nouveau&&mode==="projets")?"hidden":""}>Détail de l'état<input id="p-detail" value="${esc(base.etat_detail)}" placeholder="ex. feuilles jaunes depuis le déplacement"></label>
+      <label class="f full">Notes perso<textarea id="p-perso" placeholder="historique, emplacement précis, ce qu'on a remarqué…">${esc(base.etat_detail)}</textarea></label>
     </div>
     <div class="liees" id="p-bilans" hidden></div>
     <p class="callout" id="p-slug" hidden>Plante sensible aux limaces : prévoir cloche, granulés au phosphate de fer ou piège à bière.</p>
@@ -591,8 +594,8 @@ function editPlante(i){
     </div>`,
     {confirmer:false, plein:true, onDelete:()=>{ const vraie=!MODES.projets.includes(groupeDe(p)); S.plantes.splice(S.plantes.indexOf(p),1); render(); sauver("plantes",`Plantes : supprimer ${p.nom}`);
       if(vraie) $("#dlg").addEventListener("close",()=>demanderBilan(p),{once:true}); }});
-  const lire=()=>({nom:$("#p-nom").value.trim(),zone:$("#p-zone-l").hidden?base.zone:$("#p-zone").value,etat:$("#p-etat [aria-pressed=true]")?.dataset.etat??base.etat,etat_detail:$("#p-detail").value.trim(),
-    besoins_eau:(p||base).besoins_eau,ensoleillement:(p||base).ensoleillement,notes:(p||base).notes,notes_perso:$("#p-perso").value.trim()});
+  const lire=()=>({nom:$("#p-nom").value.trim(),zone:$("#p-zone-l").hidden?base.zone:$("#p-zone").value,etat:$("#p-etat [aria-pressed=true]")?.dataset.etat??base.etat,etat_detail:$("#p-perso").value.trim(),
+    besoins_eau:(p||base).besoins_eau,ensoleillement:(p||base).ensoleillement,notes:(p||base).notes});
   /* Eau, soleil et description sont remplis par Claude (routine qui complète les plantes ajoutées) : lecture seule ici. */
   const info=()=>{ const q=p||base, es=[q.besoins_eau&&"eau "+esc(q.besoins_eau),esc(q.ensoleillement)].filter(Boolean).join(" · ");
     $("#p-info").innerHTML=q.notes||es?`${es?`<p class="meta">${es}</p>`:""}${q.notes?`<p>${esc(q.notes)}</p>`:""}`
@@ -640,7 +643,7 @@ function editPlante(i){
   };
   upd(); liees(); bilans();
   $("#promo")&&($("#promo").onclick=()=>{ const seme=groupeDe(p)==="Stock de graines";
-    $("#p-etat").innerHTML=ETATS.plantes.map(e=>`<button type="button" role="radio" class="chip etat ${etatClasse(e)}" aria-pressed="${e===(seme?"semis":"en forme")}" data-etat="${e}">${e}</button>`).join(""); $("#p-zone").value=""; $("#p-zone-l").hidden=false; $("#p-detail-l").hidden=false;
+    $("#p-etat").innerHTML=ETATS.plantes.map(e=>`<button type="button" role="radio" class="chip etat ${etatClasse(e)}" aria-pressed="${e===(seme?"semis":"en forme")}" data-etat="${e}">${e}</button>`).join(""); $("#p-zone").value=""; $("#p-zone-l").hidden=false;
     $("#p-perso").value=($("#p-perso").value.trim()?$("#p-perso").value.trim()+" — ":"")+`${seme?"semé":"planté"} le ${dateJour()}`;
     $("#promo").remove(); $("#p-zone").focus(); maj();
     toast("Choisis la zone : elle passera dans Jardin ou Intérieur et terrasses"); });
