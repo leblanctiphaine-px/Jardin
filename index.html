@@ -141,6 +141,7 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 .lien{appearance:none;border:0;background:none;padding:0;font:inherit;color:var(--accent);text-align:left;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
 .actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:12px}
 .actions div{display:flex;gap:8px}
+.actions>div+div{margin-left:auto}
 .fab{position:fixed;right:max(16px,calc((100vw - 1080px)/2 + 16px));bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:5;appearance:none;border:0;border-radius:999px;padding:14px 22px;background:var(--accent);color:var(--on-accent);font:600 1rem var(--f-body);cursor:pointer;box-shadow:0 6px 18px rgba(10,30,20,.28)}
 .fab:hover{filter:brightness(1.08)}
 #v-taches{padding-bottom:72px}
@@ -506,11 +507,12 @@ function demanderBilan(p){
   const proche=ficheProche(p.nom), neuf=nomCourt(p.nom);
   openDlg(`
     <h2>Comment ça s'est passé ?</h2>
-    <p class="hint">${esc(p.nom)} est retirée. Le bilan reste dans Graines et envies pour la prochaine fois. Il s'enregistre en fermant.</p>
+    <p class="hint">${esc(p.nom)} est retirée. Le bilan reste dans Graines et envies pour la prochaine fois.</p>
     <div class="f full"><span>Résultat</span><div class="etats" id="b-res" role="radiogroup" aria-label="Résultat">${Object.entries(RESULTATS).map(([r,c])=>`<button type="button" role="radio" class="chip etat ${c}" aria-pressed="false" data-r="${r}">${r}</button>`).join("")}</div></div>
     <label class="f full">Pourquoi ?<textarea id="b-pq" placeholder="ex. mangée par les limaces, trop chaud en serre, super récolte…"></textarea></label>
     <label class="f full">Garder le bilan sur<select id="b-fiche">${fichesProjets().map(x=>`<option ${x.nom===proche?"selected":""}>${esc(x.nom)}</option>`).join("")}<option value="" ${proche?"":"selected"}>Nouvelle envie « ${esc(neuf)} »</option></select></label>
-    <div class="actions"><div><button type="button" class="btn" id="b-rien">Rien à retenir (pas fait ou mal fait)</button></div></div>`);
+    <div class="actions"><div><button type="button" class="btn" id="b-rien">Rien à retenir (pas fait ou mal fait)</button></div><div><button type="button" class="btn primary" id="b-ok">Valider</button></div></div>`);
+  $("#b-ok").onclick=()=>$("#dlg").close();
   let rien=false; $("#b-rien").onclick=()=>{ rien=true; $("#dlg").close(); };
   $("#b-res").onclick=e=>{ const b=e.target.closest("[data-r]"); if(!b) return; $("#b-res").querySelectorAll("[data-r]").forEach(x=>x.setAttribute("aria-pressed",x===b)); };
   $("#dlg").onclose=()=>{
@@ -606,6 +608,7 @@ function editPlante(i){
     <div class="liees" id="p-taches" hidden></div>
     <div class="actions">
       <div><button type="button" class="btn danger" id="del" ${p?"":"hidden"}>Supprimer</button>${projet&&groupeDe(p)==="Liste de souhaits"?`<button type="button" class="btn" id="promo">Je l'ai achetée</button>`:""}</div>
+      ${nouveau?`<div><button type="button" class="btn primary" id="p-ok">Valider</button></div>`:""}
     </div>`,
     {confirmer:false, plein:true, onDelete:()=>{ const vraie=!MODES.projets.includes(groupeDe(p)); S.plantes.splice(S.plantes.indexOf(p),1); render(); sauver("plantes",`Plantes : supprimer ${p.nom}`);
       if(vraie) $("#dlg").addEventListener("close",()=>demanderBilan(p),{once:true}); }});
@@ -625,6 +628,8 @@ function editPlante(i){
   $("#p-claude")&&($("#p-claude").onclick=async()=>{ const q=`À propos de « ${p.nom} » (${groupeDe(p)}) : `;
     try{ await navigator.clipboard.writeText(q); toast("Nom de la plante copié : colle-le dans ta question"); }catch(_){}
     open(LIEN_CLAUDE,"_blank","noopener"); });
+  /* Création : tout s'enregistre au fil de la saisie, « Valider » ferme la fiche (le nom est obligatoire). */
+  $("#p-ok")&&($("#p-ok").onclick=()=>{ if(!$("#p-nom").value.trim()){ toast("Donne un nom à la plante"); return $("#p-nom").focus(); } $("#dlg").close(); });
   $("#p-modif")&&($("#p-modif").onclick=()=>{ const l=$("#dlg-form").classList.toggle("lecture");
     $("#p-modif").textContent=l?"✏️ Modifier":"✓ Terminé"; if(!l) $("#p-nom").focus(); });
   const upd=()=>$("#p-slug").hidden=!sensibleLimaces(lire());
