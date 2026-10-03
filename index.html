@@ -267,7 +267,7 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 
 <script>
 const S = {plantes: [], taches: [], contexte: [], bilans: []};
-const COLS = {plantes:["nom","zone","etat","etat_detail","besoins_eau","ensoleillement","notes"], taches:["tache","priorite","responsable","statut","notes","plante"], bilans:["date","plante","resultat","pourquoi","fiche"]};
+const COLS = {plantes:["nom","zone","etat","etat_detail","besoins_eau","ensoleillement","notes"], taches:["tache","priorite","responsable","statut","notes","plante","date"], bilans:["date","plante","resultat","pourquoi","fiche"]};
 let tab = "accueil", groupe = "", mode = "jardin";
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -666,6 +666,12 @@ function purgerFaites(){
   S.taches=S.taches.filter(t=>t.statut!=="fait"||(dateFait(t)?.getTime()??0)>=limite);
   return avant-S.taches.length;
 }
+/* Date programmée (AAAA-MM-JJ) : en retard en rouge, aujourd'hui en orange ; les tâches datées passent en tête de leur groupe. */
+const aujourdhui=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
+const dateCourte=iso=>{const [a,m,j]=iso.split("-");return `${j}/${m}${a!==String(new Date().getFullYear())?"/"+a:""}`};
+const pillDate=t=>{ if(!t.date||FERMEES.includes(t.statut)) return ""; const auj=aujourdhui();
+  return `<span class="pill ${t.date<auj?"bad":t.date===auj?"warn":""}">${t.date<auj?"en retard · ":t.date===auj?"aujourd'hui · ":""}${dateCourte(t.date)}</span>`; };
+const parDate=(a,b)=>(a.t.date||"9999")<(b.t.date||"9999")?-1:(a.t.date||"9999")>(b.t.date||"9999")?1:0;
 /* Tâches ouvertes par priorité ; les tâches faites dans une section repliée tout en bas. */
 let fermeesOuvertes=false;
 const ligneTache=({t,i})=>{
@@ -673,7 +679,7 @@ const ligneTache=({t,i})=>{
   return `<div class="row task ${done?"done":""}" data-edit-tache="${i}">
         <input type="checkbox" data-done="${i}" ${t.statut==="fait"?"checked":""} aria-label="Marquer « ${esc(t.tache)} » comme ${done?"à refaire":"faite"}">
         <span class="t">${esc(t.tache)}</span>
-        <span class="tags">${t.plante?`<span class="pill plante">${esc(t.plante)}</span>`:""}</span>
+        <span class="tags">${pillDate(t)}${t.plante?`<span class="pill plante">${esc(t.plante)}</span>`:""}</span>
         <span class="meta">${t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")} · `:""}${esc(t.notes)||"&nbsp;"}</span></div>`; };
 function renderTaches(){
   const toutes=S.taches.map((t,i)=>({t,i}));
@@ -681,7 +687,7 @@ function renderTaches(){
   const prios=[...PRIO,...new Set(rows.map(r=>r.t.priorite).filter(p=>!PRIO.includes(p)))];
   let html="";
   for(const pr of prios){
-    const g=rows.filter(r=>r.t.priorite===pr); if(!g.length) continue;
+    const g=rows.filter(r=>r.t.priorite===pr).sort(parDate); if(!g.length) continue;
     html+=`<p class="group-h">${esc(pr)} · ${g.length}</p><div class="list">`+g.map(ligneTache).join("")+`</div>`;
   }
   if(!html) html=`<p class="empty">Aucune tâche ouverte. Bonne nouvelle !</p>`;
@@ -694,7 +700,7 @@ function renderTaches(){
 }
 function editTache(i,plante=""){
   let t=i==null?null:S.taches[i];
-  const base=t||{tache:"",priorite:"bientôt",responsable:"moi",statut:"à faire",notes:"",plante};
+  const base=t||{tache:"",priorite:"bientôt",responsable:"moi",statut:"à faire",notes:"",plante,date:""};
   const sel=(id,vals,v)=>`<select id="${id}">${[...new Set([...vals,v])].map(x=>`<option ${x===v?"selected":""}>${esc(x)}</option>`).join("")}</select>`;
   const plantes=[...new Set(S.plantes.filter(p=>VRAIES.includes(groupeDe(p))).map(p=>p.nom))];
   let message=t?`Tâches : modifier « ${t.tache} »`:"";
@@ -702,7 +708,8 @@ function editTache(i,plante=""){
     <h2>${t?"Tâche":"Nouvelle tâche"}</h2>
     <div class="fields">
       <label class="f full">Tâche<input id="t-nom" value="${esc(base.tache)}" ${t?"":"autofocus"}></label>
-      <label class="f full">Priorité${sel("t-prio",PRIO,base.priorite)}</label>
+      <div class="duo full"><label class="f">Priorité${sel("t-prio",PRIO,base.priorite)}</label>
+        <label class="f">Date (rappel)<input id="t-date" type="date" value="${esc(base.date||"")}"></label></div>
       <label class="f full">Plante liée<input id="t-plante" value="${esc(base.plante)}" placeholder="Chercher une plante…" autocomplete="off"></label><div class="sugg full" id="t-sugg" hidden></div>
       <label class="f full">Notes<textarea id="t-notes">${esc(base.notes)}</textarea></label>
     </div>
@@ -717,7 +724,7 @@ function editTache(i,plante=""){
   $("#t-sugg").onclick=e=>{ const b=e.target.closest("[data-plante]"); if(!b) return; $("#t-plante").value=b.dataset.plante;
     $("#t-sugg").hidden=true; $("#dlg-form").dispatchEvent(new Event("input")); };
   $("#dlg-form").oninput=()=>{
-    const n={tache:$("#t-nom").value.trim(),priorite:$("#t-prio").value,statut:base.statut,notes:$("#t-notes").value.trim(),plante:$("#t-plante").value.trim()};
+    const n={tache:$("#t-nom").value.trim(),priorite:$("#t-prio").value,statut:base.statut,notes:$("#t-notes").value.trim(),plante:$("#t-plante").value.trim(),date:$("#t-date").value};
     if(!n.tache) return;
     if(!t){ t={...n,responsable:"moi"}; S.taches.unshift(t); message=`Tâches : ajouter « ${n.tache} »`; $("#del").hidden=false; }
     else{ Object.assign(t,n); message=message.startsWith("Tâches : ajouter")?`Tâches : ajouter « ${n.tache} »`:`Tâches : modifier « ${n.tache} »`; }
