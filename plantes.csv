@@ -1,86 +1,86 @@
-Mures,Potager plein soleil,en croissance,,,,planté le 03/10/2026
-nom,zone,etat,etat_detail,besoins_eau,ensoleillement,notes,notes_perso
-Vigne,Jardin de derrière,en forme,,faible,plein soleil,"Liane ligneuse aux feuilles lobées dentées, vrilles et grappes de raisin en fin d'été. Taille en hiver, rustique et peu gourmande en eau une fois installée.",Là depuis toujours
-Houx,Jardin de derrière,en croissance,,faible,mi-ombre,"Arbuste persistant aux feuilles coriaces vert foncé luisant bordées d'épines, baies rouges l'hiver sur les pieds femelles. Pousse lentement, supporte l'ombre.",La depuis toujours
-Rosiers,Jardin de derrière,en croissance,,moyen,plein soleil,"Arbuste épineux à feuilles composées dentées, fleurs parfumées de mai à l'automne selon la variété. Aime un sol riche et frais, taille en fin d'hiver.",La depuis toujours
-Figuier,Jardin de derrière,en croissance,,moyen,plein soleil,"Arbre aux grandes feuilles rugueuses à 3-5 lobes, fruits violets ou verts en fin d'été. Rustique jusqu'à -12 °C environ, aime la chaleur et un sol drainant.",planté le 01/10/2026
-Haricots,Potager mi-ombre,à surveiller,En fin de vie,moyen,plein soleil,"Plante annuelle à feuilles trifoliées et fleurs blanches ou mauves, gousses à récolter jeunes. Craint le froid, arroser au pied sans mouiller le feuillage.",
-Framboisier,Jardin de derrière,en forme,,faible,plein soleil,"Arbuste à cannes dressées épineuses et feuilles dentées vert dessus, blanchâtres dessous ; fruits rouges en été ou à l'automne. Drageonne facilement.",branches au-dessus à éclaircir pour plus de lumière
-Aubergine,Serre,fin de vie,réfléchir à déraciner,élevé,plein soleil,"Plante annuelle aux grandes feuilles duveteuses grisâtres, fleurs mauves étoilées et fruits violets brillants. Aime la chaleur, le soleil et un arrosage régulier.",pépinière — légèrement stressée mais récupérable — repiquer dans les 10 jours en plein soleil sol chaud
-Basilic (5 plants),Serre,en forme,,moyen,plein soleil,"Aromatique annuelle aux feuilles vertes lisses et parfumées, petites fleurs blanches en épi. Frileux, pincer les fleurs pour garder des feuilles tendres. Très apprécié des limaces.","serre (x2) + terrasse (x2) + intérieur (x1) — bien installé — 2 en serre, 2 en terrasse, 1 intérieur. Stock graines supplémentaires disponibles. À récolter régulièrement (stimule la pousse, évite la montée en graine)"
-Menthe,Jardin de derrière,en croissance,Desséchée,élevé,mi-ombre,Vivace aromatique aux feuilles ovales dentées très parfumées et tiges carrées ; envahissante par ses rhizomes. Aime la fraîcheur et l'humidité.,"ajoutée à la récolte régulière (17/06) — arroser et récolter régulièrement, la menthe aime l'humidité"
-Poivrier du Sichuan,Pépinière,en croissance,,moyen,mi-ombre,"Arbuste épineux (Zanthoxylum) aux feuilles composées luisantes, baies rouges en automne dont l'écorce donne le poivre. Rustique une fois installé.","pépinière (caissette) — jolis semis — repiquer en godets 8-10 cm dans 2-4 semaines (quand 2-3 vraies feuilles, ~5-6 cm), puis pleine terre à l'automne"
-Pothos (x3),Intérieur,à surveiller,à rempoter,moyen,3/5,"Liane d'intérieur (Epipremnum) aux feuilles en cœur vert panaché de jaune, retombante ou grimpante. Facile, laisser sécher le dessus du terreau entre deux arrosages.","boutures en veau — racines bien formées (~10 cm pour le centre) — rempoter aujourd'hui. Terreau drainant, pot avec trou. Après rempotage laisser sécher entre deux arrosages"
-Curcuma,Intérieur,à surveiller,"feuilles brûlées, en récupération depuis le déplacement",élevé,3/5,"Plante à rhizome aux grandes feuilles lancéolées vert vif et dressées. Aime la chaleur, l'humidité et une lumière vive sans soleil direct ; repos hivernal possible.","déplacé, lumineux sans soleil direct — pot 15cm — Grandes feuilles vertes droites lancéolées. — déplacé le 20/06 pour stopper la brûlure des feuilles. Surveiller l'apparition de nouvelles feuilles saines, garder le terreau humide — Arrosage : un grand verre d'eau (~250ml) 2 fois par semaine"
-Dracaena Lemon Lime,Intérieur,à surveiller,à rempoter,faible,4/5,"Plante d'intérieur au port dressé, feuilles fines en lanières rayées vert, jaune citron et blanc. Lumière vive indirecte, arrosage léger.","meuble devant fenêtre est — pot 10cm — Feuilles fines rayées vert/jaune/blanc, port dressé. — racines qui sortent par le bas — à rempoter dans pot légèrement plus grand. Vérifier que le pot a un trou de drainage — Arrosage : un verre d'eau (~150ml) toutes les 1-2 semaines"
-Pachira aquatica (1 seul plant),Intérieur,à surveiller,"étiolé, peu vigoureux, en convalescence",faible,4/5,"Arbre d'intérieur au tronc souvent tressé et feuilles palmées à 5 folioles brillantes. Craint l'excès d'eau, aime la lumière vive.","panier, déplacé plus près d'une fenêtre — pot 15cm — Tronc tressé noueux, feuilles à 5 folioles. — a subi dépotage + ablation racines/tronc pourris, repousse étiolée et peu vigoureuse. Déplacé pour plus de lumière (était à 2/5) — surveiller si la repousse se densifie dans les semaines qui suivent. Arroser seulement quand les 2-3 cm du dessus sont secs, pas de soucoupe — Arrosage : un verre d'eau (~200ml) toutes les 2 semaines — déplacé le 20/06 pour plus de lumière"
-Sauge,Jardin de derrière,en forme,à tailler,moyen,plein soleil,"Sous-arbrisseau aromatique aux feuilles gris-vert veloutées et parfumées, épis de fleurs violettes en été. Aime le sec et un sol drainant, tailler au printemps.","jardin/terrasse — moisit par dessous, grosses feuilles peu parfumées, taille sévère recommandée"
-Érable du Japon,Terrasse de derrière,à surveiller,stressé,élevé,mi-ombre,"Petit arbre au feuillage finement découpé en étoile, vert ou pourpre, rouge flamboyant à l'automne. Craint le soleil brûlant et la sécheresse en pot.","terrasse (pot noir) — Arroser régulièrement, le pot sèche vite"
-Hortensia,Terrasse de derrière,à surveiller,stressé,très élevé,mi-ombre,"Arbuste aux grandes feuilles ovales dentées et grosses boules de fleurs roses, bleues ou blanches. Très gourmand en eau, préfère la mi-ombre et un sol frais.","terrasse (pot rose) — feuilles très abîmées aux bords = soif. Arroser abondamment tous les jours par forte chaleur, voire 2x/jour. Fleurs qui virent du rose au vert chartreuse = normal c'est leur cycle"
-Roses,Jardin de devant,en forme,,faible,mi-ombre,"Rosiers en pleine terre : arbustes épineux à feuilles composées dentées et fleurs parfumées. Aiment un sol riche, taille principale en fin d'hiver.",jardin de devant + jardin de derrière — présentes dans les deux jardins en pleine terre. Variété(s) inconnue(s) — remontantes ou non à déterminer. Tailler les fleurs fanées légèrement pour tenter une 2e floraison estivale. Ne pas tailler sévèrement sans connaître la variété. — supporte aussi le plein soleil
-Oranger du Mexique (Choisya),Jardin de derrière,en forme,,faible,mi-ombre,"Arbuste persistant (Choisya) aux feuilles luisantes trifoliées, parfumées au froissement, et fleurs blanches étoilées au parfum d'oranger au printemps.",jardin de derrière (à côté du potager mi-ombre) — refleurit en fin d'été si taillé légèrement après la floraison de printemps. Taille douce uniquement — enlever fleurs fanées et mettre en forme.
-Chou chinois,Liste de souhaits,à acheter,,moyen,mi-ombre,"Chou à grandes feuilles tendres vert pâle formant une pomme allongée. Se sème en été pour l'automne, monte vite en graine avec la chaleur.",semer juillet-août pour récolte automne
-Mesclun,Liste de souhaits,à acheter,,moyen,mi-ombre,"Mélange de jeunes salades et pousses (laitues, roquette, chicorées) à couper. Pousse vite, craint la chaleur. Très apprécié des limaces.",semer août-septembre — craint la chaleur estivale
-Épinards,Liste de souhaits,à acheter,,moyen,mi-ombre,"Légume-feuille aux feuilles vert foncé lisses ou cloquées, récolté feuille à feuille. Aime la fraîcheur, monte en graine avec la chaleur.",semer septembre — monte en graine avec la chaleur
-Cornichons,Liste de souhaits,à acheter,,élevé,plein soleil,"Cucurbitacée coureuse aux feuilles rugueuses et fleurs jaunes, petits fruits à cueillir très jeunes. Aime la chaleur et l'eau régulière.",recommandé juin — semer maintenant jusqu'à fin juin — idéal serre ou plein soleil
-Melon,Liste de souhaits,à acheter,,élevé,plein soleil,"Cucurbitacée coureuse aux feuilles rondes rugueuses et fleurs jaunes, fruits ronds parfumés. Exige chaleur, soleil et arrosage régulier au pied.",recommandé juin — encore possible début juin — serre idéale mais arrosage régulier indispensable
-Physalis,Liste de souhaits,à acheter,,moyen,plein soleil,"Plante buissonnante aux fruits orange enfermés dans une lanterne de papier. Frileuse et tardive, culture idéale en serre.",semer maintenant mais récolte tardive — serre chaude
-Piments,Liste de souhaits,à acheter,,moyen,plein soleil,"Plante buissonnante aux feuilles lisses et petits fruits rouges, jaunes ou verts, plus ou moins piquants. Très frileuse, semis au chaud en fin d'hiver.",un peu tard (idéal mars-avril) — tentable en serre chaude
-Fèves,Liste de souhaits,à acheter,,moyen,plein soleil,"Légumineuse aux tiges carrées dressées, feuilles gris-vert et fleurs blanches tachées de noir, grosses gousses. Se sème en automne ou fin d'hiver, aime la fraîcheur.",semer octobre-novembre ou février — trop tard maintenant
-Navets,Liste de souhaits,à acheter,,moyen,plein soleil,"Légume-racine à racine ronde blanche et violette et feuilles rugueuses. Semis d'été pour l'automne, monte en graine s'il est semé trop tôt.",semer juillet-août — trop tôt maintenant (monterait en fleur)
-Panais,Liste de souhaits,à acheter,,faible,plein soleil,"Légume-racine à longue racine blanche et feuilles découpées. Demande un sol profond et meuble, récolte en automne-hiver.",besoin sol profond et meuble — problématique avec sol dur et argileux
-Rutabaga,Liste de souhaits,à acheter,,faible,plein soleil,"Légume-racine proche du navet, à chair jaune et feuilles bleutées. Rustique, demande un sol profond.",semer juin-juillet possible — racine donc sol profond nécessaire
-Lentilles,Liste de souhaits,à acheter,,faible,plein soleil,"Petite légumineuse fine aux feuilles composées et minuscules gousses plates. Peu exigeante en eau, aime le soleil et un sol drainant.",semis mars-mai idéal — un peu tard mais tentable plein soleil
-Camomille,Liste de souhaits,à acheter,,faible,plein soleil,"Annuelle aux feuilles finement découpées et petites fleurs blanches à cœur jaune, en tisane. Rustique et facile.",recommandé juin — semer maintenant — rustique et facile
-Coriandre,Liste de souhaits,à acheter,,moyen,mi-ombre,"Aromatique annuelle aux feuilles découpées type persil plat, au goût marqué. Monte vite en graine avec la chaleur.","recommandé juin — semer maintenant — rapide, utile, attention chaleur excessive"
-Courgette Genovese,Stock de graines,déjà essayé,,moyen,plein soleil,"Courgette non coureuse à fruits vert clair cylindriques. Aime le soleil, la chaleur et l'eau régulière ; sensible à l'oïdium.","semis avril-mai, récolte juillet-octobre — 15 pieds (Invivo)"
-Concombre Tendergreen Burpless,Stock de graines,déjà essayé,,élevé,plein soleil,"Concombre grimpant à longs fruits verts lisses, sans amertume. Aime la chaleur et l'eau régulière, idéal en serre.",bio & reproductible (Kokopelli) — semer maintenant jusqu'à fin juin
-Pastèque Sugar Baby,Stock de graines,déjà essayé,,élevé,plein soleil,"Pastèque coureuse à petits fruits ronds vert foncé (19-22 cm) et chair rouge sucrée. Exige chaleur et soleil, culture idéale en serre.","bio & reproductible (Kokopelli) — fruit 19-22cm, semis mai-juin"
-Artichaut Gros Vert de Laon,Stock de graines,jamais essayé,,moyen,plein soleil,"Vivace à grandes feuilles argentées très découpées et gros capitules verts. Prend de la place, rustique avec protection l'hiver.","semis mars-juin (Caillard) — vivace, prévoir place en pleine terre"
-Chou Brocoli Calabrese Vert,Stock de graines,jamais essayé,,moyen,plein soleil,Brocoli à tête verte compacte et pousses latérales. Gourmand en azote ; jeunes plants sensibles aux limaces et aux chenilles.,récolte avril-juin — semer juillet-août pour récolte printanière
-Radis Rond Écarlate,Stock de graines,déjà essayé,,moyen,mi-ombre,"Petit radis rond rouge vif à cœur blanc, prêt en un mois. Arrosage régulier sinon il devient piquant et creux.","semis mars-sept, récolte avril-oct — convient pot/bac (Invivo)"
-Radis Noir Long Poids d'Horloge,Stock de graines,déjà essayé,,moyen,mi-ombre,"Radis d'hiver à longue racine noire et chair blanche piquante. Semis d'été, récolte en automne-hiver.","semis mai-octobre, récolte 4 mois après — légume d'autrefois reproductible (Vilmorin)"
-Carottes 10 variétés,Stock de graines,déjà essayé,,moyen,plein soleil,"Mélange de carottes de couleurs et formes variées, feuillage très découpé. Préfèrent un sol léger et sans cailloux.","sachet kraft — semis toute saison, semer en lignes"
-Rhubarbe Géante Victoria,Stock de graines,déjà essayé,,moyen,mi-ombre,"Vivace aux immenses feuilles et gros pétioles rouges comestibles (les feuilles sont toxiques). Aime un sol riche et frais, place permanente.","grainetier bio Ferme de Sainte Marthe — vivace, prévoir emplacement permanent"
-Oignon Rouge Pâle de Niort,Stock de graines,déjà essayé,,faible,plein soleil,"Oignon à bulbe rouge pâle aplati, feuilles creuses en tube. Peu d'eau, sol drainant et soleil.","bio & reproductible (Kokopelli) — semis fév-mai, récolte juil-sept, 500 plants"
-Betterave de Détroit,Stock de graines,déjà essayé,,moyen,plein soleil,"Betterave à racine ronde rouge foncé et feuilles vertes à nervures rouges. Facile, semis échelonnés possibles.","semis mars-juin, récolte juin-novembre (Invivo) — déjà semé en serre"
-Mâche Ronde Maraîchère,Stock de graines,jamais essayé,,moyen,mi-ombre,"Salade d'hiver en petites rosettes de feuilles rondes vert foncé. Semis de fin d'été, très rustique.","semis août-septembre, récolte 2 mois après — précoce résistante mildiou (Vilmorin)"
-Épinard Géant d'Hiver,Stock de graines,jamais essayé,,moyen,mi-ombre,"Épinard rustique aux grandes feuilles vert foncé, pour semis de fin d'été et récolte en automne-hiver.","semis juillet-septembre, récolte 2-3 mois — rustique et productif (Vilmorin)"
-Tomate-Cerise Scarlet Starfire / Starfire Isis,Stock de graines,déjà essayé,,élevé,plein soleil,"Tomate-cerise à petits fruits rouges en grappes. Aime chaleur et soleil, tuteurer et arroser au pied.","bio & reproductible (Kokopelli) — variété mi-saison, production Isère, 33+ plants"
-Tomate Fireworks,Stock de graines,déjà essayé,,élevé,plein soleil,"Tomate précoce à fruits ronds rouges de taille moyenne. Aime chaleur et soleil, tuteurer et arroser au pied.","bio & reproductible (Kokopelli) — variété précoce, production Ariège"
-Tomate Calabash Red,Stock de graines,déjà essayé,,élevé,plein soleil,"Tomate ancienne à fruits rouges aplatis et côtelés. Aime chaleur et soleil, tuteurer et arroser au pied.","bio & reproductible (Kokopelli) — variété mi-saison, production Creuse"
-Aubergine Diamond,Stock de graines,déjà essayé,,élevé,plein soleil,"Variété productive à fruits allongés violet foncé de 15-25 cm. Très frileuse, à semer au chaud en fin d'hiver et cultiver en serre ou en plein soleil.","bio & reproductible (Kokopelli) — fruit 15-25cm, production Dordogne, semis fév-mai"
-Endive (variété non précisée),Stock de graines,jamais essayé,,moyen,mi-ombre,"Chicorée cultivée pour sa racine, qu'on force à l'obscurité en hiver pour obtenir les chicons. Semis au printemps.",(Invivo) — vérifier variété exacte sur le sachet
-Haricot nain Purple Queen,Stock de graines,déjà essayé,,moyen,plein soleil,"Haricot nain à gousses violettes qui verdissent à la cuisson. Craint le froid, semis quand le sol est chaud.","bio & reproductible (Ferme de Sainte Marthe) — semis avril-juillet, récolte juillet-oct"
-Haricot nain Délinel filet sans fil,Stock de graines,déjà essayé,,moyen,plein soleil,"Haricot nain filet sans fil, fines gousses vertes. Craint le froid, semis quand le sol est chaud.",(GrainOsol) — conditionné en France
-Pois à Grain Rond Petit Provençal,Stock de graines,déjà essayé,,moyen,plein soleil,"Petit pois nain (40 cm) à gousses vertes, résistant au froid. Semis de fin d'hiver ou d'automne.","pied nain 40cm, résistant au froid (Invivo) — semis fév-nov, récolte mai-juillet"
-Basilic Grandes Feuilles,Stock de graines,déjà essayé,,moyen,plein soleil,"Basilic aux grandes feuilles vertes gaufrées très parfumées. Frileux, se sème au chaud au printemps ; pincer les fleurs pour prolonger la récolte.",(myfood) — à semer maintenant en serre ou pot
-Basilic Bio Aromatico della riviera ligure,Stock de graines,jamais essayé,,moyen,plein soleil,"Basilic génois de Ligurie, feuilles moyennes lisses au parfum doux, idéal pour le pesto. Frileux, semis au chaud au printemps.",bio (Est Wood) — variété italienne parfumée
-Pois de Senteur Bio en Mélange,Stock de graines,déjà essayé,,moyen,plein soleil,"Fleur grimpante annuelle aux tiges ailées et fleurs papillon très parfumées de couleurs variées. Attire les pollinisateurs, à palisser.",attire pollinisateurs (Vilmorin) — semis avril-mai
-Œillets d'Inde,Stock de graines,déjà essayé,,faible,plein soleil,"Annuelle compacte aux feuilles découpées odorantes et fleurs orange, jaunes ou rouges. Réputée repousser certains nuisibles au potager.","sachet Fine pour Maîtresses — déjà en pépinière aussi, repousse nuisibles"
-Mélange fleurs Pour couvrir ma jolie Maman,Stock de graines,jamais essayé,,faible,plein soleil,Mélange de fleurs annuelles faciles pour une prairie colorée. Semis direct au printemps.,sachet cadeau — mélange courge/reine type annuelles
-Seedshaker Butterfly Mix,Stock de graines,jamais essayé,,faible,plein soleil,Mélange de 20 espèces de fleurs mellifères qui attirent les papillons. Semis direct sur sol préparé au printemps.,20 espèces de fleurs pour 15m² — secouer directement sur sol préparé
-Balsamine à Fleur de Camélia double variée,Stock de graines,déjà essayé,,moyen,mi-ombre,"Annuelle buissonnante (50 cm) aux fleurs doubles type camélia, roses, rouges ou blanches, de juin à septembre. Aime la mi-ombre fraîche.","semis avril-juin, floraison juin-septembre, 50cm (Vilmorin Vita)"
-Mélange pour Abeilles Bijenmix,Stock de graines,déjà essayé,,faible,plein soleil,Mélange de 12 fleurs mellifères pour les abeilles. Semis direct de mars à septembre.,12 variétés de fleurs pour ±50m² — semis mars-septembre (Faniflora)
-Capucine,Stock de graines,déjà essayé,,faible,plein soleil,"Annuelle grimpante ou rampante aux feuilles rondes en ombrelle et fleurs orange, jaunes ou rouges comestibles. Attire les pucerons et les chenilles.","(reste des graines) — du jardin de la maman d'Emilie — pleine terre, semis avril-mai. ⚠️ PAS à côté des choux : attire les chenilles qui les mangent"
-Vesce d'Hiver,Stock de graines,jamais essayé,,faible,plein soleil,"Engrais vert (Vicia villosa), légumineuse grimpante à fleurs violettes qui fixe l'azote et ameublit le sol. Semis d'automne, à faucher au printemps.","engrais vert bio (Vicia villosa) — 80g, fixe l'azote, améliore structure du sol argileux"
-Butternut 2025 (semé 5 juin),Jardin de derrière,semis,en germination,moyen,plein soleil,"Courge coureuse à fruits beiges en forme de poire et chair orange douce. Exige soleil, chaleur et beaucoup de place. Jeunes plants très appréciés des limaces.","3 trous, 1 graine chacun, espacés — zone repérée avec forte présence limaces/escargots (familles entières), granulés phosphate de fer posés en protection — 01/10 déplacée : Jardin"
-Potimarron 2025 (semé 5 juin),Jardin de derrière,semis,en germination,moyen,plein soleil,"Courge coureuse à fruits orange en forme de toupie, au goût de châtaigne. Exige soleil et place. Jeunes plants très appréciés des limaces.","3 trous, 1 graine chacun, espacés — même zone que butternut, granulés phosphate de fer posés en protection — 01/10 déplacée : Jardin"
-Concombre Tendergreen Burpless (2 plants),Serre,en croissance,,élevé,plein soleil,"Concombre grimpant à longs fruits verts lisses, sans amertume. Aime la chaleur et l'eau régulière.",serre ou jardin — 2 plants en place — stock graines disponible
-Betterave de Détroit (7 plants),Potager mi-ombre,à surveiller,En fin de vie,moyen,plein soleil,"Betterave à racine ronde rouge foncé et feuilles vertes à nervures rouges. Facile, semis échelonnés possibles.",7 plants semés 12 mai — prêts début août. Facile à resemer pour succession
-Patates douces,Jardin de derrière,en croissance,,moyen,plein soleil,"Plante rampante aux feuilles en cœur et longues tiges, tubercules à chair orange. Frileuse, aime chaleur et sol léger.",sacs à patates (serre) — dans des sacs à patates en serre — sortir quand temps stabilisé (tâche en cours)
-Potimarron 2025,Stock de graines,jamais essayé,,moyen,plein soleil,"Courge coureuse à fruits orange en forme de toupie, au goût de châtaigne. Exige soleil et place. Jeunes plants très appréciés des limaces.","(maison) — graines maison 2025 — possible F1 hybride à confirmer. URGENT : semer cette semaine en pleine terre, dernière chance"
-"Plante araignée / Chlorophytum (meuble fenêtre est, collée)",Intérieur,en forme,,moyen,3/5,"Chlorophytum : touffe de longues feuilles en lanières vertes et blanches qui retombent, avec des stolons portant des bébés plantes. Très facile.","meuble devant fenêtre est — pot 10cm — Touffe de longues feuilles fines en lanières, vert et blanc panaché, retombantes en étoile depuis le centre du pot — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
-"Plante araignée / Chlorophytum (meuble fenêtre est, décalée)",Intérieur,en forme,,moyen,3/5,"Chlorophytum : touffe de longues feuilles en lanières vertes et blanches qui retombent, avec des stolons portant des bébés plantes. Très facile.","meuble devant fenêtre est, légèrement décalée — pot 10cm — Touffe de longues feuilles fines en lanières, vert et blanc panaché, retombantes en étoile depuis le centre du pot — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
-Pothos suspendu,Intérieur,en forme,,moyen,3/5,"Liane d'intérieur (Epipremnum) aux feuilles en cœur vert panaché de jaune, retombante ou grimpante. Facile, laisser sécher le dessus du terreau entre deux arrosages.","suspendu, ~5m de la fenêtre est — pot 10cm — Feuilles en cœur vert/jaune marbré, tiges retombantes — sèche plus vite en suspension qu'en pot posé — Arrosage : un verre d'eau (~150ml) 1 fois par semaine — vérifier plus souvent si l'air est sec"
-Pothos (meuble fenêtre est),Intérieur,en forme,,moyen,3/5,"Liane d'intérieur (Epipremnum) aux feuilles en cœur vert panaché de jaune, retombante ou grimpante. Facile, laisser sécher le dessus du terreau entre deux arrosages.","meuble devant fenêtre est — pot 10cm — Feuilles en cœur vert/jaune marbré, tiges grimpantes ou retombantes — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
-Langue de belle-mère / Sansevieria (plante principale),Intérieur,en forme,,faible,3/5,"Sansevieria : feuilles raides et pointues dressées, vert marbré parfois bordé de jaune. Très résistante à la sécheresse, craint l'excès d'eau.","meuble devant fenêtre est, déplaçable ailleurs — pot 10cm — Feuilles raides, pointues, dressées verticalement, vert marbré, très résistante à la sécheresse. Plante d'origine en bonne forme — peut être déplacée ailleurs dans la maison pour décorer — Arrosage : un petit verre d'eau (~100ml) toutes les 2-3 semaines"
-Langue de belle-mère / Sansevieria (rejets repiqués),Intérieur,à surveiller,"nouvelle pousse étiolée, fine, tordue et translucide",faible,5/5,"Sansevieria : feuilles raides et pointues dressées, vert marbré parfois bordé de jaune. Très résistante à la sécheresse, craint l'excès d'eau.","nouveau pot, reste au soleil pour récupérer — pot 10cm — Rejets de la plante principale, séparés et repiqués dans un nouveau pot — pousse étiolée/fine/tordue/translucide : manque de lumière sur la nouvelle pousse et/ou excès d'arrosage. À laisser en plein soleil et espacer les arrosages pour qu'ils récupèrent une forme normale — Arrosage : un petit verre d'eau (~100ml) toutes les 2-3 semaines — réduire si excès actuel"
-Pilea peperomioides,Intérieur,en forme,,moyen,4/5,"Plante à monnaie chinoise : feuilles rondes plates comme des pièces sur de fines tiges. Lumière vive indirecte, fait des rejets.","meuble fenêtre est — pot 10cm — Feuilles rondes plates en forme de pièce de monnaie sur tiges fines, port buissonnant — confirmée : grosses feuilles rondes — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
-"Tradescantia zebrina/pallida (x2, meuble fenêtre est)",Intérieur,en forme,,moyen,3/5,"Misère : feuillage retombant violet et vert à rayures argentées. Facile, se bouture très bien ; s'étiole si trop sombre.","meuble devant fenêtre est, légèrement décalées — pots 10cm — Feuillage panaché violet/vert avec rayures argentées, port retombant ou buissonnant — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
-Tradescantia zebrina/pallida (panier suspendu),Intérieur,à surveiller,"fine, peu de fleurs",moyen,4/5,"Misère : feuillage retombant violet et vert à rayures argentées. Facile, se bouture très bien ; s'étiole si trop sombre.","panier suspendu — Feuillage panaché violet/vert avec rayures argentées, port retombant — plus clairsemée que les 2 autres, peu de fleurs. Était déjà étiolée avant le réglage à 4/5 (probablement pas un manque de lumière) — tailler les tiges dégarnies pour relancer une pousse plus dense, réévaluer dans quelques semaines — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
-Ficus ginseng,Intérieur,en forme,,faible,4/5,"Petit ficus au tronc et racines renflés noueux et petites feuilles ovales vert foncé brillant. Tolère le sec, aime la lumière.","meuble devant fenêtre est — pot 10cm — Tronc/racines renflées noueuses, petites feuilles ovales vert foncé brillant — Arrosage : un verre d'eau (~150ml) toutes les 1-2 semaines (semi-succulent, tolère le sec)"
-Peperomia rotundifolia,Intérieur,en forme,,moyen,3/5,"Petite plante aux feuilles rondes charnues sur tiges fines retombantes. Arrosage léger, lumière indirecte.","~3m de la fenêtre ouest — pot 10cm — Petites feuilles rondes charnues, tiges fines retombantes — Arrosage : un verre d'eau (~150ml) 1 fois par semaine"
-Succulente non identifiée (étagère blanche),Intérieur,à surveiller,peu de feuillage,faible,4/5,"Succulente aux feuilles charnues en palette et tiges ligneuses. Très peu d'eau, beaucoup de lumière.","meuble devant fenêtre est, près du basilic — pot 10cm — Pot côtelé moutarde/ocre, feuilles charnues en palette, tiges ligneuses rougeâtres duveteuses — espèce précise non identifiée (type Crassula/Echeveria arborescens). Peu de feuilles actuellement malgré la forte lumière — surveiller racines/arrosage — Arrosage : un petit verre d'eau (~100ml) toutes les 2-3 semaines — laisser sécher complètement"
-Patate douce (plante d'ornement),Intérieur,en forme,,élevé,4/5,Patate douce d'ornement : longues lianes retombantes aux feuilles en cœur vert vif. Aime la lumière et un terreau frais.,"~2m de la fenêtre est, derrière un poteau — pot 20cm — Feuilles en cœur vert vif retombantes en longues lianes — confondue au premier coup d'œil avec du lierre — Arrosage : un mug d'eau (~300ml) 2 fois par semaine — garder le terreau humide sans détremper"
-Figuier,Liste de souhaits,à acheter,,moyen,plein soleil,"Arbre aux grandes feuilles rugueuses à 3-5 lobes, fruits violets ou verts en fin d'été. Rustique jusqu'à -12 °C environ, aime la chaleur et un sol drainant.",
+nom,zone,etat,etat_detail,besoins_eau,ensoleillement,notes
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
