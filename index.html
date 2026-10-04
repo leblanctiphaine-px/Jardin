@@ -13,7 +13,7 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
 @font-face{font-family:"Paragon";src:url("fonts/paragon-regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
 /* Layout : en-tête avec onglets par fichier, barre d'outils, liste dense de fiches, éditeur en fenêtre */
 :root{
-  --bg:#f7f7f7; --surface:#fdfdfd; --accent-surface-soft:#f0f0f6; --accent-brown:#542a12; --ink:#361300; --muted:#50443f; --line:#b69082; --line-strong:var(--accent-brown);
+  --bg:#f7f7f7; --surface:#fdfdfd; --accent-surface-soft:#f0f0f6; --accent-brown:#542a12; --ink:#361300; --muted:#50443f; --line:#50443f; --line-strong:var(--accent-brown);
   --accent:#3d6a3a; --accent-soft:#660866; --on-accent:#f2eee6; --on-soft:#f2eee6;
   --ok:#1d8a53; --warn:#ca6413; --bad:#9f071a; --ok-soft:color-mix(in srgb,var(--ok) 14%,var(--surface)); --warn-soft:color-mix(in srgb,var(--warn) 14%,var(--surface)); --bad-soft:color-mix(in srgb,var(--bad) 14%,var(--surface));
   --idle:var(--muted); --idle-soft:var(--accent-surface-soft);
@@ -364,6 +364,19 @@ body{font-size:14px}
 .plus-desc{appearance:none;border:0;background:none;padding:0;margin-top:-6px;justify-self:start;align-self:flex-start;font:500 14px/1.2 var(--f-body);color:var(--accent-brown);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 /* Maquette (15h30) : états de la fiche en small, coins 6px */
 .etats .chip.etat{font:400 12px/1.3 var(--f-body);border-radius:6px;padding:2px 7px}
+/* DS (15h40) : style « tag » pour les tags d'état, d'urgence et de date. 12px regular, coins radius-tag, 2px 5px, contour 1px ;
+   non choisi = fond on-accent, contour et texte marron ; choisi ou affiché = couleur système pleine et texte on-accent */
+:root{--radius-tag:6px}
+.pill,.chip.etat,.etats .chip.etat,.today li .pill{font:400 12px/1.3 var(--f-body);border-radius:var(--radius-tag);padding:2px 5px;border:1px solid transparent}
+.pill.ok{border-color:var(--ok)}.pill.warn{border-color:var(--warn)}.pill.bad,.pill.slug{border-color:var(--bad)}
+.chip.etat:not([aria-pressed="true"]){background:var(--on-accent);border-color:var(--accent-brown);color:var(--accent-brown)}
+/* Maquette (15h45) : tâches de la fiche sans séparateur ni ombre ; champs au contour clair #e3c8b9 (line est devenu foncé dans le DS) */
+.liees{border-top:0;padding-top:6px}
+.liees .check{box-shadow:none}
+:root{--field-line:#e3c8b9}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--field-line:var(--line)}}
+:root[data-theme="dark"]{--field-line:var(--line)}
+input:not([type=checkbox]),select,textarea{border-color:var(--field-line)}
 </style>
 </head>
 <body>
