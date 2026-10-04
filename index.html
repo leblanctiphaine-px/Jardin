@@ -260,7 +260,9 @@ body{font-size:14px}
 .pill.plante,.chip.etat[aria-pressed="true"]:not(.ok):not(.warn):not(.bad){color:var(--on-soft)}
 /* Description et zones d'info : accent-surface-soft ; tags, cartes et champs : surface */
 .carte,.md code{background:var(--accent-surface-soft);color:var(--ink)}
-.carte .badge{background:var(--surface)}
+/* Zone, eau, soleil de la fiche : simple ligne d'info, pas des tags */
+.carte .badges{gap:4px 14px}
+.carte .badge{background:none;padding:0;border-radius:0;font-size:14px;font-weight:400;color:var(--muted)}
 .close:hover{background:var(--surface)}
 .add-row:hover{background:var(--surface)}
 /* Boutons : primaires verts pleins + on-accent, secondaires en contour marron ; Supprimer reste rouge */
