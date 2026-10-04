@@ -181,10 +181,8 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-size:15px}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.35;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .25 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-header{justify-content:space-between;align-items:flex-start;gap:16px;padding-top:8px}
-.titre h1{font:700 clamp(1.8rem,6.5vw,2.6rem)/1.08 var(--f-display);letter-spacing:-.035em}
-.titre .jour{margin:0 0 6px;color:var(--muted);font-size:.95rem}
-.titre .jour::first-letter{text-transform:uppercase}
+header{padding-top:0}
+header+.home,header~#v-accueil{margin-top:12px}
 button,.btn,.chip,.row,.card,.fab,.add-row,.gear{transition:background-color .2s,border-color .2s,color .2s,box-shadow .25s,transform .2s cubic-bezier(.2,.8,.2,1)}
 .btn:active,.chip:active,.card:active,.fab:active,.row:active{transform:scale(.985)}
 .btn{border-radius:999px;font-weight:600}
@@ -245,7 +243,6 @@ dialog{border:0;border-radius:18px;box-shadow:var(--shadow-up)}
 
 <div class="wrap">
   <header>
-    <div class="titre"><p class="jour" id="jour"></p><h1>Carnet du jardin</h1></div>
     <div class="sync">
       <span id="sync" class="syncst" aria-live="polite"></span>
       <button class="gear" id="btn-reglages" data-tab="connexion" aria-label="Réglages" title="Réglages" hidden>
@@ -807,7 +804,6 @@ function renderAujourdhui(){
     .sort((a,b)=>parDate(a,b)||(a.t.priorite==="urgent"?-1:0)-(b.t.priorite==="urgent"?-1:0));
   const quand=t=>!t.date?"urgent":t.date<auj?`en retard · ${dateCourte(t.date)}`:t.date===auj?"aujourd'hui":dateCourte(t.date);
   const vus=presse.slice(0,4);
-  $("#jour").textContent=new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
   const urg=ouv.filter(({t})=>t.priorite==="urgent").length;
   $("#today").innerHTML=`<div class="today-h"><h2>Tâches</h2><span>${ouv.length} ouverte${ouv.length>1?"s":""}${urg?` · ${urg} urgente${urg>1?"s":""}`:""}</span></div>`+(vus.length
     ? `<ul>${vus.map(({t,i})=>`<li><button data-edit-tache="${i}"><span>${esc(t.tache)}</span><small class="${t.date&&t.date<auj?"retard":""}">${quand(t)}</small></button></li>`).join("")}</ul>`
