@@ -13,9 +13,9 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
 @font-face{font-family:"Paragon";src:url("fonts/paragon-regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
 /* Layout : en-tête avec onglets par fichier, barre d'outils, liste dense de fiches, éditeur en fenêtre */
 :root{
-  --bg:#f7f7f7; --surface:#fdfdfd; --accent-surface-soft:#e7e9ef; --accent-brown:#6d3f25; --ink:#4e1d02; --muted:#88665a; --line:#cdaa9c; --line-strong:#963b05;
-  --accent:#3d6a3a; --accent-soft:#6f156f; --on-accent:#faf7ed; --on-soft:#faf7ed;
-  --ok:#2e9d65; --warn:#ca6413; --bad:#9f071a; --ok-soft:color-mix(in srgb,var(--ok) 14%,var(--surface)); --warn-soft:color-mix(in srgb,var(--warn) 14%,var(--surface)); --bad-soft:color-mix(in srgb,var(--bad) 14%,var(--surface));
+  --bg:#f7f7f7; --surface:#fdfdfd; --accent-surface-soft:#e7e9ef; --accent-brown:#542a12; --ink:#4e1d02; --muted:#775948; --line:#cdaa9c; --line-strong:#963b05;
+  --accent:#3d6a3a; --accent-soft:#660866; --on-accent:#faf7ed; --on-soft:#faf7ed;
+  --ok:#1d8a53; --warn:#ca6413; --bad:#9f071a; --ok-soft:color-mix(in srgb,var(--ok) 14%,var(--surface)); --warn-soft:color-mix(in srgb,var(--warn) 14%,var(--surface)); --bad-soft:color-mix(in srgb,var(--bad) 14%,var(--surface));
   --idle:#77736a; --idle-soft:#eeeae0;
   --shadow:0 1px 2px rgba(74,60,30,.06),0 4px 14px -6px rgba(74,60,30,.14);
   --shadow-up:0 2px 4px rgba(74,60,30,.07),0 12px 28px -10px rgba(74,60,30,.22);
@@ -291,6 +291,12 @@ body{font-size:14px}
 .pill.plante{background:var(--accent-brown);color:var(--on-accent)}
 .today{background:var(--accent-brown)}
 .add-row{border:1.5px dashed var(--accent);color:var(--accent)}
+/* Tags d'état rectangulaires arrondis (radius-md du DS) ; onglets de zone en défilement horizontal */
+:root{--radius-md:8px}
+.chip.etat,.pill.etat{border-radius:var(--radius-md)}
+#chips-plantes{flex-wrap:nowrap;overflow-x:auto;margin-left:-16px;margin-right:-16px;padding:0 16px;scrollbar-width:none}
+#chips-plantes::-webkit-scrollbar{display:none}
+#chips-plantes .chip{flex:none;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -617,13 +623,13 @@ const aSurveiller=p=>p.etat==="à surveiller";
 const RESULTATS={"réussi":"ok","mitigé":"warn","raté":"bad"};
 /* Un bilan apparaît sur toutes les fiches de la même plante (ex. un bilan « Tomates » sur chaque variété de tomate). */
 const bilansDe=nom=>{ const r=racine(nom); return S.bilans.filter(b=>b.fiche===nom||racine(b.fiche)===r||racine(b.plante)===r); };
-const dernierBilan=p=>{ const b=bilansDe(p.nom).filter(b=>b.resultat).at(-1); return b?`<span class="pill ${RESULTATS[b.resultat]??""}">${esc(b.resultat)}</span>`:""; };
+const dernierBilan=p=>{ const b=bilansDe(p.nom).filter(b=>b.resultat).at(-1); return b?`<span class="pill etat ${RESULTATS[b.resultat]??""}">${esc(b.resultat)}</span>`:""; };
 const racine=n=>{ const t=n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\(.*?\)/g,"").trim();
   return /senteur/.test(t)?"senteur":t.split(/[\s\/,]+/)[0].slice(0,5); };  // le pois de senteur est une fleur, pas un petit pois
 const nomCourt=n=>n.replace(/\s*\(.*?\)\s*/g," ").replace(/\b20\d\d\b/g,"").trim();
 const fichesProjets=()=>S.plantes.filter(x=>MODES.projets.includes(groupeDe(x)));
 const ficheProche=nom=>{ const r=racine(nom); return fichesProjets().find(x=>racine(x.nom)===r)?.nom||""; };
-const listeBilans=bs=>bs.map(b=>`<li><span class="pill ${RESULTATS[b.resultat]??""}">${esc(b.resultat)}</span> ${esc(b.pourquoi||"")} <span class="meta">${esc(b.plante)} · ${esc(b.date)}</span></li>`).join("");
+const listeBilans=bs=>bs.map(b=>`<li><span class="pill etat ${RESULTATS[b.resultat]??""}">${esc(b.resultat)}</span> ${esc(b.pourquoi||"")} <span class="meta">${esc(b.plante)} · ${esc(b.date)}</span></li>`).join("");
 /* Un bilan sur une fiche de graines la passe en « déjà essayé ». */
 function essayee(nom){ const f=S.plantes.find(x=>x.nom===nom&&groupeDe(x)==="Stock de graines");
   if(!f||f.etat==="déjà essayé") return false; f.etat="déjà essayé"; sauver("plantes",`Plantes : ${nom} déjà essayé`); return true; }
@@ -684,7 +690,7 @@ const trier=(r,z)=>z==="Stock de graines"?r.map(x=>({...x,n:0})).sort((a,b)=>ran
 const ligne=({p,i,n})=>`
     <button class="row" data-edit-plante="${i}">
       <span class="t">${esc(p.nom)}</span>
-      <span class="tags">${sensibleLimaces(p)&&!MODES.projets.includes(groupeDe(p))?'<span class="pill slug">limaces</span>':""}${groupeDe(p)==="Stock de graines"&&dernierBilan(p)||`<span class="pill ${etatClasse(p.etat)}">${esc(p.etat)}</span>${dernierBilan(p)}`}${n?`<span class="pill plante">${n} tâche${n>1?"s":""}</span>`:""}</span>
+      <span class="tags">${sensibleLimaces(p)&&!MODES.projets.includes(groupeDe(p))?'<span class="pill slug">limaces</span>':""}${groupeDe(p)==="Stock de graines"&&dernierBilan(p)||`<span class="pill etat ${etatClasse(p.etat)}">${esc(p.etat)}</span>${dernierBilan(p)}`}${n?`<span class="pill plante">${n} tâche${n>1?"s":""}</span>`:""}</span>
       ${p.etat_detail?`<span class="detail">${esc(p.etat_detail)}</span>`:""}
       ${p.besoins_eau||p.ensoleillement?`<span class="meta">${[p.besoins_eau&&"eau "+esc(p.besoins_eau),esc(p.ensoleillement)].filter(Boolean).join(" · ")}</span>`:""}
     </button>`;
