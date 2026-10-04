@@ -13,9 +13,9 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
 @font-face{font-family:"Paragon";src:url("fonts/paragon-regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
 /* Layout : en-tête avec onglets par fichier, barre d'outils, liste dense de fiches, éditeur en fenêtre */
 :root{
-  --bg:#f7f7f7; --surface:#fdfdfd; --accent-surface-soft:#e7e9ef; --accent-brown:#6d3f25; --ink:#462715; --muted:#7b7575; --line:#977569;
+  --bg:#f7f7f7; --surface:#fdfdfd; --accent-surface-soft:#e7e9ef; --accent-brown:#6d3f25; --ink:#4e1d02; --muted:#88665a; --line:#cdaa9c; --line-strong:#963b05;
   --accent:#3d6a3a; --accent-soft:#6f156f; --on-accent:#faf7ed; --on-soft:#faf7ed;
-  --ok:#6db691; --ok-soft:#e7eee2; --warn:#de8d50; --warn-soft:#fbece2; --bad:#d85d84; --bad-soft:#f8e8e8;
+  --ok:#2e9d65; --warn:#ca6413; --bad:#9f071a; --ok-soft:color-mix(in srgb,var(--ok) 14%,var(--surface)); --warn-soft:color-mix(in srgb,var(--warn) 14%,var(--surface)); --bad-soft:color-mix(in srgb,var(--bad) 14%,var(--surface));
   --idle:#77736a; --idle-soft:#eeeae0;
   --shadow:0 1px 2px rgba(74,60,30,.06),0 4px 14px -6px rgba(74,60,30,.14);
   --shadow-up:0 2px 4px rgba(74,60,30,.07),0 12px 28px -10px rgba(74,60,30,.22);
@@ -24,13 +24,13 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#191a15; --surface:#22231d; --accent-surface-soft:#2c2d25; --accent-brown:#d2ab8e; --ink:#ebe7da; --muted:#a6a193; --line:#34352c;
+  --bg:#191a15; --surface:#22231d; --accent-surface-soft:#2c2d25; --accent-brown:#d2ab8e; --line-strong:#d2ab8e; --ink:#ebe7da; --muted:#a6a193; --line:#34352c;
   --accent:#9cc48c; --accent-soft:#2b3626; --on-accent:#14190f; --on-soft:#ebe7da;
   --ok:#9cc48c; --ok-soft:#28331f; --warn:#e2ad62; --warn-soft:#3a2d19; --bad:#ec9a83; --bad-soft:#3d241c;
   --idle:#aaa69a; --idle-soft:#2c2d25;
   --shadow:0 1px 2px rgba(0,0,0,.25); --shadow-up:0 10px 24px -10px rgba(0,0,0,.6); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#191a15; --surface:#22231d; --accent-surface-soft:#2c2d25; --accent-brown:#d2ab8e; --ink:#ebe7da; --muted:#a6a193; --line:#34352c;
+  --bg:#191a15; --surface:#22231d; --accent-surface-soft:#2c2d25; --accent-brown:#d2ab8e; --line-strong:#d2ab8e; --ink:#ebe7da; --muted:#a6a193; --line:#34352c;
   --accent:#9cc48c; --accent-soft:#2b3626; --on-accent:#14190f; --on-soft:#ebe7da;
   --ok:#9cc48c; --ok-soft:#28331f; --warn:#e2ad62; --warn-soft:#3a2d19; --bad:#ec9a83; --bad-soft:#3d241c;
   --idle:#aaa69a; --idle-soft:#2c2d25;
@@ -280,6 +280,8 @@ body{font-size:14px}
 .proto{background:var(--warn);color:var(--on-accent)}
 .pill::before{display:none}.pill{padding:3px 10px}
 .badge,.pill,.chip{box-shadow:none}
+/* Onglets et tags (puces de filtre et d'état) : bordure line-strong */
+.chip{border-color:var(--line-strong)}
 </style>
 </head>
 <body>
