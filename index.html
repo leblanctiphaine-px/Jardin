@@ -9,6 +9,8 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
+/* Paragon (titres et chiffres) : une seule graisse, servie depuis le dépôt. */
+@font-face{font-family:"Paragon";src:url("fonts/paragon-regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
 /* Layout : en-tête avec onglets par fichier, barre d'outils, liste dense de fiches, éditeur en fenêtre */
 :root{
   --bg:#f5f0e6; --surface:#fffdf8; --ink:#2b2a24; --muted:#6e6a5d; --line:#e5ddcc;
@@ -17,7 +19,7 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
   --idle:#77736a; --idle-soft:#eeeae0;
   --shadow:0 1px 2px rgba(74,60,30,.06),0 4px 14px -6px rgba(74,60,30,.14);
   --shadow-up:0 2px 4px rgba(74,60,30,.07),0 12px 28px -10px rgba(74,60,30,.22);
-  --f-display:"Poppins",ui-sans-serif,system-ui,sans-serif;
+  --f-display:"Paragon","Poppins",ui-sans-serif,system-ui,sans-serif;
   --f-body:"Poppins",ui-sans-serif,system-ui,sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
 }
@@ -237,6 +239,10 @@ input,select,textarea{border-radius:10px;background:var(--surface)}
 dialog{border:0;border-radius:18px;box-shadow:var(--shadow-up)}
 .toast{border-radius:999px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* Titres et chiffres en Paragon : graisse normale (pas de faux gras), les noms dans les listes restent en Poppins. */
+h1,h2,.card-t,.card-n,.group-h,.today h2,.crumb h2,.dlg h2,.sec h2,.invite-t{font-weight:400!important;font-synthesis:none;letter-spacing:0;word-spacing:.1em}
+.card-t{font-size:1.5rem}.card-n{font-size:2.1rem}.today h2{font-size:1.6rem}.crumb h2{font-size:clamp(1.8rem,5.5vw,2.2rem)}
+.row .t{font-family:var(--f-body)}
 </style>
 </head>
 <body>
