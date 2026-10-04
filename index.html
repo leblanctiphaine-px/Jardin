@@ -13,7 +13,7 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
 @font-face{font-family:"Paragon";src:url("fonts/paragon-regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
 /* Layout : en-tête avec onglets par fichier, barre d'outils, liste dense de fiches, éditeur en fenêtre */
 :root{
-  --bg:#f7f7f7; --surface:#fdfdfd; --accent-surface-soft:#f0f0f6; --accent-brown:#542a12; --ink:#361300; --muted:#775948; --line:#b69082; --line-strong:var(--accent-brown);
+  --bg:#f7f7f7; --surface:#fdfdfd; --accent-surface-soft:#f0f0f6; --accent-brown:#542a12; --ink:#361300; --muted:#50443f; --line:#b69082; --line-strong:var(--accent-brown);
   --accent:#3d6a3a; --accent-soft:#660866; --on-accent:#faf7ed; --on-soft:#faf7ed;
   --ok:#1d8a53; --warn:#ca6413; --bad:#9f071a; --ok-soft:color-mix(in srgb,var(--ok) 14%,var(--surface)); --warn-soft:color-mix(in srgb,var(--warn) 14%,var(--surface)); --bad-soft:color-mix(in srgb,var(--bad) 14%,var(--surface));
   --idle:var(--muted); --idle-soft:var(--accent-surface-soft);
@@ -308,6 +308,8 @@ body{font-size:14px}
 .add-row{border-radius:999px}
 /* Même espace en haut que les pages de liste */
 .dlg{padding-top:36px}.close{top:26px}
+/* Texte secondaire : notes perso des cartes de liste et libellés de champ (en normal) */
+.row .detail{color:var(--muted)}.f>span{font-weight:400;color:var(--muted)}
 </style>
 </head>
 <body>
