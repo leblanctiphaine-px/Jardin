@@ -1,8 +1,8 @@
 nom,zone,etat,etat_detail,besoins_eau,ensoleillement,notes
-Tournesol,Potager plein soleil,en danger,"Tout grillés, morts",,,
-Tomates,Potager plein soleil,en croissance,,,,
-Courgettes,Potager plein soleil,en croissance,,,,
-Courges,Potager plein soleil,en croissance,,,,
+Tournesol,Potager plein soleil,en danger,"Tout grillés, morts",moyen,plein soleil,"Grande plante annuelle à tige robuste et velue, larges feuilles en cœur rugueuses et énorme capitule jaune d'or au cœur brun qui suit le soleil. Demande plein soleil et chaleur ; arrosage régulier les premières semaines puis modéré, tuteur conseillé pour les grandes variétés. Les jeunes pousses sont très appréciées des limaces."
+Tomates,Potager plein soleil,en croissance,,élevé,plein soleil,"Solanacée grimpante ou buissonnante aux feuilles découpées velues et odorantes, petites fleurs jaunes en grappes, fruits charnus rouges, jaunes ou noirs selon la variété. Demande chaleur, plein soleil et un tuteur ; arrosage régulier au pied sans mouiller le feuillage (sensible au mildiou), en évitant les à-coups qui font éclater les fruits."
+Courgettes,Potager plein soleil,en croissance,,élevé,plein soleil,"Cucurbitacée buissonnante aux très grandes feuilles découpées tachetées d'argent, grosses fleurs jaunes en trompette et fruits allongés verts ou jaunes à cueillir jeunes. Gourmande : plein soleil, sol riche en compost et arrosage abondant au pied ; sensible à l'oïdium en fin de saison et aux limaces au stade jeune plant."
+Courges,Potager plein soleil,en croissance,,élevé,plein soleil,"Cucurbitacée coureuse aux longues tiges rampantes, grandes feuilles rêches et fleurs jaunes, donnant de gros fruits à peau dure (potimarron, butternut…) qui se conservent l'hiver. Demande beaucoup de place, plein soleil, un sol riche et un arrosage copieux au pied ; récolter quand le pédoncule sèche, avant les gelées."
 Tomates,Serre,en forme,"Mal en point mais rien à faire, attendons mi octobre pour les couper.",élevé,plein soleil,"Solanacée grimpante ou buissonnante aux feuilles découpées velues et odorantes, petites fleurs jaunes en grappes, fruits charnus rouges, jaunes ou noirs selon la variété. Demande chaleur, plein soleil et un tuteur ; arrosage régulier au pied sans mouiller le feuillage (sensible au mildiou), en évitant les à-coups qui font éclater les fruits."
 Gingembre,Serre,à surveiller,"planté le 03/10/2026
 En forme étonnement y en a plusieurs qui sont morts mais lui ça va...
