@@ -297,6 +297,11 @@ body{font-size:14px}
 #chips-plantes{flex-wrap:nowrap;overflow-x:auto;margin-left:-16px;margin-right:-16px;padding:0 16px;scrollbar-width:none}
 #chips-plantes::-webkit-scrollbar{display:none}
 #chips-plantes .chip{flex:none;white-space:nowrap}
+/* Onglets et états non sélectionnés : même style que les boutons secondaires (contour et texte marron) */
+.chip:not([aria-pressed="true"]){background:transparent;border-color:var(--accent-brown);color:var(--accent-brown)}
+.liees{padding-top:20px}
+#p-modif{margin-left:auto}
+.close{color:var(--accent-brown)}
 </style>
 </head>
 <body>
