@@ -383,6 +383,9 @@ input:not([type=checkbox]),select,textarea{border-color:var(--line-field)}
 /* Liste : flèche blanche dans un rond aubergine, comme sur la fiche */
 .row .tache-l .go{flex:none;width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--on-accent);display:grid;place-items:center}
 .row .tache-l .go svg{width:16px;height:16px;color:var(--on-accent)}
+/* Liste : séparateur seulement entre deux tâches */
+.row .tache-l{border-top:0;padding-top:4px}
+.row .tache-l+.tache-l{border-top:1px solid var(--line-field);padding-top:8px;margin-top:0}
 </style>
 </head>
 <body>
