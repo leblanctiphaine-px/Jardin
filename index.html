@@ -13,7 +13,7 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
 @font-face{font-family:"Paragon";src:url("fonts/paragon-regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
 /* Layout : en-tête avec onglets par fichier, barre d'outils, liste dense de fiches, éditeur en fenêtre */
 :root{
-  --bg:#f7f7f7; --surface:#e7e9ef; --ink:#462715; --muted:#7b605e; --line:#e5ddcc;
+  --bg:#f7f7f7; --surface:#fdfdfd; --accent-surface-soft:#e7e9ef; --ink:#462715; --muted:#7b605e; --line:#e5ddcc;
   --accent:#3d6a3a; --accent-soft:#895e89; --on-accent:#faf7ed; --on-soft:#faf7ed;
   --ok:#258319; --ok-soft:#d1e5cf; --warn:#d1691b; --warn-soft:#f4d8c4; --bad:#af1a2b; --bad-soft:#eccdcd;
   --idle:#77736a; --idle-soft:#eeeae0;
@@ -24,13 +24,13 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#191a15; --surface:#22231d; --ink:#ebe7da; --muted:#a6a193; --line:#34352c;
+  --bg:#191a15; --surface:#22231d; --accent-surface-soft:#2c2d25; --ink:#ebe7da; --muted:#a6a193; --line:#34352c;
   --accent:#9cc48c; --accent-soft:#2b3626; --on-accent:#14190f; --on-soft:#ebe7da;
   --ok:#9cc48c; --ok-soft:#28331f; --warn:#e2ad62; --warn-soft:#3a2d19; --bad:#ec9a83; --bad-soft:#3d241c;
   --idle:#aaa69a; --idle-soft:#2c2d25;
   --shadow:0 1px 2px rgba(0,0,0,.25); --shadow-up:0 10px 24px -10px rgba(0,0,0,.6); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#191a15; --surface:#22231d; --ink:#ebe7da; --muted:#a6a193; --line:#34352c;
+  --bg:#191a15; --surface:#22231d; --accent-surface-soft:#2c2d25; --ink:#ebe7da; --muted:#a6a193; --line:#34352c;
   --accent:#9cc48c; --accent-soft:#2b3626; --on-accent:#14190f; --on-soft:#ebe7da;
   --ok:#9cc48c; --ok-soft:#28331f; --warn:#e2ad62; --warn-soft:#3a2d19; --bad:#ec9a83; --bad-soft:#3d241c;
   --idle:#aaa69a; --idle-soft:#2c2d25;
@@ -257,9 +257,10 @@ body{font-size:14px}
 .pill{font:400 12px/1.3 var(--f-body)}
 .btn,.add-row,.today .plus,.fab{font-weight:500}
 /* Aubergine (accent-soft) : seulement badges et pastilles. Grandes surfaces : marron ou vert ; la description reste discrète. */
-.pill.plante,.chip.etat[aria-pressed="true"]:not(.ok):not(.warn):not(.bad),.md code{color:var(--on-soft)}
-.carte{background:var(--surface);color:var(--ink)}
-.carte .badge{background:var(--bg)}
+.pill.plante,.chip.etat[aria-pressed="true"]:not(.ok):not(.warn):not(.bad){color:var(--on-soft)}
+/* Description et zones d'info : accent-surface-soft ; tags, cartes et champs : surface */
+.carte,.md code{background:var(--accent-surface-soft);color:var(--ink)}
+.carte .badge{background:var(--surface)}
 .close:hover{background:var(--surface)}
 .add-row:hover{background:var(--surface)}
 /* Boutons : vert accent + on-accent ; Supprimer reste rouge */
