@@ -242,7 +242,11 @@ dialog{border:0;border-radius:18px;box-shadow:var(--shadow-up)}
 /* Titres et chiffres en Paragon : graisse normale (pas de faux gras), les noms dans les listes restent en Poppins. */
 h1,h2,.card-t,.card-n,.group-h,.today h2,.crumb h2,.dlg h2,.sec h2,.invite-t{font-weight:400!important;font-synthesis:none;letter-spacing:0;word-spacing:.1em}
 .card-t{font-size:1.5rem}.card-n{font-size:2.1rem}.today h2{font-size:1.6rem}.crumb h2{font-size:clamp(1.8rem,5.5vw,2.2rem)}
-.row .t{font-family:var(--f-body)}
+/* Paragon aussi pour tous les titres de cartes et les textes longs (description, contexte, notes perso). */
+.row .t,.task .t,.fiche-t,.md h3,.today li span{font-family:var(--f-display);font-weight:400;font-synthesis:none;letter-spacing:0;word-spacing:.1em}
+.row .t{font-size:1.12rem}.task .t,.today li span{font-size:1.05rem}.fiche-t{font-size:1.05rem}.md h3{font-size:1.1rem}
+.carte .desc,.md,.row .detail,#p-perso,#t-notes{font-family:var(--f-display);font-weight:400;font-size:1.05rem;line-height:1.5;word-spacing:.08em}
+.md{font-size:1.02rem}
 /* Texte léger pour s'accorder à Paragon : 300 courant, 400 pour les libellés, 500 pour l'accent. */
 body{font-weight:300}
 b,strong{font-weight:500}
