@@ -353,6 +353,15 @@ body{font-size:14px}
 .liees .check .go{flex:none;width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--on-accent);display:grid;place-items:center}
 .liees .check .go svg{width:16px;height:16px}
 .today li .pill{font:500 12px/1.3 var(--f-body);padding:3px 10px}
+/* Commentaire maquette (15h27) : zone en Paragon marron, eau et lumière en 3 icônes, description sur 3 lignes avec « En savoir plus » */
+.info-ligne{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;font:400 14px/1.3 var(--f-display);color:var(--accent-brown)}
+.jauge{display:inline-flex;gap:2px}
+.jauge>span{display:inline-flex;color:color-mix(in srgb,var(--accent-brown) 25%,transparent)}
+.jauge>span.on{color:var(--accent-brown)}
+.jauge>span.on svg{fill:currentColor}
+.carte .desc{color:var(--muted);font-size:12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.carte .desc.ouverte{display:block;-webkit-line-clamp:unset;overflow:visible}
+.plus-desc{appearance:none;border:0;background:none;padding:0;margin-top:-6px;justify-self:start;align-self:flex-start;font:500 14px/1.2 var(--f-body);color:var(--accent-brown);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -805,14 +814,18 @@ function editPlante(i){
     besoins_eau:(p||base).besoins_eau,ensoleillement:(p||base).ensoleillement,notes:(p||base).notes});
   /* Eau, soleil et description sont remplis par Claude (routine qui complète les plantes ajoutées) : lecture seule ici. */
   /* Nom et zone ne bougent pas souvent : en lecture seule sur la carte, modifiables via « Modifier ». */
-  const info=()=>{ const q=p||base, b=[];
-    const maj1=s=>s.charAt(0).toUpperCase()+s.slice(1);
-    if(!nouveau||mode!=="projets") b.push(groupeDe(q));
-    if(q.besoins_eau) b.push(`Eau ${q.besoins_eau}`);
-    if(q.ensoleillement) b.push(/\/5$/.test(q.ensoleillement)?`Lumière ${q.ensoleillement}`:maj1(q.ensoleillement));
-    /* Ligne d'info simple, comme la maquette : « Zone · Eau moyen · Plein soleil ». */
-    $("#p-info").innerHTML=(b.length?`<p class="info-ligne">${esc(b.join(" · "))}</p>`:"")+
-      (q.notes?`<p class="desc">${esc(q.notes)}</p>`:`<p class="attente">🌱 Claude complétera l'eau, le soleil et la description d'ici quelques heures.</p>`); };
+  const info=()=>{ const q=p||base;
+    /* Eau et lumière en 3 icônes, d'autant plus colorées que le besoin est fort ; le détail va dans la description. */
+    const niv=(v,o)=>v?/^(\d)\/5$/.test(v)?Math.ceil(+v[0]*3/5):o[v]??0:0;
+    const jauge=(n,ico,titre)=>n?`<span class="jauge" role="img" aria-label="${esc(titre)}" title="${esc(titre)}">${[1,2,3].map(k=>`<span class="${k<=n?"on":""}">${ico}</span>`).join("")}</span>`:"";
+    const eau=niv(q.besoins_eau,{"faible":1,"moyen":2,"élevé":3,"très élevé":3}), sol=niv(q.ensoleillement,{"ombre":1,"mi-ombre":2,"plein soleil":3});
+    const zone=!nouveau||mode!=="projets"?groupeDe(q):"";
+    $("#p-info").innerHTML=(zone||eau||sol?`<p class="info-ligne">${zone?`<span>${esc(zone)}</span>`:""}${jauge(eau,ICO_GOUTTE,`Eau : ${q.besoins_eau}`)}${jauge(sol,ICO_SOLEIL,/\/5$/.test(q.ensoleillement)?`Lumière : ${q.ensoleillement}`:cap(q.ensoleillement))}</p>`:"")+
+      (q.notes?`<p class="desc">${esc(q.notes)}</p><button type="button" class="plus-desc" hidden aria-expanded="false">En savoir plus</button>`:`<p class="attente">🌱 Claude complétera l'eau, le soleil et la description d'ici quelques heures.</p>`);
+    /* Description longue : 3 lignes, puis « En savoir plus » déplie le reste. */
+    const d=$("#p-info .desc"), btn=$("#p-info .plus-desc");
+    if(d&&btn) requestAnimationFrame(()=>{ btn.hidden=d.scrollHeight<=d.clientHeight+1;
+      btn.onclick=()=>{ const o=d.classList.toggle("ouverte"); btn.textContent=o?"Moins":"En savoir plus"; btn.setAttribute("aria-expanded",o); }; }); };
   info();
   if(p) $("#dlg-form").classList.add("lecture");
   /* Ouvre le projet Jardin dans Claude, avec le nom de la plante copié pour le coller dans la question. */
@@ -896,6 +909,8 @@ const ICO_PLANTE=`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" st
 const ICO_CAL=`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>`;
 const dateLongue=iso=>new Date(iso+"T12:00").toLocaleDateString("fr-FR",{day:"2-digit",month:"long",...(iso.slice(0,4)!==String(new Date().getFullYear())?{year:"numeric"}:{})});
 const ICO_FLECHE=`<svg class="fleche" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>`;
+const ICO_GOUTTE=`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>`;
+const ICO_SOLEIL=`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`;
 const parDate=(a,b)=>(a.t.date||"9999")<(b.t.date||"9999")?-1:(a.t.date||"9999")>(b.t.date||"9999")?1:0;
 /* Tâches ouvertes par priorité ; les tâches faites dans une section repliée tout en bas. */
 let fermeesOuvertes=false;
