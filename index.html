@@ -444,7 +444,7 @@ header{justify-content:space-between;align-items:center}
 /* Accueil : tâches en 14px medium, urgence en 13px (retouche de Tiph dans la maquette) */
 .today li button>span:first-child{font:500 14px/1.4 var(--f-body)}
 .today li .tg{font-size:13px}
-.marque{gap:8px}.marque .nom{font:700 18px/1 var(--f-body);word-spacing:0}
+.marque{gap:6px}.marque .nom{font:700 27px/1 var(--f-body);word-spacing:0;color:var(--accent-brown)}
 .carte .limaces{align-items:center}.carte .limaces .pt{flex:none;width:6px;height:6px;border-radius:50%;background:var(--bad)}
 /* Onglets non sélectionnés sur fond on-accent ; « + Ajouter » sur fond surface, pointillé 1px (maquette de Tiph) */
 .chip:not(.etat):not([aria-pressed="true"]){background:var(--on-accent)}
@@ -461,7 +461,7 @@ header{justify-content:space-between;align-items:center}
 
 <div class="wrap">
   <header>
-    <div class="marque"><svg class="logo" viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="var(--accent-brown)"/><path d="M18 18C10.2 18 6 13.8 6 6C13.8 6 18 10.2 18 18Z" fill="var(--on-accent)"/></svg><span class="nom">Casa verte</span></div>
+    <div class="marque"><svg class="logo" viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="var(--accent-brown)"/><path d="M18 18C10.2 18 6 13.8 6 6C13.8 6 18 10.2 18 18Z" fill="var(--on-accent)"/></svg><span class="nom">casa</span></div>
     <div class="sync">
       <span id="sync" class="syncst" aria-live="polite"></span>
       <button class="gear" id="btn-reglages" data-tab="connexion" aria-label="Réglages" title="Réglages" hidden>
@@ -1057,7 +1057,7 @@ function renderAujourdhui(){
     const vus=presse.slice(0,3);
   const urg=ouv.filter(({t})=>t.priorite==="urgent").length;
   $("#today").innerHTML=`<div class="today-h"><h2>Tâches</h2><span>${ouv.length} ouverte${ouv.length>1?"s":""}${urg?` · ${urg} urgente${urg>1?"s":""}`:""}</span></div>`+(vus.length
-    ? `<ul>${vus.map(({t,i})=>`<li><button data-edit-tache="${i}"><span>${esc(t.tache)}</span><span class="tg">${[t.priorite==="urgent"?'<b class="bad">Urgent</b>':"",t.date&&t.date<auj?'<b class="bad">En retard</b>':t.date===auj?'<b class="warn">Aujourd\'hui</b>':""].filter(Boolean).join('<i> · </i>')}</span><span class="go">${ICO_FLECHE}</span></button></li>`).join("")}</ul>`
+    ? `<ul>${vus.map(({t,i})=>`<li><button data-edit-tache="${i}"><span>${esc(t.tache)}</span><span class="tg">${[t.priorite==="urgent"?'<b class="bad">Urgent</b>':"",t.date&&t.date<auj?'<b class="bad">En retard</b>':""].filter(Boolean).join('<i> · </i>')}</span><span class="go">${ICO_FLECHE}</span></button></li>`).join("")}</ul>`
     : `<p class="vide">Rien de prévu ni d'urgent.</p>`)
     +`<button class="plus" data-tab="taches">Toutes les tâches<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>`;
 }
