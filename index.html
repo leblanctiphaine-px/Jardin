@@ -468,10 +468,16 @@ header{justify-content:space-between;align-items:center}
   <section id="v-accueil" class="home" hidden>
     <div class="today" id="today"></div>
     <button class="card" data-tab="jardin">
-      <span class="card-k">Potager, serre, pleine terre</span>
+      <span class="card-k">Potager, pleine terre</span>
       <span class="card-t">Jardin</span>
       <span class="card-n" id="n-jardin"></span>
       <span class="card-s" id="s-jardin"></span>
+    </button>
+    <button class="card" data-tab="serre">
+      <span class="card-k">Semis et cultures sous abri</span>
+      <span class="card-t">Serre</span>
+      <span class="card-n" id="n-serre"></span>
+      <span class="card-s" id="s-serre"></span>
     </button>
     <button class="card" data-tab="interieur">
       <span class="card-k">Pots de la maison et des terrasses</span>
@@ -751,7 +757,7 @@ function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("on");
 /* ---------- Règles métier tirées de CLAUDE.md ---------- */
 /* Zones : celles du tableau « Zones du jardin » du contexte. Intérieur et terrasses vont ensemble, le reste dans Jardin. */
 const A_CLASSER="À classer";
-let MODES={jardin:[A_CLASSER],interieur:[],projets:["Stock de graines","Liste de souhaits"]}, VRAIES=[A_CLASSER];
+let MODES={jardin:[A_CLASSER],serre:[],interieur:[],projets:["Stock de graines","Liste de souhaits"]}, VRAIES=[A_CLASSER];
 function zonesDuContexte(){
   const sec=S.contexte.find(x=>/^zones du jardin/i.test(x.titre)); if(!sec) return [];
   return sec.contenu.split("\n").map(l=>l.trim()).filter(l=>l.startsWith("|")&&!/^\|[\s|:-]+\|$/.test(l)).slice(1)
@@ -761,17 +767,19 @@ const estInterieur=z=>/intérieur|terrasse|pépinière/i.test(z);
 function construireModes(){
   const zones=zonesDuContexte();
   const toutes=[...zones,...new Set(S.plantes.map(p=>p.zone).filter(z=>z&&!zones.includes(z)&&!MODES.projets.includes(z)))];
-  MODES.jardin=[...toutes.filter(z=>!estInterieur(z)),A_CLASSER];
+  /* La serre a sa propre page, à part du jardin. */
+  MODES.serre=toutes.filter(z=>!estInterieur(z)&&/serre/i.test(z));
+  MODES.jardin=[...toutes.filter(z=>!estInterieur(z)&&!MODES.serre.includes(z)),A_CLASSER];
   MODES.interieur=toutes.filter(estInterieur);
   VRAIES=[...toutes,A_CLASSER];
 }
 /* Graines et envies sont rangées comme des zones à part : « Stock de graines » et « Liste de souhaits ». */
 const groupeDe=p=>p.zone||A_CLASSER;
 /* L'état est un tag court pris dans une liste fixe ; les notes perso (historique, observations) vont dans etat_detail. */
-const ETATS={plantes:["semis","en croissance","en forme","à récolter","à surveiller","fin de vie"],graines:["jamais essayé","déjà essayé"],envies:["à acheter"]};
+const ETATS={plantes:["semis","en croissance","en forme","à récolter","à surveiller"],graines:["jamais essayé","déjà essayé"],envies:["à acheter"]};
 /* Tags et onglets : majuscule au premier mot, les valeurs restent en minuscules dans les CSV. */
 const cap=x=>x?x[0].toUpperCase()+x.slice(1):x;
-const ETAT_CLASSE={"semis":"ok","en croissance":"ok","en forme":"ok","à récolter":"warn","à surveiller":"warn","fin de vie":"bad"};
+const ETAT_CLASSE={"semis":"ok","en croissance":"ok","en forme":"ok","à récolter":"warn","à surveiller":"warn"};
 const etatClasse=e=>ETAT_CLASSE[e]??"";
 /* Bilans : ce qui a marché ou non, gardés dans bilans.csv et rattachés à une fiche de Graines et envies. */
 const RESULTATS={"réussi":"ok","mitigé":"warn","raté":"bad"};
@@ -823,15 +831,19 @@ function sensibleLimaces(p){
 /* ---------- Plantes ---------- */
 /* Un onglet couvre une zone, sauf « Terrasses » qui regroupe les deux terrasses en deux sections. */
 const TERRASSES="Terrasses";
+/* Onglet « À faire » (jardin et intérieur) : d'abord les plantes qui ont des tâches ouvertes, puis celles à surveiller. */
+const A_FAIRE="À faire";
+const aFaire=m=>S.plantes.map((p,i)=>({p,i})).filter(({p})=>MODES[m].includes(groupeDe(p))&&(nbTaches(p)>0||p.etat==="à surveiller"));
 const zonesOnglet=g=>g===TERRASSES?MODES.interieur.filter(z=>/terrasse/i.test(z)):[g];
 function ongletsDe(m){
+  if(m==="jardin") return [A_FAIRE,...MODES[m]];
   if(m!=="interieur") return MODES[m];
   const t=MODES.interieur.filter(z=>/terrasse/i.test(z));
-  return [...MODES.interieur.filter(z=>!t.includes(z)),...(t.length?[TERRASSES]:[])];
+  return [A_FAIRE,...MODES.interieur.filter(z=>!t.includes(z)),...(t.length?[TERRASSES]:[])];
 }
 const nbTaches=p=>S.taches.filter(t=>t.plante===p.nom&&!FERMEES.includes(t.statut)).length;
 /* Tri : d'abord les plantes qui ont des tâches à faire, puis les états inquiétants, puis l'ordre du fichier. */
-const RANG_ETAT={"à surveiller":0,"fin de vie":1,"à récolter":2};
+const RANG_ETAT={"à surveiller":0,"à récolter":1};
 const rangEtat=p=>RANG_ETAT[p.etat]??3;
 const parTaches=r=>r.map(x=>({...x,n:nbTaches(x.p)})).sort((a,b)=>(b.n>0)-(a.n>0)||b.n-a.n||rangEtat(a.p)-rangEtat(b.p));
 /* Graines : les déjà essayées d'abord (réussi, mitigé, raté, puis sans bilan), ensuite les jamais essayées. */
@@ -850,7 +862,7 @@ const ligne=({p,i})=>{ const projet=MODES.projets.includes(groupeDe(p)), etat=`<
       ${projet||!tachesDe(p).length?"":`<div class="taches-c">${tachesDe(p).map(({t,j})=>`<div class="tache-l"><input type="checkbox" data-carte-fait="${j}" aria-label="Marquer « ${esc(t.tache)} » comme faite"><button type="button" data-edit-tache="${j}"><span>${esc(t.tache)}</span><span class="go">${ICO_FLECHE}</span></button></div>`).join("")}</div>`}
     </div>`; };
 function renderPlantes(){
-  const nb=g=>S.plantes.filter(p=>zonesOnglet(g).includes(groupeDe(p))).length;
+  const nb=g=>g===A_FAIRE?aFaire(mode).length:S.plantes.filter(p=>zonesOnglet(g).includes(groupeDe(p))).length;
   const groupes=ongletsDe(mode).filter(g=>g!==A_CLASSER||nb(g)>0);
   if(!groupes.includes(groupe)) groupe=groupes.find(g=>nb(g)>0)||groupes[0];
   $("#chips-plantes").hidden=groupes.length<2;
@@ -859,14 +871,16 @@ function renderPlantes(){
     return `<button class="chip" aria-pressed="${g===groupe}" data-g="${esc(g)}">${esc(cap(g))}<span>${n}</span></button>`}).join("");
   const zs=zonesOnglet(groupe), toutes=S.plantes.map((p,i)=>({p,i}));
   const vide=`<p class="empty">Rien ici pour l'instant.</p>`;
-  $("#list-plantes").innerHTML=zs.length>1
+  $("#list-plantes").innerHTML=groupe===A_FAIRE
+    ? (r=>r.length?r.map(ligne).join(""):`<p class="empty">Aucune tâche ni plante à surveiller. Tout va bien !</p>`)(parTaches(aFaire(mode)))
+    : zs.length>1
     ? zs.map(z=>{ const r=trier(toutes.filter(({p})=>groupeDe(p)===z),z); return `<p class="group-h">${esc(cap(z))}</p>${r.length?r.map(ligne).join(""):vide}`; }).join("")
     : (r=>r.length?r.map(ligne).join(""):vide)(trier(toutes.filter(({p})=>groupeDe(p)===groupe),groupe));
-  for(const k of ["jardin","interieur"]){
-    const ps=S.plantes.filter(p=>MODES[k].includes(groupeDe(p))), orange=ps.filter(p=>etatClasse(p.etat)==="warn"), rouge=ps.filter(p=>etatClasse(p.etat)==="bad").length;
+  for(const k of ["jardin","serre","interieur"]){
+    const ps=S.plantes.filter(p=>MODES[k].includes(groupeDe(p))), orange=ps.filter(p=>etatClasse(p.etat)==="warn");
     const recolte=orange.filter(p=>p.etat==="à récolter").length, surv=orange.length-recolte;
     $("#n-"+k).textContent=ps.length;
-    const bouts=[surv&&`<b class="warn">${surv} à surveiller</b>`,recolte&&`<b class="warn">${recolte} à récolter</b>`,rouge&&`<b class="bad">${rouge} en fin de vie</b>`].filter(Boolean);
+    const bouts=[surv&&`<b class="warn">${surv} à surveiller</b>`,recolte&&`<b class="warn">${recolte} à récolter</b>`].filter(Boolean);
     $("#s-"+k).innerHTML=bouts.length?bouts.join(" · "):"Rien à signaler";
   }
   const nG=S.plantes.filter(p=>groupeDe(p)==="Stock de graines").length, nE=S.plantes.filter(p=>groupeDe(p)==="Liste de souhaits").length;
@@ -878,7 +892,7 @@ const etatsPour=p=>{ const g=groupeDe(p), l=ETATS[g==="Stock de graines"?"graine
 function editPlante(i){
   let p=i==null?null:S.plantes[i];
   const nouveau=!p, projet=p&&MODES.projets.includes(groupeDe(p));
-  const base=p||{nom:"",zone:groupe===A_CLASSER?"":zonesOnglet(groupe)[0]||"",
+  const base=p||{nom:"",zone:groupe===A_CLASSER||groupe===A_FAIRE?"":zonesOnglet(groupe)[0]||"",
     etat:mode==="projets"?(groupe==="Liste de souhaits"?"à acheter":"jamais essayé"):"en croissance",etat_detail:mode==="projets"?"":`planté le ${dateJour()}`,besoins_eau:"",ensoleillement:"",notes:""};
   let message=p?`Plantes : modifier ${p.nom}`:"";
   openDlg(`
@@ -1136,7 +1150,7 @@ function openDlg(html,{onDelete,confirmer=true,plein=false}={}){
 
 /* ---------- Navigation ---------- */
 function render(){ construireModes(); renderPlantes(); renderTaches(); renderContexte(); }
-const TITRES={jardin:"Jardin",interieur:"Intérieur et terrasses",projets:"Graines et envies",taches:"Tâches",contexte:"Contexte",connexion:"Réglages"};
+const TITRES={jardin:"Jardin",serre:"Serre",interieur:"Intérieur et terrasses",projets:"Graines et envies",taches:"Tâches",contexte:"Contexte",connexion:"Réglages"};
 function setTab(t,push=true){ const ctx=/^ctx-(\d+)$/.exec(t);
   if(ctx&&!S.contexte[+ctx[1]]) t="contexte"; else if(!ctx&&!TITRES[t]) t="accueil"; if(!charge) t="connexion"; tab=t;
   if(t==="connexion"){ $("#c-token").value=cfg.token; $("#c-repo").value=cfg.repo; $("#c-branch").value=cfg.branch;
