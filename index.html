@@ -776,10 +776,10 @@ function construireModes(){
 /* Graines et envies sont rangées comme des zones à part : « Stock de graines » et « Liste de souhaits ». */
 const groupeDe=p=>p.zone||A_CLASSER;
 /* L'état est un tag court pris dans une liste fixe ; les notes perso (historique, observations) vont dans etat_detail. */
-const ETATS={plantes:["semis","en croissance","en forme","à récolter","à surveiller"],graines:["jamais essayé","déjà essayé"],envies:["à acheter"]};
+const ETATS={plantes:["semis","en croissance","en forme","à surveiller"],graines:["jamais essayé","déjà essayé"],envies:["à acheter"]};
 /* Tags et onglets : majuscule au premier mot, les valeurs restent en minuscules dans les CSV. */
 const cap=x=>x?x[0].toUpperCase()+x.slice(1):x;
-const ETAT_CLASSE={"semis":"ok","en croissance":"ok","en forme":"ok","à récolter":"warn","à surveiller":"warn"};
+const ETAT_CLASSE={"semis":"ok","en croissance":"ok","en forme":"ok","à surveiller":"warn"};
 const etatClasse=e=>ETAT_CLASSE[e]??"";
 /* Bilans : ce qui a marché ou non, gardés dans bilans.csv et rattachés à une fiche de Graines et envies. */
 const RESULTATS={"réussi":"ok","mitigé":"warn","raté":"bad"};
@@ -843,7 +843,7 @@ function ongletsDe(m){
 }
 const nbTaches=p=>S.taches.filter(t=>t.plante===p.nom&&!FERMEES.includes(t.statut)).length;
 /* Tri : d'abord les plantes qui ont des tâches à faire, puis les états inquiétants, puis l'ordre du fichier. */
-const RANG_ETAT={"à surveiller":0,"à récolter":1};
+const RANG_ETAT={"à surveiller":0};
 const rangEtat=p=>RANG_ETAT[p.etat]??3;
 const parTaches=r=>r.map(x=>({...x,n:nbTaches(x.p)})).sort((a,b)=>(b.n>0)-(a.n>0)||b.n-a.n||rangEtat(a.p)-rangEtat(b.p));
 /* Graines : les déjà essayées d'abord (réussi, mitigé, raté, puis sans bilan), ensuite les jamais essayées. */
@@ -878,9 +878,9 @@ function renderPlantes(){
     : (r=>r.length?r.map(ligne).join(""):vide)(trier(toutes.filter(({p})=>groupeDe(p)===groupe),groupe));
   for(const k of ["jardin","serre","interieur"]){
     const ps=S.plantes.filter(p=>MODES[k].includes(groupeDe(p))), orange=ps.filter(p=>etatClasse(p.etat)==="warn");
-    const recolte=orange.filter(p=>p.etat==="à récolter").length, surv=orange.length-recolte;
+    const surv=orange.length;
     $("#n-"+k).textContent=ps.length;
-    const bouts=[surv&&`<b class="warn">${surv} à surveiller</b>`,recolte&&`<b class="warn">${recolte} à récolter</b>`].filter(Boolean);
+    const bouts=[surv&&`<b class="warn">${surv} à surveiller</b>`].filter(Boolean);
     $("#s-"+k).innerHTML=bouts.length?bouts.join(" · "):"Rien à signaler";
   }
   const nG=S.plantes.filter(p=>groupeDe(p)==="Stock de graines").length, nE=S.plantes.filter(p=>groupeDe(p)==="Liste de souhaits").length;
