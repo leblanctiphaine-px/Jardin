@@ -449,6 +449,12 @@ header{justify-content:space-between;align-items:center}
 /* Onglets non sélectionnés sur fond on-accent ; « + Ajouter » sur fond surface, pointillé 1px (maquette de Tiph) */
 .chip:not(.etat):not([aria-pressed="true"]){background:var(--on-accent)}
 .add-row{background:var(--surface);border-width:1px}
+/* Accueil : KPI (chiffre + petit libellé dessous) en haut à droite des cartes */
+.card-n.kpis{display:flex;gap:18px;align-items:flex-start;opacity:1}
+.kpi{display:flex;flex-direction:column;align-items:center;gap:2px}
+.kpi b{font:inherit;color:inherit}
+.kpi i{font:400 12px/1.2 var(--f-body);font-style:normal;color:var(--muted);letter-spacing:0;word-spacing:0}
+.card.kpi2 .card-t,.card.kpi2 .card-k{padding-right:120px}
 </style>
 </head>
 <body>
@@ -467,34 +473,34 @@ header{justify-content:space-between;align-items:center}
   <!-- ACCUEIL -->
   <section id="v-accueil" class="home" hidden>
     <div class="today" id="today"></div>
-    <button class="card" data-tab="jardin">
+    <button class="card kpi2" data-tab="jardin">
       <span class="card-k">Potager, pleine terre</span>
       <span class="card-t">Jardin</span>
-      <span class="card-n" id="n-jardin"></span>
+      <span class="card-n kpis"><span class="kpi"><b id="t-jardin"></b><i id="tl-jardin">tâches</i></span><span class="kpi"><b id="n-jardin"></b><i id="nl-jardin">plantes</i></span></span>
       <span class="card-s" id="s-jardin"></span>
     </button>
-    <button class="card" data-tab="serre">
+    <button class="card kpi2" data-tab="serre">
       <span class="card-k">Semis et cultures sous abri</span>
       <span class="card-t">Serre</span>
-      <span class="card-n" id="n-serre"></span>
+      <span class="card-n kpis"><span class="kpi"><b id="t-serre"></b><i id="tl-serre">tâches</i></span><span class="kpi"><b id="n-serre"></b><i id="nl-serre">plantes</i></span></span>
       <span class="card-s" id="s-serre"></span>
     </button>
-    <button class="card" data-tab="interieur">
+    <button class="card kpi2" data-tab="interieur">
       <span class="card-k">Pots de la maison et des terrasses</span>
-      <span class="card-t">Intérieur et terrasses</span>
-      <span class="card-n" id="n-interieur"></span>
+      <span class="card-t">Intérieur</span>
+      <span class="card-n kpis"><span class="kpi"><b id="t-interieur"></b><i id="tl-interieur">tâches</i></span><span class="kpi"><b id="n-interieur"></b><i id="nl-interieur">plantes</i></span></span>
       <span class="card-s" id="s-interieur"></span>
     </button>
     <button class="card" data-tab="contexte">
       <span class="card-k">Zones, sol, arrosage, limaces</span>
       <span class="card-t">Contexte</span>
-      <span class="card-n" id="n-contexte"></span>
+      <span class="card-n kpis"><span class="kpi"><b id="n-contexte"></b><i>sections</i></span></span>
       <span class="card-s">Les infos durables sur le jardin</span>
     </button>
     <button class="card" data-tab="projets">
       <span class="card-k">Graines en stock et envies</span>
       <span class="card-t">Graines et envies</span>
-      <span class="card-n" id="n-projets"></span>
+      <span class="card-n kpis"><span class="kpi"><b id="n-projets"></b><i>fiches</i></span></span>
       <span class="card-s" id="s-projets"></span>
     </button>
   </section>
@@ -879,7 +885,9 @@ function renderPlantes(){
   for(const k of ["jardin","serre","interieur"]){
     const ps=S.plantes.filter(p=>MODES[k].includes(groupeDe(p))), orange=ps.filter(p=>etatClasse(p.etat)==="warn");
     const surv=orange.length;
-    $("#n-"+k).textContent=ps.length;
+    const nt=ps.reduce((s,p)=>s+nbTaches(p),0);
+    $("#n-"+k).textContent=ps.length; $("#nl-"+k).textContent=ps.length>1?"plantes":"plante";
+    $("#t-"+k).textContent=nt; $("#tl-"+k).textContent=nt>1?"tâches":"tâche";
     const bouts=[surv&&`<b class="warn">${surv} à surveiller</b>`].filter(Boolean);
     $("#s-"+k).innerHTML=bouts.length?bouts.join(" · "):"Rien à signaler";
   }
@@ -984,7 +992,7 @@ function editPlante(i){
     $("#p-etat").innerHTML=ETATS.plantes.map(e=>`<button type="button" role="radio" class="chip etat ${etatClasse(e)}" aria-pressed="${e===(seme?"semis":"en forme")}" data-etat="${e}">${cap(e)}</button>`).join(""); $("#p-zone").value=""; $("#p-zone-l").hidden=false; $("#dlg-form").classList.remove("lecture"); $("#p-modif")&&($("#p-modif").textContent="Terminé");
     $("#p-perso").value=($("#p-perso").value.trim()?$("#p-perso").value.trim()+" — ":"")+`${seme?"semé":"planté"} le ${dateJour()}`;
     $("#promo").remove(); $("#p-zone").focus(); maj();
-    toast("Choisis la zone : elle passera dans Jardin ou Intérieur et terrasses"); });
+    toast("Choisis la zone : elle passera dans Jardin, Serre ou Intérieur"); });
 }
 
 /* ---------- Tâches ---------- */
@@ -1121,7 +1129,7 @@ function renderContexte(){
     <div class="sec sec-edit">
       <label class="f">Titre<input id="c-titre" value="${esc(s.titre)}"></label>
       <label class="f">Contenu (Markdown)<textarea id="c-contenu">${esc(s.contenu)}</textarea></label>
-      <p class="hint">Pas de tableau de plantes ici : l'inventaire vit dans Jardin et Intérieur et terrasses.</p>
+      <p class="hint">Pas de tableau de plantes ici : l'inventaire vit dans Jardin, Serre et Intérieur.</p>
       <div class="actions"><div></div><div><button class="btn" data-cancel-sec>Terminé</button></div></div>
     </div>`:`
     <div class="sec"><div class="md">${md(s.contenu)}</div>
@@ -1150,7 +1158,7 @@ function openDlg(html,{onDelete,confirmer=true,plein=false}={}){
 
 /* ---------- Navigation ---------- */
 function render(){ construireModes(); renderPlantes(); renderTaches(); renderContexte(); }
-const TITRES={jardin:"Jardin",serre:"Serre",interieur:"Intérieur et terrasses",projets:"Graines et envies",taches:"Tâches",contexte:"Contexte",connexion:"Réglages"};
+const TITRES={jardin:"Jardin",serre:"Serre",interieur:"Intérieur",projets:"Graines et envies",taches:"Tâches",contexte:"Contexte",connexion:"Réglages"};
 function setTab(t,push=true){ const ctx=/^ctx-(\d+)$/.exec(t);
   if(ctx&&!S.contexte[+ctx[1]]) t="contexte"; else if(!ctx&&!TITRES[t]) t="accueil"; if(!charge) t="connexion"; tab=t;
   if(t==="connexion"){ $("#c-token").value=cfg.token; $("#c-repo").value=cfg.repo; $("#c-branch").value=cfg.branch;
