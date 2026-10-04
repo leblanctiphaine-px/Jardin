@@ -428,6 +428,10 @@ header{justify-content:space-between;align-items:center}
 .marque{display:flex;align-items:center;gap:10px}
 .marque .logo{flex:none}
 .marque .nom{font:400 22px/1 var(--f-display);color:var(--ink);letter-spacing:0;word-spacing:.1em}
+/* Carte de plante : tag en haut à droite, début des Notes perso (2 lignes, 12px, gris) sous le nom */
+.row.plante,.row.plante:not(.task){grid-template-columns:minmax(0,1fr) auto}
+.row.plante .tags{justify-content:flex-end;align-self:start;min-width:0}
+.row.plante .extrait{grid-column:1/-1;font:400 12px/1.45 var(--f-display);word-spacing:.1em;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-width:0;margin-top:-2px}
 </style>
 </head>
 <body>
@@ -822,9 +826,10 @@ const trier=(r,z)=>z==="Stock de graines"?r.map(x=>({...x,n:0})).sort((a,b)=>ran
 const tachesDe=p=>S.taches.map((t,j)=>({t,j})).filter(({t})=>t.plante===p.nom&&!FERMEES.includes(t.statut));
 const ligne=({p,i})=>{ const projet=MODES.projets.includes(groupeDe(p)), etat=`<span class="pill etat ${etatClasse(p.etat)}">${esc(cap(p.etat))}</span>`;
   return `
-    <div class="row" role="button" tabindex="0" data-edit-plante="${i}">
+    <div class="row plante" role="button" tabindex="0" data-edit-plante="${i}">
       <span class="t">${esc(p.nom)}</span>
       <span class="tags">${!projet&&sensibleLimaces(p)?'<span class="pill slug">Limaces</span>':""}${projet?(groupeDe(p)==="Stock de graines"&&dernierBilan(p)||etat+dernierBilan(p)):etat}</span>
+      ${p.etat_detail?`<span class="extrait">${esc(p.etat_detail)}</span>`:""}
       ${projet?"":tachesDe(p).map(({t,j})=>`<div class="tache-l"><input type="checkbox" data-carte-fait="${j}" aria-label="Marquer « ${esc(t.tache)} » comme faite"><button type="button" data-edit-tache="${j}"><span>${esc(t.tache)}</span><span class="go">${ICO_FLECHE}</span></button></div>`).join("")}
     </div>`; };
 function renderPlantes(){
