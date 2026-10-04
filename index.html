@@ -369,14 +369,15 @@ body{font-size:14px}
 :root{--radius-tag:6px}
 .pill,.chip.etat,.etats .chip.etat,.today li .pill{font:400 12px/1.3 var(--f-body);border-radius:var(--radius-tag);padding:2px 5px;border:1px solid transparent}
 .pill.ok{border-color:var(--ok)}.pill.warn{border-color:var(--warn)}.pill.bad,.pill.slug{border-color:var(--bad)}
-.chip.etat:not([aria-pressed="true"]){background:var(--on-accent);border-color:var(--accent-brown);color:var(--accent-brown)}
+.chip.etat:not([aria-pressed="true"]){background:var(--on-accent);border-color:var(--line-field);color:var(--accent-brown)}
 /* Maquette (15h45) : tâches de la fiche sans séparateur ni ombre ; champs au contour clair #e3c8b9 (line est devenu foncé dans le DS) */
 .liees{border-top:0;padding-top:6px}
 .liees .check{box-shadow:none}
-:root{--field-line:#e3c8b9}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--field-line:var(--line)}}
-:root[data-theme="dark"]{--field-line:var(--line)}
-input:not([type=checkbox]),select,textarea{border-color:var(--field-line)}
+/* DS : line-field = contour des champs et des tags non choisis */
+:root{--line-field:#e3dedc}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--line-field:#34352c}}
+:root[data-theme="dark"]{--line-field:#34352c}
+input:not([type=checkbox]),select,textarea{border-color:var(--line-field)}
 </style>
 </head>
 <body>
