@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Carnet du jardin</title>
+<script>/* Thème choisi dans Réglages, appliqué avant l'affichage pour éviter un flash. */
+try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
@@ -229,6 +231,7 @@ input,select,textarea{border-radius:10px;background:var(--surface)}
 .today .vide{margin:0;opacity:.9}
 .today .plus{appearance:none;border:0;background:none;color:inherit;font:600 .92rem var(--f-body);text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:2px 0;justify-self:start}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .today li small.retard{color:#7a2a18}}
+:root[data-theme="dark"] .today li small.retard{color:#7a2a18}
 .carte{border-radius:18px}
 .badge{box-shadow:var(--shadow)}
 .fab{box-shadow:var(--shadow-up);padding:14px 22px}
@@ -289,6 +292,15 @@ dialog{border:0;border-radius:18px;box-shadow:var(--shadow-up)}
 
   <!-- CONNEXION -->
   <section id="v-connexion" hidden>
+    <div class="sec conn" id="apparence">
+      <h2 class="invite-t">Apparence</h2>
+      <div class="etats" role="radiogroup" aria-label="Thème" id="theme-choix">
+        <button type="button" class="chip" role="radio" data-theme-choix="auto">Automatique</button>
+        <button type="button" class="chip" role="radio" data-theme-choix="light">Clair</button>
+        <button type="button" class="chip" role="radio" data-theme-choix="dark">Sombre</button>
+      </div>
+      <p class="hint">« Automatique » suit le réglage du téléphone ou de l'ordinateur. Le choix est gardé sur cet appareil.</p>
+    </div>
     <form class="sec conn" id="conn-form">
       <p class="hint" id="conn-err" hidden></p>
       <p>Le carnet lit et écrit directement les fichiers du dépôt GitHub. Chaque modification devient un commit, donc rien ne se perd.</p>
@@ -947,6 +959,14 @@ $("#invite-copy").onclick=()=>{ const i=$("#invite-link");
   const repli=()=>{ i.select(); toast("Lien sélectionné : copie-le avec Ctrl+C ou un appui long"); };
   navigator.clipboard?.writeText(i.value).then(()=>toast("Lien copié"),repli) ?? repli(); };
 $("#c-forget").onclick=()=>{ cfg.token=""; try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(_){} charge=false; setSync("",""); setTab("connexion"); toast("Jeton oublié sur cet appareil"); };
+/* Apparence : automatique (système), clair ou sombre, mémorisé dans ce navigateur. */
+const majTheme=()=>{ const t=document.documentElement.dataset.theme||"auto";
+  document.querySelectorAll("[data-theme-choix]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.themeChoix===t)); };
+$("#theme-choix").onclick=e=>{ const b=e.target.closest("[data-theme-choix]"); if(!b) return; const t=b.dataset.themeChoix;
+  if(t==="auto") delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme=t;
+  try{ t==="auto"?localStorage.removeItem("jardin-theme"):localStorage.setItem("jardin-theme",t) }catch(_){}
+  majTheme(); };
+majTheme();
 demarrer();
 </script>
 </body>
