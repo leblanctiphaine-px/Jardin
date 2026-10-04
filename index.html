@@ -380,7 +380,7 @@ body{font-size:14px}
   </section>
 </div>
 
-<a class="fab" id="fab-claude" href="https://claude.ai/code/project/chan_01TqBsirXojFXyLjmkSXSNzp" target="_blank" rel="noopener" title="Une question, une photo ? Ouvre le projet Jardin">💬 Demander à Claude</a>
+<a class="fab" id="fab-claude" href="https://claude.ai/code/project/chan_01TqBsirXojFXyLjmkSXSNzp" target="_blank" rel="noopener" title="Une question, une photo ? Ouvre le projet Jardin">Demander à Claude</a>
 <dialog id="dlg"><form class="dlg" id="dlg-form" method="dialog"></form></dialog>
 <div class="toast" id="toast" role="status"></div>
 
@@ -702,7 +702,7 @@ function editPlante(i){
     etat:mode==="projets"?(groupe==="Liste de souhaits"?"à acheter":"jamais essayé"):"en croissance",etat_detail:mode==="projets"?"":`planté le ${dateJour()}`,besoins_eau:"",ensoleillement:"",notes:""};
   let message=p?`Plantes : modifier ${p.nom}`:"";
   openDlg(`
-    <div class="titre-fiche"><h2 id="p-titre">${p?esc(p.nom):"Nouvelle plante"}</h2>${p?`<button type="button" class="btn mini" id="p-modif">✏️ Modifier</button>`:""}</div>${p?`<button type="button" class="fab" id="p-claude">💬 Demander à Claude</button>`:""}
+    <div class="titre-fiche"><h2 id="p-titre">${p?esc(p.nom):"Nouvelle plante"}</h2>${p?`<button type="button" class="btn mini" id="p-modif">Modifier</button>`:""}</div>${p?`<button type="button" class="fab" id="p-claude">Demander à Claude</button>`:""}
     <div class="fields">
       <label class="f full edit-only">Nom<input id="p-nom" value="${esc(base.nom)}" ${nouveau?"autofocus":""}></label>
       <div class="full carte" id="p-info"></div>
@@ -738,7 +738,7 @@ function editPlante(i){
   /* Création : tout s'enregistre au fil de la saisie, « Valider » ferme la fiche (le nom est obligatoire). */
   $("#p-ok")&&($("#p-ok").onclick=()=>{ if(!$("#p-nom").value.trim()){ toast("Donne un nom à la plante"); return $("#p-nom").focus(); } $("#dlg").close(); });
   $("#p-modif")&&($("#p-modif").onclick=()=>{ const l=$("#dlg-form").classList.toggle("lecture");
-    $("#p-modif").textContent=l?"✏️ Modifier":"✓ Terminé"; if(!l) $("#p-nom").focus(); });
+    $("#p-modif").textContent=l?"Modifier":"Terminé"; if(!l) $("#p-nom").focus(); });
   const upd=()=>$("#p-slug").hidden=!sensibleLimaces(lire());
   const liees=()=>{
     const box=$("#p-taches"); if(!p||MODES.projets.includes(groupeDe(p))){box.hidden=true;return} box.hidden=false;  // pas de tâches pour les graines et envies
@@ -781,7 +781,7 @@ function editPlante(i){
   };
   upd(); liees(); bilans();
   $("#promo")&&($("#promo").onclick=()=>{ const seme=groupeDe(p)==="Stock de graines";
-    $("#p-etat").innerHTML=ETATS.plantes.map(e=>`<button type="button" role="radio" class="chip etat ${etatClasse(e)}" aria-pressed="${e===(seme?"semis":"en forme")}" data-etat="${e}">${e}</button>`).join(""); $("#p-zone").value=""; $("#p-zone-l").hidden=false; $("#dlg-form").classList.remove("lecture"); $("#p-modif")&&($("#p-modif").textContent="✓ Terminé");
+    $("#p-etat").innerHTML=ETATS.plantes.map(e=>`<button type="button" role="radio" class="chip etat ${etatClasse(e)}" aria-pressed="${e===(seme?"semis":"en forme")}" data-etat="${e}">${e}</button>`).join(""); $("#p-zone").value=""; $("#p-zone-l").hidden=false; $("#dlg-form").classList.remove("lecture"); $("#p-modif")&&($("#p-modif").textContent="Terminé");
     $("#p-perso").value=($("#p-perso").value.trim()?$("#p-perso").value.trim()+" — ":"")+`${seme?"semé":"planté"} le ${dateJour()}`;
     $("#promo").remove(); $("#p-zone").focus(); maj();
     toast("Choisis la zone : elle passera dans Jardin ou Intérieur et terrasses"); });
