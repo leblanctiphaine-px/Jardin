@@ -445,6 +445,10 @@ header{justify-content:space-between;align-items:center}
 .today li button>span:first-child{font:500 14px/1.4 var(--f-body)}
 .today li .tg{font-size:13px}
 .marque{gap:8px}.marque .nom{font:700 18px/1 var(--f-body);word-spacing:0}
+.carte .limaces{align-items:center}.carte .limaces .pt{flex:none;width:6px;height:6px;border-radius:50%;background:var(--bad)}
+/* Onglets non sélectionnés sur fond on-accent ; « + Ajouter » sur fond surface, pointillé 1px (maquette de Tiph) */
+.chip:not(.etat):not([aria-pressed="true"]){background:var(--on-accent)}
+.add-row{background:var(--surface);border-width:1px}
 </style>
 </head>
 <body>
@@ -906,7 +910,7 @@ function editPlante(i){
     const zone=!nouveau||mode!=="projets"?groupeDe(q):"";
     $("#p-info").innerHTML=(zone||eau||sol?`<p class="info-ligne">${zone?`<span class="zone">${ICO_PIN}${esc(zone)}</span>`:""}<span class="jauges">${jauge(eau,ICO_GOUTTE,`Eau : ${q.besoins_eau}`)}${jauge(sol,ICO_SOLEIL,/\/5$/.test(q.ensoleillement)?`Lumière : ${q.ensoleillement}`:cap(q.ensoleillement))}</span></p>`:"")+
       (q.notes?`<p class="desc">${esc(q.notes)}</p><button type="button" class="plus-desc" hidden aria-expanded="false">En savoir plus</button>`:`<p class="attente">🌱 Claude complétera l'eau, le soleil et la description d'ici quelques heures.</p>`)
-      +`<p class="limaces" id="p-slug" ${sensibleLimaces(q)?"":"hidden"}>${ICO_LIMACE}<span>Sensible aux limaces : prévoir cloche, granulés au phosphate de fer ou piège à bière.</span></p>`;
+      +`<p class="limaces" id="p-slug" ${sensibleLimaces(q)?"":"hidden"}><span class="pt"></span><span>Sensible aux limaces, prévoir cloche ou granulés</span></p>`;
     /* Description longue : 3 lignes, puis « En savoir plus » déplie le reste. */
     const d=$("#p-info .desc"), btn=$("#p-info .plus-desc");
     if(d&&btn) requestAnimationFrame(()=>{ btn.hidden=d.scrollHeight<=d.clientHeight+1;
