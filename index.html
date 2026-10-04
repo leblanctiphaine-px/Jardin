@@ -7,7 +7,7 @@
 <script>/* Thème choisi dans Réglages, appliqué avant l'affichage pour éviter un flash. */
 try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 /* Paragon (titres et chiffres) : une seule graisse, servie depuis le dépôt. */
 @font-face{font-family:"Paragon";src:url("fonts/paragon-regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
@@ -19,8 +19,8 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
   --idle:#77736a; --idle-soft:#eeeae0;
   --shadow:0 1px 2px rgba(74,60,30,.06),0 4px 14px -6px rgba(74,60,30,.14);
   --shadow-up:0 2px 4px rgba(74,60,30,.07),0 12px 28px -10px rgba(74,60,30,.22);
-  --f-display:"Paragon","Poppins",ui-sans-serif,system-ui,sans-serif;
-  --f-body:"Poppins",ui-sans-serif,system-ui,sans-serif;
+  --f-display:"Paragon","Source Sans 3",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Source Sans 3",ui-sans-serif,system-ui,sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
@@ -180,7 +180,7 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 @media (max-width:560px){.home{grid-template-columns:minmax(0,1fr)}}
 @media (prefers-reduced-motion:reduce){.toast{transition:none}}
 /* Carnet botanique : papier chaud, titres serif, cartes sans bordure posées par une ombre douce. */
-body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-size:15px}
+body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-size:16px}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.35;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .25 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 header{padding-top:0}
@@ -239,7 +239,7 @@ input,select,textarea{border-radius:10px;background:var(--surface)}
 dialog{border:0;border-radius:18px;box-shadow:var(--shadow-up)}
 .toast{border-radius:999px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
-/* Titres et chiffres en Paragon : graisse normale (pas de faux gras), les noms dans les listes restent en Poppins. */
+/* Titres et chiffres en Paragon : graisse normale (pas de faux gras), les noms dans les listes restent en Source Sans 3. */
 h1,h2,.card-t,.card-n,.group-h,.today h2,.crumb h2,.dlg h2,.sec h2,.invite-t{font-weight:400!important;font-synthesis:none;letter-spacing:0;word-spacing:.1em}
 .card-t{font-size:1.5rem}.card-n{font-size:2.1rem}.today h2{font-size:1.6rem}.crumb h2{font-size:clamp(1.8rem,5.5vw,2.2rem)}
 /* Paragon aussi pour tous les titres de cartes et les textes longs (description, contexte, notes perso). */
@@ -247,8 +247,8 @@ h1,h2,.card-t,.card-n,.group-h,.today h2,.crumb h2,.dlg h2,.sec h2,.invite-t{fon
 .row .t{font-size:1.12rem}.task .t,.today li span{font-size:1.05rem}.fiche-t{font-size:1.05rem}.md h3{font-size:1.1rem}
 .carte .desc,.md,.row .detail,#p-perso,#t-notes{font-family:var(--f-display);font-weight:400;font-size:1.05rem;line-height:1.5;word-spacing:.08em}
 .md{font-size:1.02rem}
-/* Texte léger pour s'accorder à Paragon : 300 courant, 400 pour les libellés, 500 pour l'accent. */
-body{font-weight:300}
+/* Texte en Source Sans 3 : 400 courant et libellés, 500 pour l'accent, pour rester léger à côté de Paragon. */
+body{font-weight:400}
 b,strong{font-weight:500}
 input,select,textarea{font-weight:300}
 </style>
