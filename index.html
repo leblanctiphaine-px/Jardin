@@ -286,6 +286,11 @@ body{font-size:14px}
 .badge,.pill,.chip{box-shadow:none}
 /* Onglets et tags (puces de filtre et d'état) : bordure line-strong */
 .chip{border-color:var(--line-strong)}
+/* Onglets de filtre actifs : aubergine ; tout ce qui touche aux tâches : marron ; « Ajouter » en vert */
+.chip[aria-pressed="true"]:not(.etat){background:var(--accent-soft);border-color:var(--accent-soft);color:var(--on-accent)}
+.pill.plante{background:var(--accent-brown);color:var(--on-accent)}
+.today{background:var(--accent-brown)}
+.add-row{border:1.5px dashed var(--accent);color:var(--accent)}
 </style>
 </head>
 <body>
