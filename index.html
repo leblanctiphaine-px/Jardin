@@ -455,6 +455,14 @@ header{justify-content:space-between;align-items:center}
 .kpi b{font:inherit;color:inherit}
 .kpi i{font:400 12px/1.2 var(--f-body);font-style:normal;color:var(--muted);letter-spacing:0;word-spacing:0}
 .card.kpi2 .card-t,.card.kpi2 .card-k{padding-right:120px}
+/* Page Tâches : lignes sans fond séparées par un trait, tag d'urgence en haut à droite */
+#list-taches .list{gap:0}
+#list-taches .row.task{background:none;box-shadow:none;border:0;border-radius:0;padding:14px 0;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 8px}
+#list-taches .row.task+.row.task{border-top:1px solid var(--line-field)}
+#list-taches .row.task input[type=checkbox]{grid-column:1;grid-row:1;margin-top:5px}
+#list-taches .row.task .t{grid-column:2;grid-row:1}
+#list-taches .row.task .urg{grid-column:3;grid-row:1;display:flex;gap:4px;align-self:start;margin-top:3px}
+#list-taches .row.task .infos,#list-taches .row.task .meta{grid-column:2/-1}
 </style>
 </head>
 <body>
@@ -1032,6 +1040,7 @@ const ligneTache=({t,i})=>{
   return `<div class="row task ${done?"done":""}" data-edit-tache="${i}">
         <input type="checkbox" data-done="${i}" ${t.statut==="fait"?"checked":""} aria-label="Marquer « ${esc(t.tache)} » comme ${done?"à refaire":"faite"}">
         <span class="t">${esc(t.tache)}</span>
+        ${(u=>u.length&&!done?`<span class="urg">${u.join("")}</span>`:"")([t.priorite==="urgent"?'<span class="pill bad">Urgent</span>':"",t.date&&t.date<aujourdhui()?'<span class="pill bad">En retard</span>':""].filter(Boolean))}
         ${t.plante||t.date&&!done?`<span class="infos">${t.plante?`<span>${ICO_PLANTE}${esc(t.plante)}</span>`:""}${t.date&&!done?`<span class="${t.date<aujourdhui()?"bad":t.date===aujourdhui()?"warn":""}">${ICO_CAL}${dateLongue(t.date)}</span>`:""}</span>`:""}
         ${(m=>m?`<span class="meta">${m}</span>`:"")((t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")} · `:"")+esc(t.notes))}</div>`; };
 function renderTaches(){
