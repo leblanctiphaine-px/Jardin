@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Carnet du jardin</title>
+<title>Casa verte</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23542a12'/%3E%3Cpath d='M7 17C7 10.5 10.5 7 17 7c0 6.5-3.5 10-10 10z' fill='%23f2eee6'/%3E%3Cpath d='M8.5 15.5l5-5' stroke='%23542a12' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E">
 <script>/* Thème choisi dans Réglages, appliqué avant l'affichage pour éviter un flash. */
 try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -422,12 +423,18 @@ input:not([type=checkbox]),select,textarea{border-color:var(--line-field)}
 .info-ligne .jauges{display:inline-flex;gap:14px;margin-left:auto}
 .plus-desc{font-size:12px}
 .today .plus{display:inline-flex;align-items:center;gap:2px}.today .plus svg{flex:none}
+/* Marque : logo (rond marron, feuille géométrique) et nom de l'app, en haut de l'accueil */
+header{justify-content:space-between;align-items:center}
+.marque{display:flex;align-items:center;gap:10px}
+.marque .logo{flex:none}
+.marque .nom{font:400 22px/1 var(--f-display);color:var(--ink);letter-spacing:0;word-spacing:.1em}
 </style>
 </head>
 <body>
 
 <div class="wrap">
   <header>
+    <div class="marque"><svg class="logo" viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="var(--accent-brown)"/><path d="M7 17C7 10.5 10.5 7 17 7c0 6.5-3.5 10-10 10z" fill="var(--on-accent)"/><path d="M8.5 15.5l5-5" stroke="var(--accent-brown)" stroke-width="1.3" stroke-linecap="round"/></svg><span class="nom">Casa verte</span></div>
     <div class="sync">
       <span id="sync" class="syncst" aria-live="polite"></span>
       <button class="gear" id="btn-reglages" data-tab="connexion" aria-label="Réglages" title="Réglages" hidden>
