@@ -323,6 +323,22 @@ body{font-size:14px}
 .chip{font:500 15px var(--f-body)}
 #chips-plantes .chip[aria-pressed="true"]{font-size:14px}
 .btn.mini{font:500 14px var(--f-body);padding:4px 12px}
+
+/* Commentaires maquette (4 oct.) : accueil en small/default, 3 tâches, onglet actif marron, tâches sur la carte de plante */
+.today-h span,.today li small{font:var(--text-small,500 12px/1.3 var(--f-body))}
+.today li span{font:400 14px/1.5 var(--f-body);word-spacing:0}
+.today .plus{font:500 16px/1.2 var(--f-body);text-decoration:underline;text-underline-offset:3px}
+.card-k{font:500 12px/1.3 var(--f-body);color:var(--muted)}
+.card-s b{font-weight:500}.card-s b.warn{color:var(--warn)}.card-s b.bad{color:var(--bad)}
+#chips-plantes .chip[aria-pressed="true"]{background:var(--accent-brown);border-color:var(--accent-brown);color:var(--on-accent)}
+.pill{font-weight:500}
+.row .tache-l{grid-column:1/-1;appearance:none;display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;border:0;border-top:1px solid var(--line);background:none;padding:8px 0 0;margin-top:2px;color:var(--ink);text-align:left;cursor:pointer;font:400 14px/1.5 var(--f-body)}
+.row .tache-l svg{flex:none;color:var(--accent-brown)}
+.row .tache-l:hover span{text-decoration:underline}
+.task .infos{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:4px 14px;font:400 14px/1.4 var(--f-body);color:var(--muted)}
+.task .infos>span{display:inline-flex;align-items:center;gap:6px}
+.task .infos svg{flex:none;color:var(--accent-brown)}
+.task .infos .warn,.task .infos .warn svg{color:var(--warn)}.task .infos .bad,.task .infos .bad svg{color:var(--bad)}
 </style>
 </head>
 <body>
@@ -642,20 +658,21 @@ function construireModes(){
 const groupeDe=p=>p.zone||A_CLASSER;
 /* L'état est un tag court pris dans une liste fixe ; les notes perso (historique, observations) vont dans etat_detail. */
 const ETATS={plantes:["semis","en croissance","en forme","à récolter","à surveiller","fin de vie"],graines:["jamais essayé","déjà essayé"],envies:["à acheter"]};
+/* Tags et onglets : majuscule au premier mot, les valeurs restent en minuscules dans les CSV. */
+const cap=x=>x?x[0].toUpperCase()+x.slice(1):x;
 const ETAT_CLASSE={"semis":"ok","en croissance":"ok","en forme":"ok","à récolter":"warn","à surveiller":"warn","fin de vie":"bad"};
 const etatClasse=e=>ETAT_CLASSE[e]??"";
-const aSurveiller=p=>p.etat==="à surveiller";
 /* Bilans : ce qui a marché ou non, gardés dans bilans.csv et rattachés à une fiche de Graines et envies. */
 const RESULTATS={"réussi":"ok","mitigé":"warn","raté":"bad"};
 /* Un bilan apparaît sur toutes les fiches de la même plante (ex. un bilan « Tomates » sur chaque variété de tomate). */
 const bilansDe=nom=>{ const r=racine(nom); return S.bilans.filter(b=>b.fiche===nom||racine(b.fiche)===r||racine(b.plante)===r); };
-const dernierBilan=p=>{ const b=bilansDe(p.nom).filter(b=>b.resultat).at(-1); return b?`<span class="pill etat ${RESULTATS[b.resultat]??""}">${esc(b.resultat)}</span>`:""; };
+const dernierBilan=p=>{ const b=bilansDe(p.nom).filter(b=>b.resultat).at(-1); return b?`<span class="pill etat ${RESULTATS[b.resultat]??""}">${esc(cap(b.resultat))}</span>`:""; };
 const racine=n=>{ const t=n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\(.*?\)/g,"").trim();
   return /senteur/.test(t)?"senteur":t.split(/[\s\/,]+/)[0].slice(0,5); };  // le pois de senteur est une fleur, pas un petit pois
 const nomCourt=n=>n.replace(/\s*\(.*?\)\s*/g," ").replace(/\b20\d\d\b/g,"").trim();
 const fichesProjets=()=>S.plantes.filter(x=>MODES.projets.includes(groupeDe(x)));
 const ficheProche=nom=>{ const r=racine(nom); return fichesProjets().find(x=>racine(x.nom)===r)?.nom||""; };
-const listeBilans=bs=>bs.map(b=>`<li><span class="pill etat ${RESULTATS[b.resultat]??""}">${esc(b.resultat)}</span> ${esc(b.pourquoi||"")} <span class="meta">${esc(b.plante)} · ${esc(b.date)}</span></li>`).join("");
+const listeBilans=bs=>bs.map(b=>`<li><span class="pill etat ${RESULTATS[b.resultat]??""}">${esc(cap(b.resultat))}</span> ${esc(b.pourquoi||"")} <span class="meta">${esc(b.plante)} · ${esc(b.date)}</span></li>`).join("");
 /* Un bilan sur une fiche de graines la passe en « déjà essayé ». */
 function essayee(nom){ const f=S.plantes.find(x=>x.nom===nom&&groupeDe(x)==="Stock de graines");
   if(!f||f.etat==="déjà essayé") return false; f.etat="déjà essayé"; sauver("plantes",`Plantes : ${nom} déjà essayé`); return true; }
@@ -664,7 +681,7 @@ function demanderBilan(p){
   openDlg(`
     <h2>Comment ça s'est passé ?</h2>
     <p class="hint">${esc(p.nom)} est retirée. Le bilan reste dans Graines et envies pour la prochaine fois.</p>
-    <div class="f full"><span>Résultat</span><div class="etats" id="b-res" role="radiogroup" aria-label="Résultat">${Object.entries(RESULTATS).map(([r,c])=>`<button type="button" role="radio" class="chip etat ${c}" aria-pressed="false" data-r="${r}">${r}</button>`).join("")}</div></div>
+    <div class="f full"><span>Résultat</span><div class="etats" id="b-res" role="radiogroup" aria-label="Résultat">${Object.entries(RESULTATS).map(([r,c])=>`<button type="button" role="radio" class="chip etat ${c}" aria-pressed="false" data-r="${r}">${cap(r)}</button>`).join("")}</div></div>
     <label class="f full">Pourquoi ?<textarea id="b-pq" placeholder="ex. mangée par les limaces, trop chaud en serre, super récolte…"></textarea></label>
     <label class="f full">Garder le bilan sur<select id="b-fiche">${fichesProjets().map(x=>`<option ${x.nom===proche?"selected":""}>${esc(x.nom)}</option>`).join("")}<option value="" ${proche?"":"selected"}>Nouvelle envie « ${esc(neuf)} »</option></select></label>
     <div class="actions"><div><button type="button" class="btn" id="b-rien">Rien à retenir (pas fait ou mal fait)</button></div><div><button type="button" class="btn primary" id="b-ok">Valider</button></div></div>`);
@@ -686,7 +703,7 @@ function demanderBilan(p){
 }
 /* Listes fermées : la précision éventuelle va dans la description. Intérieur : note de lumière sur 5 (légende dans le contexte). */
 const EAUX=["faible","moyen","élevé","très élevé"], SOLEILS={"Extérieur":["plein soleil","mi-ombre","ombre"],"Intérieur (lumière sur 5)":["1/5","2/5","3/5","4/5","5/5"]};
-const choix=(liste,v)=>`<option value="">—</option>`+liste.map(x=>`<option ${x===v?"selected":""}>${esc(x)}</option>`).join("")+(v&&!liste.includes(v)?`<option selected>${esc(v)}</option>`:"");
+const choix=(liste,v)=>`<option value="">—</option>`+liste.map(x=>`<option value="${esc(x)}" ${x===v?"selected":""}>${esc(cap(x))}</option>`).join("")+(v&&!liste.includes(v)?`<option value="${esc(v)}" selected>${esc(cap(v))}</option>`:"");
 const SENSIBLES=/laitue|salade|basilic|poireau|haricot|épinard|chou/i;
 function sensibleLimaces(p){
   return groupeDe(p)!=="Intérieur" && (SENSIBLES.test(p.nom) || p.etat==="semis");
@@ -710,13 +727,16 @@ const parTaches=r=>r.map(x=>({...x,n:nbTaches(x.p)})).sort((a,b)=>(b.n>0)-(a.n>0
 const RANG_BILAN={"réussi":0,"mitigé":1,"raté":2};
 const rangGraine=p=>{ const b=bilansDe(p.nom).filter(b=>b.resultat).at(-1); return b?RANG_BILAN[b.resultat]??3:p.etat==="déjà essayé"?3:4; };
 const trier=(r,z)=>z==="Stock de graines"?r.map(x=>({...x,n:0})).sort((a,b)=>rangGraine(a.p)-rangGraine(b.p)):parTaches(r);
-const ligne=({p,i,n})=>`
-    <button class="row" data-edit-plante="${i}">
+/* Carte de plante : nom, état, et chaque tâche ouverte sur sa ligne (un clic l'ouvre).
+   La réussite (bilans) ne s'affiche que dans Graines et envies ; une plante plantée n'a que son état. */
+const tachesDe=p=>S.taches.map((t,j)=>({t,j})).filter(({t})=>t.plante===p.nom&&!FERMEES.includes(t.statut));
+const ligne=({p,i})=>{ const projet=MODES.projets.includes(groupeDe(p)), etat=`<span class="pill etat ${etatClasse(p.etat)}">${esc(cap(p.etat))}</span>`;
+  return `
+    <div class="row" role="button" tabindex="0" data-edit-plante="${i}">
       <span class="t">${esc(p.nom)}</span>
-      <span class="tags">${sensibleLimaces(p)&&!MODES.projets.includes(groupeDe(p))?'<span class="pill slug">limaces</span>':""}${groupeDe(p)==="Stock de graines"&&dernierBilan(p)||`<span class="pill etat ${etatClasse(p.etat)}">${esc(p.etat)}</span>${dernierBilan(p)}`}${n?`<span class="pill plante">${n} tâche${n>1?"s":""}</span>`:""}</span>
-      ${p.etat_detail?`<span class="detail">${esc(p.etat_detail)}</span>`:""}
-      ${p.besoins_eau||p.ensoleillement?`<span class="meta">${[p.besoins_eau&&"eau "+esc(p.besoins_eau),esc(p.ensoleillement)].filter(Boolean).join(" · ")}</span>`:""}
-    </button>`;
+      <span class="tags">${!projet&&sensibleLimaces(p)?'<span class="pill slug">Limaces</span>':""}${projet?(groupeDe(p)==="Stock de graines"&&dernierBilan(p)||etat+dernierBilan(p)):etat}</span>
+      ${projet?"":tachesDe(p).map(({t,j})=>`<button type="button" class="tache-l" data-edit-tache="${j}"><span>${esc(t.tache)}</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>`).join("")}
+    </div>`; };
 function renderPlantes(){
   const nb=g=>S.plantes.filter(p=>zonesOnglet(g).includes(groupeDe(p))).length;
   const groupes=ongletsDe(mode).filter(g=>g!==A_CLASSER||nb(g)>0);
@@ -724,16 +744,18 @@ function renderPlantes(){
   $("#chips-plantes").hidden=groupes.length<2;
   $("#chips-plantes").innerHTML=groupes.map(g=>{
     const n=nb(g);
-    return `<button class="chip" aria-pressed="${g===groupe}" data-g="${esc(g)}">${esc(g)}<span>${n}</span></button>`}).join("");
+    return `<button class="chip" aria-pressed="${g===groupe}" data-g="${esc(g)}">${esc(cap(g))}<span>${n}</span></button>`}).join("");
   const zs=zonesOnglet(groupe), toutes=S.plantes.map((p,i)=>({p,i}));
   const vide=`<p class="empty">Rien ici pour l'instant.</p>`;
   $("#list-plantes").innerHTML=zs.length>1
-    ? zs.map(z=>{ const r=trier(toutes.filter(({p})=>groupeDe(p)===z),z); return `<p class="group-h">${esc(z)}</p>${r.length?r.map(ligne).join(""):vide}`; }).join("")
+    ? zs.map(z=>{ const r=trier(toutes.filter(({p})=>groupeDe(p)===z),z); return `<p class="group-h">${esc(cap(z))}</p>${r.length?r.map(ligne).join(""):vide}`; }).join("")
     : (r=>r.length?r.map(ligne).join(""):vide)(trier(toutes.filter(({p})=>groupeDe(p)===groupe),groupe));
   for(const k of ["jardin","interieur"]){
-    const ps=S.plantes.filter(p=>MODES[k].includes(groupeDe(p))), alerte=ps.filter(aSurveiller).length;
+    const ps=S.plantes.filter(p=>MODES[k].includes(groupeDe(p))), orange=ps.filter(p=>etatClasse(p.etat)==="warn"), rouge=ps.filter(p=>etatClasse(p.etat)==="bad").length;
+    const recolte=orange.filter(p=>p.etat==="à récolter").length, surv=orange.length-recolte;
     $("#n-"+k).textContent=ps.length;
-    $("#s-"+k).innerHTML=alerte?`<b>${alerte} à surveiller</b>`:"Rien à signaler";
+    const bouts=[surv&&`<b class="warn">${surv} à surveiller</b>`,recolte&&`<b class="warn">${recolte} à récolter</b>`,rouge&&`<b class="bad">${rouge} en fin de vie</b>`].filter(Boolean);
+    $("#s-"+k).innerHTML=bouts.length?bouts.join(" · "):"Rien à signaler";
   }
   const nG=S.plantes.filter(p=>groupeDe(p)==="Stock de graines").length, nE=S.plantes.filter(p=>groupeDe(p)==="Liste de souhaits").length;
   $("#n-projets").textContent=nG+nE;
@@ -753,7 +775,7 @@ function editPlante(i){
       <label class="f full edit-only">Nom<input id="p-nom" value="${esc(base.nom)}" ${nouveau?"autofocus":""}></label>
       <div class="full carte" id="p-info"></div>
       <label class="f full edit-only" id="p-zone-l" ${projet||(nouveau&&mode==="projets")?"hidden":""}>Zone<select id="p-zone">${["",...VRAIES.filter(z=>z!==A_CLASSER)].map(z=>`<option value="${esc(z)}" ${z===(base.zone||"")?"selected":""}>${z?esc(z):"À classer"}</option>`).join("")}</select></label>
-      <div class="f full"><span>État</span><div class="etats" id="p-etat" role="radiogroup" aria-label="État">${etatsPour(base).map(e=>`<button type="button" role="radio" class="chip etat ${etatClasse(e)}" aria-pressed="${e===base.etat}" data-etat="${esc(e)}">${esc(e)}</button>`).join("")}</div></div>
+      <div class="f full"><span>État</span><div class="etats" id="p-etat" role="radiogroup" aria-label="État">${etatsPour(base).map(e=>`<button type="button" role="radio" class="chip etat ${etatClasse(e)}" aria-pressed="${e===base.etat}" data-etat="${esc(e)}">${esc(cap(e))}</button>`).join("")}</div></div>
       <label class="f full">Notes perso<textarea id="p-perso" placeholder="historique, emplacement précis, ce qu'on a remarqué…">${esc(base.etat_detail)}</textarea></label>
     </div>
     <div class="liees" id="p-bilans" hidden></div>
@@ -819,7 +841,7 @@ function editPlante(i){
     const box=$("#p-bilans"); if(!p||!MODES.projets.includes(groupeDe(p))){box.hidden=true;return} box.hidden=false;
     const bs=bilansDe(p.nom); let res="";
     box.innerHTML=`<p class="group-h">Ce qui a marché ou non · ${bs.length}</p>${bs.length?`<ul class="bilans">${listeBilans(bs)}</ul>`:""}
-      <div class="etats" id="pb-res" role="radiogroup" aria-label="Résultat">${Object.entries(RESULTATS).map(([r,c])=>`<button type="button" role="radio" class="chip etat ${c}" aria-pressed="false" data-r="${r}">${r}</button>`).join("")}</div>
+      <div class="etats" id="pb-res" role="radiogroup" aria-label="Résultat">${Object.entries(RESULTATS).map(([r,c])=>`<button type="button" role="radio" class="chip etat ${c}" aria-pressed="false" data-r="${r}">${cap(r)}</button>`).join("")}</div>
       <input id="pb-pq" placeholder="+ Pourquoi ? (Entrée pour ajouter le bilan)" aria-label="Nouveau bilan">`;
     $("#pb-res").onclick=e=>{ const b=e.target.closest("[data-r]"); if(!b) return; res=b.dataset.r; $("#pb-res").querySelectorAll("[data-r]").forEach(x=>x.setAttribute("aria-pressed",x===b)); $("#pb-pq").focus(); };
     $("#pb-pq").onkeydown=e=>{ if(e.key!=="Enter") return; e.preventDefault(); const pq=e.target.value.trim(); if(!res&&!pq) return;
@@ -829,7 +851,7 @@ function editPlante(i){
   };
   upd(); liees(); bilans();
   $("#promo")&&($("#promo").onclick=()=>{ const seme=groupeDe(p)==="Stock de graines";
-    $("#p-etat").innerHTML=ETATS.plantes.map(e=>`<button type="button" role="radio" class="chip etat ${etatClasse(e)}" aria-pressed="${e===(seme?"semis":"en forme")}" data-etat="${e}">${e}</button>`).join(""); $("#p-zone").value=""; $("#p-zone-l").hidden=false; $("#dlg-form").classList.remove("lecture"); $("#p-modif")&&($("#p-modif").textContent="Terminé");
+    $("#p-etat").innerHTML=ETATS.plantes.map(e=>`<button type="button" role="radio" class="chip etat ${etatClasse(e)}" aria-pressed="${e===(seme?"semis":"en forme")}" data-etat="${e}">${cap(e)}</button>`).join(""); $("#p-zone").value=""; $("#p-zone-l").hidden=false; $("#dlg-form").classList.remove("lecture"); $("#p-modif")&&($("#p-modif").textContent="Terminé");
     $("#p-perso").value=($("#p-perso").value.trim()?$("#p-perso").value.trim()+" — ":"")+`${seme?"semé":"planté"} le ${dateJour()}`;
     $("#promo").remove(); $("#p-zone").focus(); maj();
     toast("Choisis la zone : elle passera dans Jardin ou Intérieur et terrasses"); });
@@ -855,8 +877,10 @@ function purgerFaites(){
 /* Date programmée (AAAA-MM-JJ) : en retard en rouge, aujourd'hui en orange ; les tâches datées passent en tête de leur groupe. */
 const aujourdhui=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
 const dateCourte=iso=>{const [a,m,j]=iso.split("-");return `${j}/${m}${a!==String(new Date().getFullYear())?"/"+a:""}`};
-const pillDate=t=>{ if(!t.date||FERMEES.includes(t.statut)) return ""; const auj=aujourdhui();
-  return `<span class="pill ${t.date<auj?"bad":t.date===auj?"warn":""}">${t.date<auj?"en retard · ":t.date===auj?"aujourd'hui · ":""}${dateCourte(t.date)}</span>`; };
+/* Tâches : plante liée et date de rappel avec une icône, date au format « 01 octobre ». */
+const ICO_PLANTE=`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>`;
+const ICO_CAL=`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>`;
+const dateLongue=iso=>new Date(iso+"T12:00").toLocaleDateString("fr-FR",{day:"2-digit",month:"long",...(iso.slice(0,4)!==String(new Date().getFullYear())?{year:"numeric"}:{})});
 const parDate=(a,b)=>(a.t.date||"9999")<(b.t.date||"9999")?-1:(a.t.date||"9999")>(b.t.date||"9999")?1:0;
 /* Tâches ouvertes par priorité ; les tâches faites dans une section repliée tout en bas. */
 let fermeesOuvertes=false;
@@ -865,8 +889,8 @@ const ligneTache=({t,i})=>{
   return `<div class="row task ${done?"done":""}" data-edit-tache="${i}">
         <input type="checkbox" data-done="${i}" ${t.statut==="fait"?"checked":""} aria-label="Marquer « ${esc(t.tache)} » comme ${done?"à refaire":"faite"}">
         <span class="t">${esc(t.tache)}</span>
-        <span class="tags">${pillDate(t)}${t.plante?`<span class="pill plante">${esc(t.plante)}</span>`:""}</span>
-        <span class="meta">${t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")} · `:""}${esc(t.notes)||"&nbsp;"}</span></div>`; };
+        ${t.plante||t.date&&!done?`<span class="infos">${t.plante?`<span>${ICO_PLANTE}${esc(t.plante)}</span>`:""}${t.date&&!done?`<span class="${t.date<aujourdhui()?"bad":t.date===aujourdhui()?"warn":""}">${ICO_CAL}${dateLongue(t.date)}</span>`:""}</span>`:""}
+        ${(m=>m?`<span class="meta">${m}</span>`:"")((t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")} · `:"")+esc(t.notes))}</div>`; };
 function renderTaches(){
   const toutes=S.taches.map((t,i)=>({t,i}));
   const rows=toutes.filter(({t})=>!FERMEES.includes(t.statut)), faites=toutes.filter(({t})=>FERMEES.includes(t.statut));
@@ -874,7 +898,7 @@ function renderTaches(){
   let html="";
   for(const pr of prios){
     const g=rows.filter(r=>r.t.priorite===pr).sort(parDate); if(!g.length) continue;
-    html+=`<p class="group-h">${esc(pr)} · ${g.length}</p><div class="list">`+g.map(ligneTache).join("")+`</div>`;
+    html+=`<p class="group-h">${esc(cap(pr))} · ${g.length}</p><div class="list">`+g.map(ligneTache).join("")+`</div>`;
   }
   if(!html) html=`<p class="empty">Aucune tâche ouverte. Bonne nouvelle !</p>`;
   if(faites.length) html+=`<details class="fermees" ${fermeesOuvertes?"open":""}><summary>Faites ces 30 jours · ${faites.length}</summary><div class="list">${faites.map(ligneTache).join("")}</div></details>`;
@@ -888,17 +912,17 @@ function renderAujourdhui(){
   const presse=ouv.filter(({t})=>(t.date&&t.date<=auj)||t.priorite==="urgent")
     .sort((a,b)=>parDate(a,b)||(a.t.priorite==="urgent"?-1:0)-(b.t.priorite==="urgent"?-1:0));
   const quand=t=>!t.date?"urgent":t.date<auj?`en retard · ${dateCourte(t.date)}`:t.date===auj?"aujourd'hui":dateCourte(t.date);
-  const vus=presse.slice(0,4);
+  const vus=presse.slice(0,3);
   const urg=ouv.filter(({t})=>t.priorite==="urgent").length;
   $("#today").innerHTML=`<div class="today-h"><h2>Tâches</h2><span>${ouv.length} ouverte${ouv.length>1?"s":""}${urg?` · ${urg} urgente${urg>1?"s":""}`:""}</span></div>`+(vus.length
-    ? `<ul>${vus.map(({t,i})=>`<li><button data-edit-tache="${i}"><span>${esc(t.tache)}</span><small class="${t.date&&t.date<auj?"retard":""}">${quand(t)}</small></button></li>`).join("")}</ul>`
+    ? `<ul>${vus.map(({t,i})=>`<li><button data-edit-tache="${i}"><span>${esc(t.tache)}</span><small class="${t.date&&t.date<auj?"retard":""}">${cap(quand(t))}</small></button></li>`).join("")}</ul>`
     : `<p class="vide">Rien de prévu ni d'urgent.</p>`)
     +`<button class="plus" data-tab="taches">Toutes les tâches</button>`;
 }
 function editTache(i,plante=""){
   let t=i==null?null:S.taches[i];
   const base=t||{tache:"",priorite:"bientôt",responsable:"moi",statut:"à faire",notes:"",plante,date:""};
-  const sel=(id,vals,v)=>`<select id="${id}">${[...new Set([...vals,v])].map(x=>`<option ${x===v?"selected":""}>${esc(x)}</option>`).join("")}</select>`;
+  const sel=(id,vals,v)=>`<select id="${id}">${[...new Set([...vals,v])].map(x=>`<option value="${esc(x)}" ${x===v?"selected":""}>${esc(cap(x))}</option>`).join("")}</select>`;
   const plantes=[...new Set(S.plantes.filter(p=>VRAIES.includes(groupeDe(p))).map(p=>p.nom))];
   let message=t?`Tâches : modifier « ${t.tache} »`:"";
   openDlg(`
@@ -1008,6 +1032,7 @@ function setTab(t,push=true){ const ctx=/^ctx-(\d+)$/.exec(t);
   const fab=vue!=="taches"&&vue!=="contexte"; $("#fab-claude").hidden=!fab; $(".wrap").classList.toggle("avec-fab",fab);
   window.scrollTo(0,0);
   if(push){ try{ history.pushState(null,"",t==="accueil"?location.pathname:"#"+t) }catch(e){} } }
+document.addEventListener("keydown",e=>{ if((e.key==="Enter"||e.key===" ")&&e.target.matches?.("div.row[data-edit-plante]")){ e.preventDefault(); editPlante(+e.target.dataset.editPlante); } });
 window.addEventListener("popstate",()=>setTab(location.hash.slice(1),false));
 document.addEventListener("click",e=>{
   const el=e.target.closest("[data-tab],[data-g],[data-s],[data-edit-plante],[data-done],[data-edit-tache],[data-edit-sec],[data-cancel-sec],#add-plante,#add-tache");
