@@ -435,6 +435,12 @@ header{justify-content:space-between;align-items:center}
 /* Limaces : seulement dans la fiche (plante, graine ou envie), juste sous la description */
 .carte .limaces{margin:0;display:flex;gap:6px;align-items:flex-start;font:500 12px/1.4 var(--f-body);color:var(--bad)}
 .carte .limaces svg{flex:none;margin-top:1px}
+/* Carte de plante : 16px entre les blocs (nom, notes, tâches), 8px entre deux tâches */
+.row.plante{row-gap:16px}
+.row.plante .extrait{margin-top:-2px}
+.row.plante .taches-c{grid-column:1/-1;display:flex;flex-direction:column;gap:8px;min-width:0}
+.row.plante .taches-c .tache-l{margin:0;padding-top:0}
+.row.plante .taches-c .tache-l+.tache-l{padding-top:8px}
 </style>
 </head>
 <body>
@@ -833,7 +839,7 @@ const ligne=({p,i})=>{ const projet=MODES.projets.includes(groupeDe(p)), etat=`<
       <span class="t">${esc(p.nom)}</span>
       <span class="tags">${projet?(groupeDe(p)==="Stock de graines"&&dernierBilan(p)||etat+dernierBilan(p)):etat}</span>
       ${p.etat_detail?`<span class="extrait">${esc(p.etat_detail)}</span>`:""}
-      ${projet?"":tachesDe(p).map(({t,j})=>`<div class="tache-l"><input type="checkbox" data-carte-fait="${j}" aria-label="Marquer « ${esc(t.tache)} » comme faite"><button type="button" data-edit-tache="${j}"><span>${esc(t.tache)}</span><span class="go">${ICO_FLECHE}</span></button></div>`).join("")}
+      ${projet||!tachesDe(p).length?"":`<div class="taches-c">${tachesDe(p).map(({t,j})=>`<div class="tache-l"><input type="checkbox" data-carte-fait="${j}" aria-label="Marquer « ${esc(t.tache)} » comme faite"><button type="button" data-edit-tache="${j}"><span>${esc(t.tache)}</span><span class="go">${ICO_FLECHE}</span></button></div>`).join("")}</div>`}
     </div>`; };
 function renderPlantes(){
   const nb=g=>S.plantes.filter(p=>zonesOnglet(g).includes(groupeDe(p))).length;
