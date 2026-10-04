@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Casa verte</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23542a12'/%3E%3Cpath d='M7 17C7 10.5 10.5 7 17 7c0 6.5-3.5 10-10 10z' fill='%23f2eee6'/%3E%3Cpath d='M8.5 15.5l5-5' stroke='%23542a12' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23542a12'/%3E%3Cpath d='M18 18C10.2 18 6 13.8 6 6C13.8 6 18 10.2 18 18Z' fill='%23f2eee6'/%3E%3C/svg%3E">
 <script>/* Thème choisi dans Réglages, appliqué avant l'affichage pour éviter un flash. */
 try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 /* Paragon (titres et chiffres) : une seule graisse, servie depuis le dépôt. */
 @font-face{font-family:"Paragon";src:url("fonts/paragon-regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
@@ -441,13 +441,17 @@ header{justify-content:space-between;align-items:center}
 .row.plante .taches-c{grid-column:1/-1;display:flex;flex-direction:column;gap:8px;min-width:0}
 .row.plante .taches-c .tache-l{margin:0;padding-top:0}
 .row.plante .taches-c .tache-l+.tache-l{padding-top:8px}
+/* Accueil : tâches en 14px medium, urgence en 13px (retouche de Tiph dans la maquette) */
+.today li button>span:first-child{font:500 14px/1.4 var(--f-body)}
+.today li .tg{font-size:13px}
+.marque{gap:8px}.marque .nom{font:700 18px/1 var(--f-body);word-spacing:0}
 </style>
 </head>
 <body>
 
 <div class="wrap">
   <header>
-    <div class="marque"><svg class="logo" viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="var(--accent-brown)"/><path d="M7 17C7 10.5 10.5 7 17 7c0 6.5-3.5 10-10 10z" fill="var(--on-accent)"/><path d="M8.5 15.5l5-5" stroke="var(--accent-brown)" stroke-width="1.3" stroke-linecap="round"/></svg><span class="nom">Casa verte</span></div>
+    <div class="marque"><svg class="logo" viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="var(--accent-brown)"/><path d="M18 18C10.2 18 6 13.8 6 6C13.8 6 18 10.2 18 18Z" fill="var(--on-accent)"/></svg><span class="nom">Casa verte</span></div>
     <div class="sync">
       <span id="sync" class="syncst" aria-live="polite"></span>
       <button class="gear" id="btn-reglages" data-tab="connexion" aria-label="Réglages" title="Réglages" hidden>
