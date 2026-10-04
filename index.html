@@ -446,8 +446,9 @@ header{justify-content:space-between;align-items:center}
 .today li .tg{font-size:13px}
 .marque{gap:8px}.marque .nom{font:700 18px/1 var(--f-body);word-spacing:0}
 .carte .limaces{align-items:center}.carte .limaces .pt{flex:none;width:6px;height:6px;border-radius:50%;background:var(--bad)}
-/* Onglets non sélectionnés et bouton « + Ajouter » sur fond on-accent (maquette de Tiph) */
-.chip:not(.etat):not([aria-pressed="true"]),.add-row{background:var(--on-accent)}
+/* Onglets non sélectionnés sur fond on-accent ; « + Ajouter » sur fond surface, pointillé 1px (maquette de Tiph) */
+.chip:not(.etat):not([aria-pressed="true"]){background:var(--on-accent)}
+.add-row{background:var(--surface);border-width:1px}
 </style>
 </head>
 <body>
