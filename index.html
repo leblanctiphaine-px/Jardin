@@ -1006,9 +1006,9 @@ function editPlante(i){
 }
 
 /* ---------- Tâches ---------- */
-/* Une tâche urgente datée ne devient urgente qu'à partir de sa date ; avant, elle est rangée dans « à faire ». */
+/* Une tâche urgente datée ne devient urgente qu'à partir de sa date. Page Tâches : les tâches dont la date n'est pas arrivée vont dans la section « Bientôt ». */
 const estUrgente=t=>t.priorite==="urgent"&&(!t.date||t.date<=aujourdhui());
-const prioEff=t=>t.priorite==="urgent"&&!estUrgente(t)?"à faire":t.priorite;
+const prioEff=t=>t.date&&t.date>aujourdhui()?"bientôt":t.priorite;
 const PRIO=["urgent","à faire","récurrent","réflexion"];
 const PRIO_COL={urgent:"var(--bad)","à faire":"var(--warn)",récurrent:"var(--accent)",réflexion:"var(--idle)"};
 const FERMEES=["fait","abandonné"];
@@ -1051,7 +1051,8 @@ const ligneTache=({t,i})=>{
 function renderTaches(){
   const toutes=S.taches.map((t,i)=>({t,i}));
   const rows=toutes.filter(({t})=>!FERMEES.includes(t.statut)), faites=toutes.filter(({t})=>FERMEES.includes(t.statut));
-  const prios=[...PRIO,...new Set(rows.map(r=>prioEff(r.t)).filter(p=>!PRIO.includes(p)))];
+  const SECTIONS=["urgent","à faire","bientôt","récurrent","réflexion"];
+  const prios=[...SECTIONS,...new Set(rows.map(r=>prioEff(r.t)).filter(p=>!SECTIONS.includes(p)))];
   let html="";
   for(const pr of prios){
     const g=rows.filter(r=>prioEff(r.t)===pr).sort(parDate); if(!g.length) continue;
