@@ -395,6 +395,26 @@ input:not([type=checkbox]),select,textarea{border-color:var(--line-field)}
 .liees .check .go svg{width:14px;height:14px}
 .liees .check input[type=checkbox],.task input[type=checkbox]{appearance:none;-webkit-appearance:none;width:18px;height:18px;margin:0;flex:none;border:1.5px solid var(--accent-soft);border-radius:4px;background:var(--surface) center/14px no-repeat;cursor:pointer}
 .liees .check input[type=checkbox]:checked,.task input[type=checkbox]:checked{background-color:var(--accent-soft);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")}
+/* Tâches : rond fléché 24px, case aubergine 15px (accueil, carte de plante, fiche, page Tâches) */
+.liees .check input[type=checkbox],.task input[type=checkbox],.row .tache-l input[type=checkbox]{appearance:none;-webkit-appearance:none;width:15px;height:15px;margin:0;flex:none;border:1.5px solid var(--accent-soft);border-radius:3px;background:var(--surface) center/11px no-repeat;cursor:pointer;padding:0;box-sizing:border-box;min-width:0}
+.row .tache-l input[type=checkbox]:checked{background-color:var(--accent-soft);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")}
+.task input[type=checkbox]{margin-top:4px}
+.liees .check{gap:8px}
+.row .tache-l{cursor:default;gap:8px}
+.row .tache-l button{appearance:none;flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:10px;border:0;background:none;padding:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.row .tache-l button:hover>span:first-child{text-decoration:underline}
+.row .tache-l:hover span{text-decoration:none}
+.go,.row .tache-l .go,.liees .check .go{width:24px;height:24px}
+.go svg,.row .tache-l .go svg,.liees .check .go svg{width:14px;height:14px}
+.today{background:var(--accent-surface-soft);color:var(--ink);box-shadow:none}
+.today h2,.today li span{color:var(--ink)}
+.today-h span,.today .plus{color:var(--accent-soft)}
+.today li+li{border-top-color:var(--line-field)}
+.today li .go{flex:none;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--on-accent);display:grid;place-items:center}
+.today li .go .fleche{width:14px;height:14px;color:var(--on-accent)}
+.today li .tg{gap:0;align-items:baseline;font:500 12px/1.3 var(--f-body)}
+.today li .tg b{font-weight:500}.today li .tg b.bad{color:var(--bad)}.today li .tg b.warn{color:var(--warn)}
+.today li .tg i{font-style:normal;color:var(--muted);white-space:pre}
 </style>
 </head>
 <body>
@@ -791,7 +811,7 @@ const ligne=({p,i})=>{ const projet=MODES.projets.includes(groupeDe(p)), etat=`<
     <div class="row" role="button" tabindex="0" data-edit-plante="${i}">
       <span class="t">${esc(p.nom)}</span>
       <span class="tags">${!projet&&sensibleLimaces(p)?'<span class="pill slug">Limaces</span>':""}${projet?(groupeDe(p)==="Stock de graines"&&dernierBilan(p)||etat+dernierBilan(p)):etat}</span>
-      ${projet?"":tachesDe(p).map(({t,j})=>`<button type="button" class="tache-l" data-edit-tache="${j}"><span>${esc(t.tache)}</span><span class="go">${ICO_FLECHE}</span></button>`).join("")}
+      ${projet?"":tachesDe(p).map(({t,j})=>`<div class="tache-l"><input type="checkbox" data-carte-fait="${j}" aria-label="Marquer « ${esc(t.tache)} » comme faite"><button type="button" data-edit-tache="${j}"><span>${esc(t.tache)}</span><span class="go">${ICO_FLECHE}</span></button></div>`).join("")}
     </div>`; };
 function renderPlantes(){
   const nb=g=>S.plantes.filter(p=>zonesOnglet(g).includes(groupeDe(p))).length;
@@ -977,7 +997,7 @@ function renderAujourdhui(){
     const vus=presse.slice(0,3);
   const urg=ouv.filter(({t})=>t.priorite==="urgent").length;
   $("#today").innerHTML=`<div class="today-h"><h2>Tâches</h2><span>${ouv.length} ouverte${ouv.length>1?"s":""}${urg?` · ${urg} urgente${urg>1?"s":""}`:""}</span></div>`+(vus.length
-    ? `<ul>${vus.map(({t,i})=>`<li><button data-edit-tache="${i}"><span>${esc(t.tache)}</span><span class="tg">${t.priorite==="urgent"?'<span class="pill etat bad">Urgent</span>':""}${t.date&&t.date<auj?'<span class="pill etat bad">En retard</span>':t.date===auj?'<span class="pill etat warn">Aujourd\'hui</span>':""}</span>${ICO_FLECHE}</button></li>`).join("")}</ul>`
+    ? `<ul>${vus.map(({t,i})=>`<li><button data-edit-tache="${i}"><span>${esc(t.tache)}</span><span class="tg">${[t.priorite==="urgent"?'<b class="bad">Urgent</b>':"",t.date&&t.date<auj?'<b class="bad">En retard</b>':t.date===auj?'<b class="warn">Aujourd\'hui</b>':""].filter(Boolean).join('<i> · </i>')}</span><span class="go">${ICO_FLECHE}</span></button></li>`).join("")}</ul>`
     : `<p class="vide">Rien de prévu ni d'urgent.</p>`)
     +`<button class="plus" data-tab="taches">Toutes les tâches</button>`;
 }
@@ -1097,10 +1117,12 @@ function setTab(t,push=true){ const ctx=/^ctx-(\d+)$/.exec(t);
 document.addEventListener("keydown",e=>{ if((e.key==="Enter"||e.key===" ")&&e.target.matches?.("div.row[data-edit-plante]")){ e.preventDefault(); editPlante(+e.target.dataset.editPlante); } });
 window.addEventListener("popstate",()=>setTab(location.hash.slice(1),false));
 document.addEventListener("click",e=>{
-  const el=e.target.closest("[data-tab],[data-g],[data-s],[data-edit-plante],[data-done],[data-edit-tache],[data-edit-sec],[data-cancel-sec],#add-plante,#add-tache");
+  const el=e.target.closest("[data-tab],[data-g],[data-s],[data-carte-fait],[data-edit-plante],[data-done],[data-edit-tache],[data-edit-sec],[data-cancel-sec],#add-plante,#add-tache");
   if(!el) return; const ds=el.dataset;
   if(ds.tab) return setTab(ds.tab);
   if(ds.g) {groupe=ds.g; return renderPlantes()}
+  if(ds.carteFait!=null){ if(e.target!==el) return; const t=S.taches[+ds.carteFait]; marquerFait(t,true);
+    sauver("taches",`Tâches : « ${t.tache} » faite`); renderTaches(); return renderPlantes(); }
   if(ds.editPlante!=null) return editPlante(+ds.editPlante);
   if(ds.done!=null){ const t=S.taches[+ds.done], row=el.closest(".task"); marquerFait(t,el.checked);
     sauver("taches",`Tâches : « ${t.tache} » ${el.checked?"faite":"rouverte"}`);
