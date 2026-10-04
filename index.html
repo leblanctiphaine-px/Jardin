@@ -271,6 +271,10 @@ body{font-size:14px}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .btn.primary:hover{background:var(--accent);filter:brightness(1.07)}
 .btn.danger.armed{color:var(--on-accent)}
+/* Réglages : bouton secondaire rond en contour marron ; icônes Lucide */
+.gear{border-color:var(--accent-brown);background:transparent;color:var(--accent-brown)}
+.gear:hover{background:var(--accent-surface-soft);color:var(--accent-brown);border-color:var(--accent-brown)}
+.close{display:grid;place-items:center}
 /* Couleurs système : pleines + on-accent sur les petits éléments, soft seulement pour les grandes zones de texte */
 .pill{background:var(--idle);color:var(--on-accent)}
 .pill.ok{background:var(--ok);color:var(--on-accent)} .pill.warn{background:var(--warn);color:var(--on-accent)} .pill.bad,.pill.slug{background:var(--bad);color:var(--on-accent)}
@@ -291,7 +295,7 @@ body{font-size:14px}
     <div class="sync">
       <span id="sync" class="syncst" aria-live="polite"></span>
       <button class="gear" id="btn-reglages" data-tab="connexion" aria-label="Réglages" title="Réglages" hidden>
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
       </button>
     </div>
   </header>
@@ -327,7 +331,7 @@ body{font-size:14px}
 
   <div class="crumb" id="crumb" hidden>
     <button class="back" data-tab="accueil" aria-label="Retour à l'accueil" title="Accueil">
-      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
     </button>
     <h2 id="crumb-t"></h2>
   </div>
@@ -938,7 +942,7 @@ function renderContexte(){
 function openDlg(html,{onDelete,confirmer=true,plein=false}={}){
   const d=$("#dlg"), f=$("#dlg-form"); d.classList.toggle("plein",plein);
   f.classList.remove("lecture");
-  f.innerHTML=`<button type="button" class="close" id="close" aria-label="Fermer">×</button>`+html;
+  f.innerHTML=`<button type="button" class="close" id="close" aria-label="Fermer"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>`+html;
   f.oninput=null; f.onsubmit=e=>{e.preventDefault(); d.close()};
   $("#close").onclick=()=>d.close();
   d.onclick=e=>{ if(e.target===d) d.close() };
