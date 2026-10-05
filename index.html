@@ -144,6 +144,7 @@ dialog.plein .dlg{max-width:640px;margin:0 auto;padding-bottom:40px}
 label.f{display:grid;gap:4px;font-size:.85rem;font-weight:500;color:var(--muted);min-width:0}
 label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 .hint{font-size:.85rem;color:var(--muted);margin:0}
+.signature{font-size:12px;color:var(--muted);margin:12px 0 0;text-align:right}
 .callout{font-size:.88rem;padding:8px 12px;border-radius:6px;background:var(--bad-soft);color:var(--bad)}
 .check{display:flex;gap:8px;align-items:center;font-size:.9rem}
 .check input{width:auto;accent-color:var(--accent)}
@@ -538,6 +539,11 @@ header{justify-content:space-between;align-items:center}
       </div>
       <p class="hint">« Automatique » suit le réglage du téléphone ou de l'ordinateur. Le choix est gardé sur cet appareil.</p>
     </div>
+    <div class="sec conn" id="prenom-sec">
+      <h2 class="invite-t">Ton prénom</h2>
+      <label class="f">Prénom<input id="c-prenom" autocomplete="given-name" placeholder="Pour signer les tâches que tu ajoutes"></label>
+      <p class="hint">Affiché en petit en bas des tâches que tu crées. Gardé sur cet appareil.</p>
+    </div>
     <form class="sec conn" id="conn-form">
       <p class="hint" id="conn-err" hidden></p>
       <p>Le carnet lit et écrit directement les fichiers du dépôt GitHub. Chaque modification devient un commit, donc rien ne se perd.</p>
@@ -589,7 +595,7 @@ header{justify-content:space-between;align-items:center}
 
 <script>
 const S = {plantes: [], taches: [], contexte: [], bilans: []};
-const COLS = {plantes:["nom","zone","etat","etat_detail","besoins_eau","ensoleillement","notes"], taches:["tache","priorite","responsable","statut","notes","plante","date"], bilans:["date","plante","resultat","pourquoi","fiche"]};
+const COLS = {plantes:["nom","zone","etat","etat_detail","besoins_eau","ensoleillement","notes"], taches:["tache","priorite","responsable","statut","notes","plante","date","cree_par","cree_le"], bilans:["date","plante","resultat","pourquoi","fiche"]};
 let tab = "accueil", groupe = "", mode = "jardin";
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -977,7 +983,7 @@ function editPlante(i){
       renderTaches(); sauver("taches",`Tâches : « ${t.tache} » faite`); liees(); });
     /* Nouvelle tâche liée : ajoutée seulement avec le bouton « Ajouter » (ou Entrée). */
     const ajouterT=()=>{ const v=$("#p-tache-new").value.trim(); if(!v) return $("#p-tache-new").focus();
-      S.taches.unshift({tache:v,priorite:"à faire",responsable:"moi",statut:"à faire",notes:"",plante:p.nom,date:""});
+      S.taches.unshift({tache:v,priorite:"à faire",responsable:"moi",statut:"à faire",notes:"",plante:p.nom,date:"",...creation()});
       renderTaches(); sauver("taches",`Tâches : ajouter « ${v} »`); liees(); $("#p-tache-new").focus(); };
     $("#p-tache-ok").onclick=ajouterT;
     $("#p-tache-new").onkeydown=e=>{ if(e.key!=="Enter") return; e.preventDefault(); ajouterT(); };
@@ -1091,6 +1097,12 @@ function renderAujourdhui(){
     : `<p class="vide">Rien de prévu ni d'urgent.</p>`)
     +`<button class="plus" data-tab="taches">Toutes les tâches<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>`;
 }
+/* Qui a créé la tâche et quand : prénom demandé une fois puis gardé sur cet appareil (réglable dans Réglages). */
+const PRENOM_KEY="jardin-prenom";
+const lirePrenom=()=>{ try{ return localStorage.getItem(PRENOM_KEY)||"" }catch(_){ return "" } };
+function creation(){ let nom=lirePrenom();
+  if(!nom){ nom=(prompt("Ton prénom ? Il apparaîtra discrètement sur les tâches que tu ajoutes.")||"").trim(); if(nom) try{ localStorage.setItem(PRENOM_KEY,nom) }catch(_){} }
+  const d=new Date(); return {cree_par:nom,cree_le:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}; }
 function editTache(i,plante=""){
   let t=i==null?null:S.taches[i];
   const base=t||{tache:"",priorite:"à faire",responsable:"moi",statut:"à faire",notes:"",plante,date:""};
@@ -1106,7 +1118,8 @@ function editTache(i,plante=""){
       <label class="f full">Plante liée<input id="t-plante" value="${esc(base.plante)}" placeholder="Chercher une plante…" autocomplete="off"></label><div class="sugg full" id="t-sugg" hidden></div>
       <label class="f full">Notes<textarea id="t-notes">${esc(base.notes)}</textarea></label>
     </div>
-    <div class="actions"><div><button type="button" class="btn danger" id="del" ${t?"":"hidden"}>Supprimer</button></div>${t?"":`<div><button type="button" class="btn primary" id="t-ok">Ajouter la tâche</button></div>`}</div>`,
+    <div class="actions"><div><button type="button" class="btn danger" id="del" ${t?"":"hidden"}>Supprimer</button></div>${t?"":`<div><button type="button" class="btn primary" id="t-ok">Ajouter la tâche</button></div>`}</div>
+    ${t&&t.cree_le?`<p class="signature">Ajoutée${t.cree_par?` par ${esc(t.cree_par)}`:""} le ${new Date(t.cree_le+"T12:00").toLocaleDateString("fr-FR")}</p>`:""}`,
     {plein:true, onDelete:()=>{ S.taches.splice(S.taches.indexOf(t),1); render(); sauver("taches",`Tâches : supprimer « ${t.tache} »`); }});
   /* Recherche de plante : suggestions filtrées sous le champ, sans tenir compte des accents. */
   const plat=x=>x.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
@@ -1120,7 +1133,7 @@ function editTache(i,plante=""){
   /* Nouvelle tâche : rien n'est enregistré avant « Ajouter la tâche » (fermer sans valider l'abandonne). Tâche existante : enregistrée au fil de la saisie. */
   if(!t){
     const ajouter=()=>{ const n=lireT(); if(!n.tache){ toast("Donne un nom à la tâche"); return $("#t-nom").focus(); }
-      S.taches.unshift({...n,responsable:"moi"}); renderTaches(); renderPlantes(); sauver("taches",`Tâches : ajouter « ${n.tache} »`); $("#dlg").close(); };
+      S.taches.unshift({...n,responsable:"moi",...creation()}); renderTaches(); renderPlantes(); sauver("taches",`Tâches : ajouter « ${n.tache} »`); $("#dlg").close(); };
     $("#t-ok").onclick=ajouter;
     $("#dlg-form").onsubmit=e=>{ e.preventDefault(); ajouter(); };
     return;
@@ -1249,6 +1262,8 @@ $("#c-forget").onclick=()=>{ cfg.token=""; try{localStorage.setItem(CFG_KEY,JSON
 /* Apparence : automatique (système), clair ou sombre, mémorisé dans ce navigateur. */
 const majTheme=()=>{ const t=document.documentElement.dataset.theme||"auto";
   document.querySelectorAll("[data-theme-choix]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.themeChoix===t)); };
+$("#c-prenom").value=lirePrenom();
+$("#c-prenom").onchange=e=>{ const v=e.target.value.trim(); try{ v?localStorage.setItem(PRENOM_KEY,v):localStorage.removeItem(PRENOM_KEY) }catch(_){} };
 $("#theme-choix").onclick=e=>{ const b=e.target.closest("[data-theme-choix]"); if(!b) return; const t=b.dataset.themeChoix;
   if(t==="auto") delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme=t;
   try{ t==="auto"?localStorage.removeItem("jardin-theme"):localStorage.setItem("jardin-theme",t) }catch(_){}
