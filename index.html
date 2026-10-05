@@ -25,15 +25,15 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#191a15; --surface:#22231d; --accent-surface-soft:#2c2d25; --accent-brown:#d2ab8e; --line-strong:#d2ab8e; --ink:#ebe7da; --muted:#a6a193; --line:#34352c;
-  --accent:#9cc48c; --accent-soft:#2b3626; --on-accent:#14190f; --on-soft:#ebe7da;
-  --ok:#9cc48c; --ok-soft:#28331f; --warn:#e2ad62; --warn-soft:#3a2d19; --bad:#ec9a83; --bad-soft:#3d241c;
+  --bg:#1a1512; --surface:#241e1a; --accent-surface-soft:#2e2622; --accent-brown:#dcae8c; --line-strong:#dcae8c; --ink:#f2eee6; --muted:#b5a89f; --line:#4a3f38; --line-field:#3d332d;
+  --accent:#93c08a; --accent-soft:#cf96cf; --on-accent:#1a1512; --on-soft:#1a1512;
+  --ok:#6fc293; --ok-soft:#1f3328; --warn:#eda15a; --warn-soft:#3b2a19; --bad:#f2837d; --bad-soft:#3d201e;
   --idle:var(--muted); --idle-soft:var(--accent-surface-soft);
   --shadow:0 1px 2px rgba(0,0,0,.25); --shadow-up:0 10px 24px -10px rgba(0,0,0,.6); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#191a15; --surface:#22231d; --accent-surface-soft:#2c2d25; --accent-brown:#d2ab8e; --line-strong:#d2ab8e; --ink:#ebe7da; --muted:#a6a193; --line:#34352c;
-  --accent:#9cc48c; --accent-soft:#2b3626; --on-accent:#14190f; --on-soft:#ebe7da;
-  --ok:#9cc48c; --ok-soft:#28331f; --warn:#e2ad62; --warn-soft:#3a2d19; --bad:#ec9a83; --bad-soft:#3d241c;
+  --bg:#1a1512; --surface:#241e1a; --accent-surface-soft:#2e2622; --accent-brown:#dcae8c; --line-strong:#dcae8c; --ink:#f2eee6; --muted:#b5a89f; --line:#4a3f38; --line-field:#3d332d;
+  --accent:#93c08a; --accent-soft:#cf96cf; --on-accent:#1a1512; --on-soft:#1a1512;
+  --ok:#6fc293; --ok-soft:#1f3328; --warn:#eda15a; --warn-soft:#3b2a19; --bad:#f2837d; --bad-soft:#3d201e;
   --idle:var(--muted); --idle-soft:var(--accent-surface-soft);
   --shadow:0 1px 2px rgba(0,0,0,.25); --shadow-up:0 10px 24px -10px rgba(0,0,0,.6); color-scheme:dark}
 *{box-sizing:border-box}
@@ -377,8 +377,6 @@ body{font-size:14px}
 .liees .check{box-shadow:none}
 /* DS : line-field = contour des champs et des tags non choisis */
 :root{--line-field:#e3dedc}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--line-field:#34352c}}
-:root[data-theme="dark"]{--line-field:#34352c}
 input:not([type=checkbox]),select,textarea{border-color:var(--line-field)}
 /* DS : style « lien » 500 14px souligné (Toutes les tâches, En savoir plus) */
 .today .plus,.plus-desc{font:500 14px/1.2 var(--f-body);text-decoration:underline;text-underline-offset:3px}
@@ -469,6 +467,9 @@ header{justify-content:space-between;align-items:center}
 .today li{display:flex;align-items:center;gap:8px}
 .today li button{flex:1;min-width:0}
 .nouv-t{display:flex;gap:8px;align-items:center}.nouv-t input{flex:1;min-width:0}.nouv-t .btn{flex:none;padding:8px 14px;font-size:14px}
+/* Mode sombre : fond brun chaud, accents éclaircis (vert mousse, aubergine mauve, caramel) avec texte foncé dessus ; coche foncée sur l'aubergine claire */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .liees .check input[type=checkbox]:checked,:root:not([data-theme="light"]) .task input[type=checkbox]:checked,:root:not([data-theme="light"]) .row .tache-l input[type=checkbox]:checked,:root:not([data-theme="light"]) .today li input[type=checkbox]:checked{background-image:url("data:image/svg+xml,:root:not([data-theme="light"]) %3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a1512' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")}}
+:root[data-theme="dark"] .liees .check input[type=checkbox]:checked,:root[data-theme="dark"] .task input[type=checkbox]:checked,:root[data-theme="dark"] .row .tache-l input[type=checkbox]:checked,:root[data-theme="dark"] .today li input[type=checkbox]:checked{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a1512' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")}
 </style>
 </head>
 <body>
