@@ -6,7 +6,7 @@
 <title>Casa verte</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23542a12'/%3E%3Cpath d='M18 18C10.2 18 6 13.8 6 6C13.8 6 18 10.2 18 18Z' fill='%23f2eee6'/%3E%3C/svg%3E">
 <script>/* Thème choisi dans Réglages, appliqué avant l'affichage pour éviter un flash. */
-try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark"||t==="jardin")document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
@@ -20,7 +20,7 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
   --system-ok:#1d8a53; --system-warn:#ca6413; --system-bad:#9f071a;
   --system-ok-soft:#deede5; --system-warn-soft:#f6e8dc; --system-bad-soft:#f0dbdd;
   --system-ok-text:#1d8a53; --system-warn-text:#ca6413; --system-bad-text:#9f071a;
-  --brand:#542a12; --on-brand:#f2eee6; --secondary:#542a12; --on-secondary:#f2eee6; --accent-text:#3d6a3a; --task-mark:#660866; --task-go:#660866; --tag-off:#f2eee6;
+  --brand:#542a12; --on-brand:#f2eee6; --secondary:#542a12; --on-secondary:#f2eee6; --accent-text:#3d6a3a; --task-mark:#660866; --task-go:#660866; --tag-off:#f2eee6; --action:#3d6a3a; --on-action:#f2eee6; --bg-image:none; --glass:none; --scrim:rgba(54,19,0,.45);
   --shadow-card:0 1px 2px rgba(74,60,30,.06),0 4px 14px -6px rgba(74,60,30,.14);
   --shadow-up:0 2px 4px rgba(74,60,30,.07),0 12px 28px -10px rgba(74,60,30,.22);
   --space-1:6px; --space-2:10px; --space-3:14px; --space-4:20px;
@@ -29,13 +29,13 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
   --f-body:"Source Sans 3",ui-sans-serif,system-ui,sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="jardin"]){
   --bg:#101010; --surface:#1c1917; --ink:#d9d4cd; --muted:rgba(220,198,173,.55); --line:rgba(220,198,173,.14); --line-field:#302b28;
   --accent-green:#345c31; --accent-aubergine:#521652; --accent-brown:#9a6b4a; --accent-surface-soft:#24201d; --on-accent:#e6e1d9;
   --system-ok:#2a6e47; --system-warn:#b95c26; --system-bad:#962a26;
   --system-ok-soft:#1a2a20; --system-warn-soft:#2e1f15; --system-bad-soft:#2e1817;
   --system-ok-text:#6aae84; --system-warn-text:#d9824a; --system-bad-text:#d8645c;
-  --brand:#d9d4cd; --on-brand:#101010; --secondary:rgba(226,196,162,.72); --on-secondary:#101010; --accent-text:#d9d4cd; --task-mark:rgba(220,198,173,.5); --task-go:rgba(220,198,173,.14); --tag-off:#1c1917;
+  --brand:#d9d4cd; --on-brand:#101010; --secondary:rgba(226,196,162,.72); --on-secondary:#101010; --accent-text:#d9d4cd; --task-mark:rgba(220,198,173,.5); --task-go:rgba(220,198,173,.14); --tag-off:#1c1917; --action:#345c31; --on-action:#e6e1d9; --bg-image:none; --glass:none; --scrim:rgba(0,0,0,.55);
   --shadow-card:0 1px 2px rgba(0,0,0,.25); --shadow-up:0 10px 24px -10px rgba(0,0,0,.6); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#101010; --surface:#1c1917; --ink:#d9d4cd; --muted:rgba(220,198,173,.55); --line:rgba(220,198,173,.14); --line-field:#302b28;
@@ -43,11 +43,23 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
   --system-ok:#2a6e47; --system-warn:#b95c26; --system-bad:#962a26;
   --system-ok-soft:#1a2a20; --system-warn-soft:#2e1f15; --system-bad-soft:#2e1817;
   --system-ok-text:#6aae84; --system-warn-text:#d9824a; --system-bad-text:#d8645c;
-  --brand:#d9d4cd; --on-brand:#101010; --secondary:rgba(226,196,162,.72); --on-secondary:#101010; --accent-text:#d9d4cd; --task-mark:rgba(220,198,173,.5); --task-go:rgba(220,198,173,.14); --tag-off:#1c1917;
+  --brand:#d9d4cd; --on-brand:#101010; --secondary:rgba(226,196,162,.72); --on-secondary:#101010; --accent-text:#d9d4cd; --task-mark:rgba(220,198,173,.5); --task-go:rgba(220,198,173,.14); --tag-off:#1c1917; --action:#345c31; --on-action:#e6e1d9; --bg-image:none; --glass:none; --scrim:rgba(0,0,0,.55);
   --shadow-card:0 1px 2px rgba(0,0,0,.25); --shadow-up:0 10px 24px -10px rgba(0,0,0,.6); color-scheme:dark}
+/* Thème « Jardin » : fond vert forêt avec halos de feuillage, cartes en verre dépoli discret, action principale crème, fruits (tomate, potimarron, aubergine) en petites touches. */
+:root[data-theme="jardin"]{
+  --bg:#12281a; --surface:rgba(48,88,60,.42); --ink:#eef0e2; --muted:rgba(238,240,226,.65); --line:rgba(238,240,226,.1); --line-field:rgba(238,240,226,.18);
+  --accent-green:#4f8a5c; --accent-aubergine:#6b2a6b; --accent-brown:#a8501c; --accent-surface-soft:rgba(60,105,72,.5); --on-accent:#fff6ec;
+  --system-ok:#3e8a5a; --system-warn:#e07b2c; --system-bad:#d4462a;
+  --system-ok-soft:rgba(62,138,90,.22); --system-warn-soft:rgba(224,123,44,.2); --system-bad-soft:rgba(212,70,42,.2);
+  --system-ok-text:#9fd3a8; --system-warn-text:#f0a35e; --system-bad-text:#ff8a6b;
+  --brand:#eef0e2; --on-brand:#12281a; --secondary:#cfd8c4; --on-secondary:#12281a; --accent-text:#eef0e2; --task-mark:rgba(238,240,226,.5); --task-go:rgba(238,240,226,.12); --tag-off:rgba(238,240,226,.06);
+  --action:#eef0e2; --on-action:#12281a;
+  --bg-image:radial-gradient(70% 45% at 80% 5%,#356a4a 0%,transparent 70%),radial-gradient(60% 40% at 5% 45%,#2b5136 0%,transparent 70%),radial-gradient(45% 30% at 70% 80%,#40652f 0%,transparent 70%);
+  --glass:blur(8px); --scrim:rgba(0,0,0,.55);
+  --shadow-card:none; --shadow-up:0 10px 24px -12px rgba(0,0,0,.45); color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--f-body);margin:0}
+body{background:var(--bg-image),var(--bg);background-attachment:fixed;color:var(--ink);font:16px/1.5 var(--f-body);margin:0}
 .wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:20px 64px}
 header{display:flex;justify-content:flex-end}
 h1{font:500 clamp(1.7rem,4vw,2.3rem)/1.1 var(--f-display);margin:0;letter-spacing:-.01em}
@@ -72,7 +84,7 @@ input,select,textarea{font:inherit;color:var(--ink);background:var(--surface);bo
 textarea{min-height:90px;resize:vertical}
 .toolbar input{width:auto}
 .btn{appearance:none;font:500 .92rem var(--f-body);border-radius:6px;padding:8px 14px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);white-space:nowrap}
-.btn.primary{background:var(--accent-green);border-color:var(--accent-green);color:var(--on-accent)}
+.btn.primary{background:var(--action);border-color:var(--action);color:var(--on-action)}
 .btn.danger{color:var(--system-bad-text);border-color:var(--system-bad-text)}
 .btn.danger.armed{background:var(--system-bad);color:var(--surface)}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
@@ -116,9 +128,9 @@ textarea{min-height:90px;resize:vertical}
 .sec-edit textarea{min-height:220px;font:.85rem/1.5 var(--f-mono)}
 /* Dialog */
 dialog{border:1px solid var(--line);border-radius:12px;padding:0;background:var(--surface);color:var(--ink);width:min(640px,calc(100vw - 32px));max-height:calc(100vh - 32px)}
-dialog::backdrop{background:color-mix(in srgb,var(--ink) 45%,transparent)}
+dialog::backdrop{background:var(--scrim)}
 /* Fiche plante : plein écran, contenu centré sur grand écran. */
-dialog.plein{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;margin:0;border:0;border-radius:0;background:var(--bg)}
+dialog.plein{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;margin:0;border:0;border-radius:0;background:var(--bg-image),var(--bg);background-attachment:fixed}
 dialog.plein .dlg{max-width:640px;margin:0 auto;padding-bottom:40px}
 .dlg{display:grid;gap:12px;padding:20px}
 .dlg{position:relative}
@@ -161,7 +173,7 @@ label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 .actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:12px}
 .actions div{display:flex;gap:8px}
 .actions>div+div{margin-left:auto}
-.fab{position:fixed;right:max(16px,calc((100vw - 1080px)/2 + 16px));bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:5;appearance:none;border:0;border-radius:999px;padding:14px 22px;background:var(--accent-green);color:var(--on-accent);font:500 1rem var(--f-body);cursor:pointer;box-shadow:var(--shadow-up)}
+.fab{position:fixed;right:max(16px,calc((100vw - 1080px)/2 + 16px));bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:5;appearance:none;border:0;border-radius:999px;padding:14px 22px;background:var(--action);color:var(--on-action);font:500 1rem var(--f-body);cursor:pointer;box-shadow:var(--shadow-up)}
 .fab:hover{filter:brightness(1.08)}
 #v-taches{padding-bottom:72px}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:.92rem;opacity:0;transition:opacity .2s;pointer-events:none}
@@ -241,8 +253,6 @@ input,select,textarea{border-radius:10px;background:var(--surface)}
 .today li small.retard{color:var(--on-accent);opacity:1}
 .today .vide{margin:0;opacity:.9}
 .today .plus{appearance:none;border:0;background:none;color:inherit;font:500 .92rem var(--f-body);text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:2px 0;justify-self:start}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .today li small.retard{color:var(--on-accent)}}
-:root[data-theme="dark"] .today li small.retard{color:var(--on-accent)}
 .carte{border-radius:18px}
 .badge{box-shadow:var(--shadow-card)}
 .fab{box-shadow:var(--shadow-up);padding:14px 22px}
@@ -279,8 +289,8 @@ body{font-size:14px}
 /* Boutons : primaires verts pleins + on-accent, secondaires en contour marron ; Supprimer reste rouge */
 .btn:not(.danger){background:transparent;border-color:var(--secondary);color:var(--secondary)}
 .btn:not(.danger):hover{background:var(--accent-surface-soft)}
-.btn.primary{background:var(--accent-green);border-color:var(--accent-green);color:var(--on-accent)}
-.btn.primary:hover{background:var(--accent-green);filter:brightness(1.07)}
+.btn.primary{background:var(--action);border-color:var(--action);color:var(--on-action)}
+.btn.primary:hover{background:var(--action);filter:brightness(1.07)}
 .btn.danger.armed{color:var(--on-accent)}
 /* Réglages : bouton secondaire rond en contour marron ; icônes Lucide */
 .gear{border-color:var(--secondary);background:transparent;color:var(--secondary)}
@@ -380,7 +390,7 @@ body{font-size:14px}
 :root{--radius-tag:6px}
 .pill,.chip.etat,.etats .chip.etat,.today li .pill{font:400 12px/1.3 var(--f-body);border-radius:var(--radius-tag);padding:2px 5px;border:1px solid transparent}
 .pill.ok{border-color:var(--system-ok)}.pill.warn{border-color:var(--system-warn)}.pill.bad,.pill.slug{border-color:var(--system-bad)}
-.pill.new{background:var(--accent-green);border-color:var(--accent-green);color:var(--on-accent)}
+.pill.new{background:var(--action);border-color:var(--action);color:var(--on-action)}
 .chip.etat:not([aria-pressed="true"]){background:var(--tag-off);border-color:var(--line-field);color:var(--secondary)}
 /* Maquette (15h45) : tâches de la fiche sans séparateur ni ombre ; champs au contour clair #e3c8b9 (line est devenu foncé dans le DS) */
 .liees{border-top:0;padding-top:6px}
@@ -476,6 +486,8 @@ header{justify-content:space-between;align-items:center}
 .today li{display:flex;align-items:center;gap:8px}
 .today li button{flex:1;min-width:0}
 .nouv-t{display:flex;gap:8px;align-items:center}.nouv-t input{flex:1;min-width:0}.nouv-t .btn{flex:none;padding:8px 14px;font-size:14px}
+/* Verre dépoli (thème Jardin ; --glass vaut none ailleurs) */
+.card,.row,.today,.carte,.liees .check,.fiche,.gear,dialog:not(.plein){-webkit-backdrop-filter:var(--glass);backdrop-filter:var(--glass)}
 </style>
 </head>
 <body>
@@ -540,6 +552,7 @@ header{justify-content:space-between;align-items:center}
       <div class="etats" role="radiogroup" aria-label="Thème" id="theme-choix">
         <button type="button" class="chip" role="radio" data-theme-choix="auto">Automatique</button>
         <button type="button" class="chip" role="radio" data-theme-choix="light">Clair</button>
+        <button type="button" class="chip" role="radio" data-theme-choix="jardin">Jardin</button>
         <button type="button" class="chip" role="radio" data-theme-choix="dark">Sombre</button>
       </div>
       <p class="hint">« Automatique » suit le réglage du téléphone ou de l'ordinateur. Le choix est gardé sur cet appareil.</p>
