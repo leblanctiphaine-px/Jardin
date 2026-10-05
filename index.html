@@ -30,20 +30,20 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#101010; --surface:#1c1917; --ink:#d9d4cd; --muted:#9a948e; --line:#3a3532; --line-field:#302b28;
+  --bg:#101010; --surface:#1c1917; --ink:#d9d4cd; --muted:rgba(220,198,173,.55); --line:rgba(220,198,173,.14); --line-field:#302b28;
   --accent-green:#345c31; --accent-aubergine:#521652; --accent-brown:#9a6b4a; --accent-surface-soft:#24201d; --on-accent:#e6e1d9;
   --system-ok:#2a6e47; --system-warn:#b95c26; --system-bad:#962a26;
   --system-ok-soft:#1a2a20; --system-warn-soft:#2e1f15; --system-bad-soft:#2e1817;
   --system-ok-text:#6aae84; --system-warn-text:#d9824a; --system-bad-text:#d8645c;
-  --brand:#d9d4cd; --on-brand:#101010; --secondary:#c4beb6; --on-secondary:#101010; --accent-text:#d9d4cd; --task-mark:#9a948e; --task-go:#3a3532; --tag-off:#1c1917;
+  --brand:#d9d4cd; --on-brand:#101010; --secondary:rgba(226,196,162,.72); --on-secondary:#101010; --accent-text:#d9d4cd; --task-mark:rgba(220,198,173,.5); --task-go:rgba(220,198,173,.14); --tag-off:#1c1917;
   --shadow-card:0 1px 2px rgba(0,0,0,.25); --shadow-up:0 10px 24px -10px rgba(0,0,0,.6); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#101010; --surface:#1c1917; --ink:#d9d4cd; --muted:#9a948e; --line:#3a3532; --line-field:#302b28;
+  --bg:#101010; --surface:#1c1917; --ink:#d9d4cd; --muted:rgba(220,198,173,.55); --line:rgba(220,198,173,.14); --line-field:#302b28;
   --accent-green:#345c31; --accent-aubergine:#521652; --accent-brown:#9a6b4a; --accent-surface-soft:#24201d; --on-accent:#e6e1d9;
   --system-ok:#2a6e47; --system-warn:#b95c26; --system-bad:#962a26;
   --system-ok-soft:#1a2a20; --system-warn-soft:#2e1f15; --system-bad-soft:#2e1817;
   --system-ok-text:#6aae84; --system-warn-text:#d9824a; --system-bad-text:#d8645c;
-  --brand:#d9d4cd; --on-brand:#101010; --secondary:#c4beb6; --on-secondary:#101010; --accent-text:#d9d4cd; --task-mark:#9a948e; --task-go:#3a3532; --tag-off:#1c1917;
+  --brand:#d9d4cd; --on-brand:#101010; --secondary:rgba(226,196,162,.72); --on-secondary:#101010; --accent-text:#d9d4cd; --task-mark:rgba(220,198,173,.5); --task-go:rgba(220,198,173,.14); --tag-off:#1c1917;
   --shadow-card:0 1px 2px rgba(0,0,0,.25); --shadow-up:0 10px 24px -10px rgba(0,0,0,.6); color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
