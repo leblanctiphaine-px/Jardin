@@ -20,7 +20,7 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
   --system-ok:#1d8a53; --system-warn:#ca6413; --system-bad:#9f071a;
   --system-ok-soft:#deede5; --system-warn-soft:#f6e8dc; --system-bad-soft:#f0dbdd;
   --system-ok-text:#1d8a53; --system-warn-text:#ca6413; --system-bad-text:#9f071a;
-  --brand:#542a12; --on-brand:#f2eee6; --secondary:#542a12; --accent-text:#3d6a3a; --task-mark:#660866; --task-go:#660866; --tag-off:#f2eee6;
+  --brand:#542a12; --on-brand:#f2eee6; --secondary:#542a12; --on-secondary:#f2eee6; --accent-text:#3d6a3a; --task-mark:#660866; --task-go:#660866; --tag-off:#f2eee6;
   --shadow-card:0 1px 2px rgba(74,60,30,.06),0 4px 14px -6px rgba(74,60,30,.14);
   --shadow-up:0 2px 4px rgba(74,60,30,.07),0 12px 28px -10px rgba(74,60,30,.22);
   --space-1:6px; --space-2:10px; --space-3:14px; --space-4:20px;
@@ -35,7 +35,7 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
   --system-ok:#2a6e47; --system-warn:#b95c26; --system-bad:#962a26;
   --system-ok-soft:#1a2a20; --system-warn-soft:#2e1f15; --system-bad-soft:#2e1817;
   --system-ok-text:#6aae84; --system-warn-text:#d9824a; --system-bad-text:#d8645c;
-  --brand:#d9d4cd; --on-brand:#101010; --secondary:#c4beb6; --accent-text:#d9d4cd; --task-mark:#9a948e; --task-go:#3a3532; --tag-off:#1c1917;
+  --brand:#d9d4cd; --on-brand:#101010; --secondary:#c4beb6; --on-secondary:#101010; --accent-text:#d9d4cd; --task-mark:#9a948e; --task-go:#3a3532; --tag-off:#1c1917;
   --shadow-card:0 1px 2px rgba(0,0,0,.25); --shadow-up:0 10px 24px -10px rgba(0,0,0,.6); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#101010; --surface:#1c1917; --ink:#d9d4cd; --muted:#9a948e; --line:#3a3532; --line-field:#302b28;
@@ -43,7 +43,7 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
   --system-ok:#2a6e47; --system-warn:#b95c26; --system-bad:#962a26;
   --system-ok-soft:#1a2a20; --system-warn-soft:#2e1f15; --system-bad-soft:#2e1817;
   --system-ok-text:#6aae84; --system-warn-text:#d9824a; --system-bad-text:#d8645c;
-  --brand:#d9d4cd; --on-brand:#101010; --secondary:#c4beb6; --accent-text:#d9d4cd; --task-mark:#9a948e; --task-go:#3a3532; --tag-off:#1c1917;
+  --brand:#d9d4cd; --on-brand:#101010; --secondary:#c4beb6; --on-secondary:#101010; --accent-text:#d9d4cd; --task-mark:#9a948e; --task-go:#3a3532; --tag-off:#1c1917;
   --shadow-card:0 1px 2px rgba(0,0,0,.25); --shadow-up:0 10px 24px -10px rgba(0,0,0,.6); color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -299,7 +299,7 @@ body{font-size:14px}
 .chip{border-color:var(--secondary)}
 /* Onglets de filtre actifs : aubergine ; tout ce qui touche aux tâches : marron ; « Ajouter » en vert */
 .chip[aria-pressed="true"]:not(.etat){background:var(--accent-aubergine);border-color:var(--accent-aubergine);color:var(--on-accent)}
-.pill.plante{background:var(--accent-brown);color:var(--on-accent)}
+.pill.plante{background:var(--secondary);color:var(--on-secondary)}
 .today{background:var(--accent-brown)}
 .add-row{border:1.5px dashed var(--accent-text);color:var(--accent-text)}
 /* Tags d'état rectangulaires arrondis (radius-md du DS) ; onglets de zone en défilement horizontal */
@@ -341,7 +341,7 @@ body{font-size:14px}
 .today .plus{font:500 16px/1.2 var(--f-body);text-decoration:underline;text-underline-offset:3px}
 .card-k{font:500 12px/1.3 var(--f-body);color:var(--muted)}
 .card-s b{font-weight:500}.card-s b.warn{color:var(--system-warn-text)}.card-s b.bad{color:var(--system-bad-text)}
-#chips-plantes .chip[aria-pressed="true"]{background:var(--accent-brown);border-color:var(--secondary);color:var(--on-accent)}
+#chips-plantes .chip[aria-pressed="true"]{background:var(--secondary);border-color:var(--secondary);color:var(--on-secondary)}
 .pill{font-weight:500}
 .row .tache-l{grid-column:1/-1;appearance:none;display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;border:0;border-top:1px solid var(--line);background:none;padding:8px 0 0;margin-top:2px;color:var(--ink);text-align:left;cursor:pointer;font:400 14px/1.5 var(--f-body)}
 .row .tache-l svg{flex:none;color:var(--secondary)}
