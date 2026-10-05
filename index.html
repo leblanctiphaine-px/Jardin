@@ -25,15 +25,17 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#171411; --surface:#211c18; --accent-surface-soft:#2a2420; --accent-brown:#b88b67; --line-strong:#b88b67; --ink:#ece6da; --muted:#a89c91; --line:#463c35; --line-field:#3a312b;
-  --accent:#55804e; --accent-soft:#8a5486; --on-accent:#f2eee6; --on-soft:#f2eee6;
-  --ok:#4f8a62; --ok-soft:#1f2e24; --warn:#c27a38; --warn-soft:#352717; --bad:#b9483f; --bad-soft:#36201c;
+  --bg:#101010; --surface:#1c1917; --accent-surface-soft:#24201d; --accent-brown:#9a6b4a; --line-strong:#9a6b4a; --ink:#d9d4cd; --muted:#9a948e; --line:#3a3532; --line-field:#302b28;
+  --accent:#345c31; --accent-soft:#521652; --on-accent:#e6e1d9; --on-soft:#e6e1d9;
+  --ok:#2a6e47; --ok-soft:#1a2a20; --warn:#b95c26; --warn-soft:#2e1f15; --bad:#962a26; --bad-soft:#2e1817;
+  --t-accent:#6f9d68; --t-soft:#b07aad; --t-warn:#d9824a; --t-bad:#d8645c; --t-brown:#c09070;
   --idle:var(--muted); --idle-soft:var(--accent-surface-soft);
   --shadow:0 1px 2px rgba(0,0,0,.25); --shadow-up:0 10px 24px -10px rgba(0,0,0,.6); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#171411; --surface:#211c18; --accent-surface-soft:#2a2420; --accent-brown:#b88b67; --line-strong:#b88b67; --ink:#ece6da; --muted:#a89c91; --line:#463c35; --line-field:#3a312b;
-  --accent:#55804e; --accent-soft:#8a5486; --on-accent:#f2eee6; --on-soft:#f2eee6;
-  --ok:#4f8a62; --ok-soft:#1f2e24; --warn:#c27a38; --warn-soft:#352717; --bad:#b9483f; --bad-soft:#36201c;
+  --bg:#101010; --surface:#1c1917; --accent-surface-soft:#24201d; --accent-brown:#9a6b4a; --line-strong:#9a6b4a; --ink:#d9d4cd; --muted:#9a948e; --line:#3a3532; --line-field:#302b28;
+  --accent:#345c31; --accent-soft:#521652; --on-accent:#e6e1d9; --on-soft:#e6e1d9;
+  --ok:#2a6e47; --ok-soft:#1a2a20; --warn:#b95c26; --warn-soft:#2e1f15; --bad:#962a26; --bad-soft:#2e1817;
+  --t-accent:#6f9d68; --t-soft:#b07aad; --t-warn:#d9824a; --t-bad:#d8645c; --t-brown:#c09070;
   --idle:var(--muted); --idle-soft:var(--accent-surface-soft);
   --shadow:0 1px 2px rgba(0,0,0,.25); --shadow-up:0 10px 24px -10px rgba(0,0,0,.6); color-scheme:dark}
 *{box-sizing:border-box}
@@ -468,9 +470,9 @@ header{justify-content:space-between;align-items:center}
 .today li{display:flex;align-items:center;gap:8px}
 .today li button{flex:1;min-width:0}
 .nouv-t{display:flex;gap:8px;align-items:center}.nouv-t input{flex:1;min-width:0}.nouv-t .btn{flex:none;padding:8px 14px;font-size:14px}
-/* Mode sombre : accents profonds et sourds (vert mousse, prune, caramel) avec texte crème ; onglets et tags non choisis sur fond surface */
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip:not([aria-pressed="true"]){background:var(--surface)}}
-:root[data-theme="dark"] .chip:not([aria-pressed="true"]){background:var(--surface)}
+/* Mode sombre « Encre » : fond noir neutre, cartes brun très léger ; accents profonds en fond (texte crème dessus), versions éclaircies (--t-*) quand la couleur sert de texte ou de contour */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip:not([aria-pressed="true"]){background:var(--surface)}:root:not([data-theme="light"]) .card-n,:root:not([data-theme="light"]) .add-row,:root:not([data-theme="light"]) .lien,:root:not([data-theme="light"]) a{color:var(--t-accent)}:root:not([data-theme="light"]) .add-row{border-color:var(--t-accent)}:root:not([data-theme="light"]) .today-h span,:root:not([data-theme="light"]) .today .plus{color:var(--t-soft)}:root:not([data-theme="light"]) .card-s b.warn,:root:not([data-theme="light"]) .task .infos .warn,:root:not([data-theme="light"]) .task .infos .warn svg,:root:not([data-theme="light"]) .today li .tg b.warn{color:var(--t-warn)}:root:not([data-theme="light"]) .card-s b.bad,:root:not([data-theme="light"]) .task .infos .bad,:root:not([data-theme="light"]) .task .infos .bad svg,:root:not([data-theme="light"]) .today li .tg b.bad,:root:not([data-theme="light"]) .carte .limaces,:root:not([data-theme="light"]) .btn.danger,:root:not([data-theme="light"]) #conn-err{color:var(--t-bad)}:root:not([data-theme="light"]) .btn.danger{border-color:var(--t-bad)}:root:not([data-theme="light"]) .liees .check input[type=checkbox]:not(:checked),:root:not([data-theme="light"]) .task input[type=checkbox]:not(:checked),:root:not([data-theme="light"]) .row .tache-l input[type=checkbox]:not(:checked),:root:not([data-theme="light"]) .today li input[type=checkbox]:not(:checked){border-color:var(--t-soft)}}
+:root[data-theme="dark"] .chip:not([aria-pressed="true"]){background:var(--surface)}:root[data-theme="dark"] .card-n,:root[data-theme="dark"] .add-row,:root[data-theme="dark"] .lien,:root[data-theme="dark"] a{color:var(--t-accent)}:root[data-theme="dark"] .add-row{border-color:var(--t-accent)}:root[data-theme="dark"] .today-h span,:root[data-theme="dark"] .today .plus{color:var(--t-soft)}:root[data-theme="dark"] .card-s b.warn,:root[data-theme="dark"] .task .infos .warn,:root[data-theme="dark"] .task .infos .warn svg,:root[data-theme="dark"] .today li .tg b.warn{color:var(--t-warn)}:root[data-theme="dark"] .card-s b.bad,:root[data-theme="dark"] .task .infos .bad,:root[data-theme="dark"] .task .infos .bad svg,:root[data-theme="dark"] .today li .tg b.bad,:root[data-theme="dark"] .carte .limaces,:root[data-theme="dark"] .btn.danger,:root[data-theme="dark"] #conn-err{color:var(--t-bad)}:root[data-theme="dark"] .btn.danger{border-color:var(--t-bad)}:root[data-theme="dark"] .liees .check input[type=checkbox]:not(:checked),:root[data-theme="dark"] .task input[type=checkbox]:not(:checked),:root[data-theme="dark"] .row .tache-l input[type=checkbox]:not(:checked),:root[data-theme="dark"] .today li input[type=checkbox]:not(:checked){border-color:var(--t-soft)}
 </style>
 </head>
 <body>
