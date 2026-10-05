@@ -1077,11 +1077,13 @@ function renderTaches(){
   $("#list-taches .fermees")?.addEventListener("toggle",e=>fermeesOuvertes=e.target.open);
   renderAujourdhui();
 }
-/* Accueil : bloc Tâches avec ce qui presse (en retard, du jour, urgentes) et un lien vers toutes les tâches. */
+/* Accueil : bloc Tâches avec ce qui presse (urgentes, du jour ou en retard, puis à faire) et un lien vers toutes les tâches. */
 function renderAujourdhui(){
   const auj=aujourdhui(), ouv=S.taches.map((t,i)=>({t,i})).filter(({t})=>!FERMEES.includes(t.statut));
-  const presse=ouv.filter(({t})=>(t.date&&t.date<=auj)||estUrgente(t))
-    .sort((a,b)=>parDate(a,b)||(estUrgente(a.t)?-1:0)-(estUrgente(b.t)?-1:0));
+  /* D'abord les urgentes, puis celles dont la date est passée ou du jour, puis les « à faire » ; 3 au maximum. */
+  const rang=x=>estUrgente(x)?0:x.date&&x.date<=auj?1:2;
+  const presse=ouv.filter(({t})=>estUrgente(t)||(t.date&&t.date<=auj)||prioEff(t)==="à faire")
+    .sort((a,b)=>rang(a.t)-rang(b.t)||parDate(a,b));
     const vus=presse.slice(0,3);
   const urg=ouv.filter(({t})=>estUrgente(t)).length, nv=ouv.filter(({t})=>nouvelles.has(t.tache)).length;
   $("#today").innerHTML=`<div class="today-h"><h2>Tâches</h2><span>${ouv.length} ouverte${ouv.length>1?"s":""}${urg?` · ${urg} urgente${urg>1?"s":""}`:""}${nv?` · ${nv} nouvelle${nv>1?"s":""}`:""}</span></div>`+(vus.length
