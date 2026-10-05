@@ -467,6 +467,7 @@ header{justify-content:space-between;align-items:center}
 /* Accueil : case à cocher devant chaque tâche (cocher = fait sans ouvrir la tâche) */
 .today li{display:flex;align-items:center;gap:8px}
 .today li button{flex:1;min-width:0}
+.nouv-t{display:flex;gap:8px;align-items:center}.nouv-t input{flex:1;min-width:0}.nouv-t .btn{flex:none;padding:8px 14px;font-size:14px}
 </style>
 </head>
 <body>
@@ -966,16 +967,18 @@ function editPlante(i){
     const ts=S.taches.filter(t=>t.plante===p.nom&&!FERMEES.includes(t.statut));
     box.innerHTML=`<p class="group-h">Tâches · ${ts.length}</p>`+
       ts.map(t=>`<div class="check"><input type="checkbox" data-lie="${S.taches.indexOf(t)}" aria-label="Marquer « ${esc(t.tache)} » comme faite"><button type="button" class="lien" data-ouvrir="${S.taches.indexOf(t)}"><span>${esc(t.tache)}</span><span class="go">${ICO_FLECHE}</span></button></div>`).join("")+
-      `<input id="p-tache-new" placeholder="+ Nouvelle tâche (Entrée pour l'ajouter)" aria-label="Nouvelle tâche pour cette plante">`;
+      `<div class="nouv-t"><input id="p-tache-new" placeholder="+ Nouvelle tâche" aria-label="Nouvelle tâche pour cette plante"><button type="button" class="btn primary" id="p-tache-ok">Ajouter</button></div>`;
     /* Un clic sur une tâche ferme la fiche (en l'enregistrant) et ouvre la tâche depuis la page Tâches. */
     box.querySelectorAll("[data-ouvrir]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.ouvrir;
       $("#dlg").addEventListener("close",()=>{ setTab("taches"); editTache(i); },{once:true}); $("#dlg").close(); });
     box.querySelectorAll("[data-lie]").forEach(c=>c.onchange=()=>{ const t=S.taches[+c.dataset.lie]; marquerFait(t,true);
       renderTaches(); sauver("taches",`Tâches : « ${t.tache} » faite`); liees(); });
-    $("#p-tache-new").onkeydown=e=>{ if(e.key!=="Enter") return; e.preventDefault();
-      const v=e.target.value.trim(); if(!v) return;
-      S.taches.unshift({tache:v,priorite:"à faire",responsable:"moi",statut:"à faire",notes:"",plante:p.nom});
+    /* Nouvelle tâche liée : ajoutée seulement avec le bouton « Ajouter » (ou Entrée). */
+    const ajouterT=()=>{ const v=$("#p-tache-new").value.trim(); if(!v) return $("#p-tache-new").focus();
+      S.taches.unshift({tache:v,priorite:"à faire",responsable:"moi",statut:"à faire",notes:"",plante:p.nom,date:""});
       renderTaches(); sauver("taches",`Tâches : ajouter « ${v} »`); liees(); $("#p-tache-new").focus(); };
+    $("#p-tache-ok").onclick=ajouterT;
+    $("#p-tache-new").onkeydown=e=>{ if(e.key!=="Enter") return; e.preventDefault(); ajouterT(); };
   };
   const maj=()=>{
     upd(); const n=lire(); if(!n.nom) return;
@@ -1094,7 +1097,7 @@ function editTache(i,plante=""){
       <label class="f full">Plante liée<input id="t-plante" value="${esc(base.plante)}" placeholder="Chercher une plante…" autocomplete="off"></label><div class="sugg full" id="t-sugg" hidden></div>
       <label class="f full">Notes<textarea id="t-notes">${esc(base.notes)}</textarea></label>
     </div>
-    <div class="actions"><div><button type="button" class="btn danger" id="del" ${t?"":"hidden"}>Supprimer</button></div></div>`,
+    <div class="actions"><div><button type="button" class="btn danger" id="del" ${t?"":"hidden"}>Supprimer</button></div>${t?"":`<div><button type="button" class="btn primary" id="t-ok">Ajouter la tâche</button></div>`}</div>`,
     {plein:true, onDelete:()=>{ S.taches.splice(S.taches.indexOf(t),1); render(); sauver("taches",`Tâches : supprimer « ${t.tache} »`); }});
   /* Recherche de plante : suggestions filtrées sous le champ, sans tenir compte des accents. */
   const plat=x=>x.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
@@ -1104,12 +1107,18 @@ function editTache(i,plante=""){
   $("#t-plante").onfocus=suggerer; $("#t-plante").addEventListener("input",suggerer);
   $("#t-sugg").onclick=e=>{ const b=e.target.closest("[data-plante]"); if(!b) return; $("#t-plante").value=b.dataset.plante;
     $("#t-sugg").hidden=true; $("#dlg-form").dispatchEvent(new Event("input")); };
+  const lireT=()=>({tache:$("#t-nom").value.trim(),priorite:$("#t-prio").value,statut:base.statut,notes:$("#t-notes").value.trim(),plante:$("#t-plante").value.trim(),date:$("#t-date").value});
+  /* Nouvelle tâche : rien n'est enregistré avant « Ajouter la tâche » (fermer sans valider l'abandonne). Tâche existante : enregistrée au fil de la saisie. */
+  if(!t){
+    const ajouter=()=>{ const n=lireT(); if(!n.tache){ toast("Donne un nom à la tâche"); return $("#t-nom").focus(); }
+      S.taches.unshift({...n,responsable:"moi"}); renderTaches(); renderPlantes(); sauver("taches",`Tâches : ajouter « ${n.tache} »`); $("#dlg").close(); };
+    $("#t-ok").onclick=ajouter;
+    $("#dlg-form").onsubmit=e=>{ e.preventDefault(); ajouter(); };
+    return;
+  }
   $("#dlg-form").oninput=()=>{
-    const n={tache:$("#t-nom").value.trim(),priorite:$("#t-prio").value,statut:base.statut,notes:$("#t-notes").value.trim(),plante:$("#t-plante").value.trim(),date:$("#t-date").value};
-    if(!n.tache) return;
-    if(!t){ t={...n,responsable:"moi"}; S.taches.unshift(t); message=`Tâches : ajouter « ${n.tache} »`; $("#del").hidden=false; }
-    else{ Object.assign(t,n); message=message.startsWith("Tâches : ajouter")?`Tâches : ajouter « ${n.tache} »`:`Tâches : modifier « ${n.tache} »`; }
-    renderTaches(); sauverBientot("taches",message);
+    const n=lireT(); if(!n.tache) return;
+    Object.assign(t,n); renderTaches(); sauverBientot("taches",message=`Tâches : modifier « ${n.tache} »`);
   };
 }
 
