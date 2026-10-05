@@ -25,15 +25,15 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark")docu
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#1a1512; --surface:#241e1a; --accent-surface-soft:#2e2622; --accent-brown:#dcae8c; --line-strong:#dcae8c; --ink:#f2eee6; --muted:#b5a89f; --line:#4a3f38; --line-field:#3d332d;
-  --accent:#93c08a; --accent-soft:#cf96cf; --on-accent:#1a1512; --on-soft:#1a1512;
-  --ok:#6fc293; --ok-soft:#1f3328; --warn:#eda15a; --warn-soft:#3b2a19; --bad:#f2837d; --bad-soft:#3d201e;
+  --bg:#171411; --surface:#211c18; --accent-surface-soft:#2a2420; --accent-brown:#b88b67; --line-strong:#b88b67; --ink:#ece6da; --muted:#a89c91; --line:#463c35; --line-field:#3a312b;
+  --accent:#55804e; --accent-soft:#8a5486; --on-accent:#f2eee6; --on-soft:#f2eee6;
+  --ok:#4f8a62; --ok-soft:#1f2e24; --warn:#c27a38; --warn-soft:#352717; --bad:#b9483f; --bad-soft:#36201c;
   --idle:var(--muted); --idle-soft:var(--accent-surface-soft);
   --shadow:0 1px 2px rgba(0,0,0,.25); --shadow-up:0 10px 24px -10px rgba(0,0,0,.6); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#1a1512; --surface:#241e1a; --accent-surface-soft:#2e2622; --accent-brown:#dcae8c; --line-strong:#dcae8c; --ink:#f2eee6; --muted:#b5a89f; --line:#4a3f38; --line-field:#3d332d;
-  --accent:#93c08a; --accent-soft:#cf96cf; --on-accent:#1a1512; --on-soft:#1a1512;
-  --ok:#6fc293; --ok-soft:#1f3328; --warn:#eda15a; --warn-soft:#3b2a19; --bad:#f2837d; --bad-soft:#3d201e;
+  --bg:#171411; --surface:#211c18; --accent-surface-soft:#2a2420; --accent-brown:#b88b67; --line-strong:#b88b67; --ink:#ece6da; --muted:#a89c91; --line:#463c35; --line-field:#3a312b;
+  --accent:#55804e; --accent-soft:#8a5486; --on-accent:#f2eee6; --on-soft:#f2eee6;
+  --ok:#4f8a62; --ok-soft:#1f2e24; --warn:#c27a38; --warn-soft:#352717; --bad:#b9483f; --bad-soft:#36201c;
   --idle:var(--muted); --idle-soft:var(--accent-surface-soft);
   --shadow:0 1px 2px rgba(0,0,0,.25); --shadow-up:0 10px 24px -10px rgba(0,0,0,.6); color-scheme:dark}
 *{box-sizing:border-box}
@@ -468,9 +468,9 @@ header{justify-content:space-between;align-items:center}
 .today li{display:flex;align-items:center;gap:8px}
 .today li button{flex:1;min-width:0}
 .nouv-t{display:flex;gap:8px;align-items:center}.nouv-t input{flex:1;min-width:0}.nouv-t .btn{flex:none;padding:8px 14px;font-size:14px}
-/* Mode sombre : fond brun chaud, accents éclaircis (vert mousse, aubergine mauve, caramel) avec texte foncé dessus ; coche foncée sur l'aubergine claire */
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .liees .check input[type=checkbox]:checked,:root:not([data-theme="light"]) .task input[type=checkbox]:checked,:root:not([data-theme="light"]) .row .tache-l input[type=checkbox]:checked,:root:not([data-theme="light"]) .today li input[type=checkbox]:checked{background-image:url("data:image/svg+xml,:root:not([data-theme="light"]) %3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a1512' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")}}
-:root[data-theme="dark"] .liees .check input[type=checkbox]:checked,:root[data-theme="dark"] .task input[type=checkbox]:checked,:root[data-theme="dark"] .row .tache-l input[type=checkbox]:checked,:root[data-theme="dark"] .today li input[type=checkbox]:checked{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a1512' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")}
+/* Mode sombre : accents profonds et sourds (vert mousse, prune, caramel) avec texte crème ; onglets et tags non choisis sur fond surface */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip:not([aria-pressed="true"]){background:var(--surface)}}
+:root[data-theme="dark"] .chip:not([aria-pressed="true"]){background:var(--surface)}
 </style>
 </head>
 <body>
