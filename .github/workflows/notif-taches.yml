@@ -1,0 +1,49 @@
+# Envoie une notification (appli ntfy, gratuite) à chaque nouvelle tâche ajoutée dans taches.csv.
+# Pour la recevoir : installer ntfy (Android, iPhone ou https://ntfy.sh/app) et s'abonner au canal ci-dessous.
+name: Notification nouvelles tâches
+on:
+  push:
+    branches: [main]
+    paths: [taches.csv]
+permissions:
+  contents: read
+jobs:
+  notifier:
+    runs-on: ubuntu-latest
+    env:
+      CANAL: jardin-coloc-f3119f2e
+      APPLI: https://leblanctiphaine-px.github.io/Jardin/#taches
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Repérer les nouvelles tâches et notifier
+        env:
+          AVANT: ${{ github.event.before }}
+        run: |
+          python3 - <<'PY'
+          import csv, io, json, os, subprocess, urllib.request
+          def lire(rev):
+              try: txt = subprocess.run(["git", "show", f"{rev}:taches.csv"], capture_output=True, text=True, check=True).stdout
+              except subprocess.CalledProcessError: return None
+              return list(csv.DictReader(io.StringIO(txt)))
+          avant, apres = lire(os.environ["AVANT"]), lire("HEAD")
+          if avant is None or apres is None:
+              print("Pas de version précédente comparable : rien à envoyer"); raise SystemExit
+          connues = {t["tache"] for t in avant}
+          nouvelles = [t for t in apres if t["tache"] not in connues and t.get("statut") != "fait"]
+          # Une tâche renommée remplace une ligne existante : on ne prévient que si le nombre de tâches augmente.
+          nouvelles = nouvelles[:max(0, len(apres) - len(avant))]
+          for t in nouvelles:
+              details = [t.get("priorite", "")]
+              if t.get("plante"): details.append(t["plante"])
+              if t.get("date"): details.append("le " + "/".join(reversed(t["date"].split("-"))))
+              if t.get("notes"): details.append(t["notes"])
+              corps = " · ".join(d for d in details if d) or "Nouvelle tâche dans le carnet"
+              msg = {"topic": os.environ["CANAL"], "title": "Nouvelle tâche : " + t["tache"], "message": corps,
+                     "tags": ["seedling"], "click": os.environ["APPLI"], "priority": 4 if t.get("priorite") == "urgent" else 3}
+              req = urllib.request.Request("https://ntfy.sh/", data=json.dumps(msg).encode(), method="POST",
+                                           headers={"Content-Type": "application/json"})
+              urllib.request.urlopen(req, timeout=20)
+              print("Notifié :", t["tache"])
+          PY
