@@ -13,16 +13,17 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark"||t==
 /* Paragon (titres et chiffres) : une seule graisse, servie depuis le dépôt. */
 @font-face{font-family:"Paragon";src:url("fonts/paragon-regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
 /* Layout : en-tête avec onglets par fichier, barre d'outils, liste dense de fiches, éditeur en fenêtre */
+/* Clair « Ciel » : ciel bleu en aplats, cartes ton sur ton bordées d'un trait bleu, texte et actions en terre humide, états en abricot, terracotta et pousse. */
 /* Jetons du design system « Carnet du jardin » (mêmes noms et valeurs que tokens.css du DS). En sombre, seuls les états et l'action principale gardent une couleur : les rôles (brand, secondary, accent-text, task-*) passent en neutres. */
 :root{
-  --bg:#f7f7f7; --surface:#fdfdfd; --ink:#361300; --muted:#50443f; --line:#50443f; --line-field:#e3dedc;
-  --accent-green:#3d6a3a; --accent-aubergine:#660866; --accent-brown:#542a12; --accent-surface-soft:#f0f0f6; --on-accent:#f2eee6;
-  --system-ok:#1d8a53; --system-warn:#ca6413; --system-bad:#9f071a;
-  --system-ok-soft:#deede5; --system-warn-soft:#f6e8dc; --system-bad-soft:#f0dbdd;
-  --system-ok-text:#1d8a53; --system-warn-text:#ca6413; --system-bad-text:#9f071a;
-  --brand:#542a12; --on-brand:#f2eee6; --secondary:#542a12; --on-secondary:#f2eee6; --accent-text:#3d6a3a; --task-mark:#660866; --task-go:#660866; --tag-off:#f2eee6; --action:#3d6a3a; --on-action:#f2eee6; --bg-image:none; --glass:none; --scrim:rgba(54,19,0,.45);
-  --shadow-card:0 1px 2px rgba(74,60,30,.06),0 4px 14px -6px rgba(74,60,30,.14);
-  --shadow-up:0 2px 4px rgba(74,60,30,.07),0 12px 28px -10px rgba(74,60,30,.22);
+  --bg:#e3ebf8; --surface:#dbe5f5; --ink:#24150c; --muted:#4a3122; --line:#b9cbe6; --line-field:#c3d3ea; --line-card:#b9cbe6;
+  --accent-green:#3d6a3a; --accent-aubergine:#6b3a6b; --accent-brown:#2e1a0e; --accent-surface-soft:#dbe5f5; --on-accent:#f6efe8;
+  --system-ok:#a9cfa0; --system-warn:#f0b07a; --system-bad:#e08a74; --on-system:#24150c;
+  --system-ok-soft:#dbe9d8; --system-warn-soft:#f6e3d2; --system-bad-soft:#f3dcd6;
+  --system-ok-text:#2f6e3e; --system-warn-text:#a8561a; --system-bad-text:#a8321c;
+  --brand:#2e1a0e; --on-brand:#a9cfa0; --secondary:#2e1a0e; --on-secondary:#f6efe8; --accent-text:#2e1a0e; --task-mark:#6b3a6b; --task-go:#6b3a6b; --tag-off:#e3ebf8; --action:#2e1a0e; --on-action:#f6efe8; --bg-image:none; --glass:none; --scrim:rgba(36,21,12,.45);
+  --shadow-card:none;
+  --shadow-up:0 2px 4px rgba(40,60,100,.07),0 12px 28px -10px rgba(40,60,100,.22);
   --space-1:6px; --space-2:10px; --space-3:14px; --space-4:20px;
   --radius-sm:4px; --radius-tag:6px; --radius-md:8px; --radius-lg:12px; --radius-pill:999px;
   --f-display:"Paragon","Source Sans 3",ui-sans-serif,system-ui,sans-serif;
@@ -32,7 +33,7 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark"||t==
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="jardin"]){
   --bg:#101010; --surface:#1c1917; --ink:#d9d4cd; --muted:rgba(220,198,173,.55); --line:rgba(220,198,173,.14); --line-field:#302b28;
   --accent-green:#345c31; --accent-aubergine:#521652; --accent-brown:#9a6b4a; --accent-surface-soft:#24201d; --on-accent:#e6e1d9;
-  --system-ok:#2a6e47; --system-warn:#b95c26; --system-bad:#962a26;
+  --on-system:var(--on-accent); --line-card:transparent; --system-ok:#2a6e47; --system-warn:#b95c26; --system-bad:#962a26;
   --system-ok-soft:#1a2a20; --system-warn-soft:#2e1f15; --system-bad-soft:#2e1817;
   --system-ok-text:#6aae84; --system-warn-text:#d9824a; --system-bad-text:#d8645c;
   --brand:#d9d4cd; --on-brand:#101010; --secondary:rgba(226,196,162,.72); --on-secondary:#101010; --accent-text:#d9d4cd; --task-mark:rgba(220,198,173,.5); --task-go:rgba(220,198,173,.14); --tag-off:#1c1917; --action:#345c31; --on-action:#e6e1d9; --bg-image:none; --glass:none; --scrim:rgba(0,0,0,.55);
@@ -40,7 +41,7 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark"||t==
 :root[data-theme="dark"]{
   --bg:#101010; --surface:#1c1917; --ink:#d9d4cd; --muted:rgba(220,198,173,.55); --line:rgba(220,198,173,.14); --line-field:#302b28;
   --accent-green:#345c31; --accent-aubergine:#521652; --accent-brown:#9a6b4a; --accent-surface-soft:#24201d; --on-accent:#e6e1d9;
-  --system-ok:#2a6e47; --system-warn:#b95c26; --system-bad:#962a26;
+  --on-system:var(--on-accent); --line-card:transparent; --system-ok:#2a6e47; --system-warn:#b95c26; --system-bad:#962a26;
   --system-ok-soft:#1a2a20; --system-warn-soft:#2e1f15; --system-bad-soft:#2e1817;
   --system-ok-text:#6aae84; --system-warn-text:#d9824a; --system-bad-text:#d8645c;
   --brand:#d9d4cd; --on-brand:#101010; --secondary:rgba(226,196,162,.72); --on-secondary:#101010; --accent-text:#d9d4cd; --task-mark:rgba(220,198,173,.5); --task-go:rgba(220,198,173,.14); --tag-off:#1c1917; --action:#345c31; --on-action:#e6e1d9; --bg-image:none; --glass:none; --scrim:rgba(0,0,0,.55);
@@ -49,7 +50,7 @@ try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark"||t==
 :root[data-theme="jardin"]{
   --bg:#12281a; --surface:rgba(48,88,60,.42); --ink:#eef0e2; --muted:rgba(238,240,226,.65); --line:rgba(238,240,226,.1); --line-field:rgba(238,240,226,.18);
   --accent-green:#4f8a5c; --accent-aubergine:#6b2a6b; --accent-brown:#a8501c; --accent-surface-soft:rgba(60,105,72,.5); --on-accent:#fff6ec;
-  --system-ok:#3e8a5a; --system-warn:#e07b2c; --system-bad:#d4462a;
+  --on-system:var(--on-accent); --line-card:transparent; --system-ok:#3e8a5a; --system-warn:#e07b2c; --system-bad:#d4462a;
   --system-ok-soft:rgba(62,138,90,.22); --system-warn-soft:rgba(224,123,44,.2); --system-bad-soft:rgba(212,70,42,.2);
   --system-ok-text:#9fd3a8; --system-warn-text:#ff9b3d; --system-bad-text:#ff6347;
   --brand:#eef0e2; --on-brand:#12281a; --secondary:#cfd8c4; --on-secondary:#12281a; --accent-text:#eef0e2; --task-mark:rgba(238,240,226,.5); --task-go:rgba(238,240,226,.12); --tag-off:rgba(238,240,226,.06);
@@ -70,7 +71,7 @@ h1{font:500 clamp(1.7rem,4vw,2.3rem)/1.1 var(--f-display);margin:0;letter-spacin
 /* Indicateur d'enregistrement flottant : il ne prend pas de place quand il est vide. */
 .syncst{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:6;padding:4px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font:400 .72rem var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
 .syncst:empty{display:none}
-.syncst.ok{color:var(--system-ok)}.syncst.busy{color:var(--system-warn)}.syncst.bad{color:var(--system-bad)}
+.syncst.ok{color:var(--system-ok-text)}.syncst.busy{color:var(--system-warn-text)}.syncst.bad{color:var(--system-bad-text)}
 .proto{font:400 .72rem var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--system-warn);background:var(--system-warn-soft);padding:4px 8px;border-radius:4px}
 nav.tabs{display:flex;gap:4px;margin-top:20px;border-bottom:1px solid var(--line);overflow-x:auto}
 .tab{appearance:none;background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;font:500 1rem var(--f-body);color:var(--muted);cursor:pointer;white-space:nowrap}
@@ -166,7 +167,7 @@ label.f{display:grid;gap:4px;font-size:.85rem;font-weight:500;color:var(--muted)
 label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 .hint{font-size:.85rem;color:var(--muted);margin:0}
 .signature{font-size:12px;color:var(--muted);margin:12px 0 0;text-align:right}
-.callout{font-size:.88rem;padding:8px 12px;border-radius:6px;background:var(--system-bad-soft);color:var(--system-bad)}
+.callout{font-size:.88rem;padding:8px 12px;border-radius:6px;background:var(--system-bad-soft);color:var(--system-bad-text)}
 .check{display:flex;gap:8px;align-items:center;font-size:.9rem}
 .check input{width:auto;accent-color:var(--accent-green)}
 .lien{appearance:none;border:0;background:none;padding:0;font:inherit;color:var(--accent-text);text-align:left;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
@@ -291,18 +292,18 @@ body{font-size:14px}
 .btn:not(.danger):hover{background:var(--accent-surface-soft)}
 .btn.primary{background:var(--action);border-color:var(--action);color:var(--on-action)}
 .btn.primary:hover{background:var(--action);filter:brightness(1.07)}
-.btn.danger.armed{color:var(--on-accent)}
+.btn.danger.armed{color:var(--on-system)}
 /* Réglages : bouton secondaire rond en contour marron ; icônes Lucide */
 .gear{border-color:var(--secondary);background:transparent;color:var(--secondary)}
 .gear:hover{background:var(--accent-surface-soft);color:var(--secondary);border-color:var(--secondary)}
 .close{display:grid;place-items:center}
 /* Couleurs système : pleines + on-accent sur les petits éléments, soft seulement pour les grandes zones de texte */
 .pill{background:var(--muted);color:var(--on-accent)}
-.pill.ok{background:var(--system-ok);color:var(--on-accent)} .pill.warn{background:var(--system-warn);color:var(--on-accent)} .pill.bad,.pill.slug{background:var(--system-bad);color:var(--on-accent)}
-.chip.etat[aria-pressed="true"].ok{background:var(--system-ok);border-color:var(--system-ok);color:var(--on-accent)}
-.chip.etat[aria-pressed="true"].warn{background:var(--system-warn);border-color:var(--system-warn);color:var(--on-accent)}
-.chip.etat[aria-pressed="true"].bad{background:var(--system-bad);border-color:var(--system-bad);color:var(--on-accent)}
-.proto{background:var(--system-warn);color:var(--on-accent)}
+.pill.ok{background:var(--system-ok);color:var(--on-system)} .pill.warn{background:var(--system-warn);color:var(--on-system)} .pill.bad,.pill.slug{background:var(--system-bad);color:var(--on-system)}
+.chip.etat[aria-pressed="true"].ok{background:var(--system-ok);border-color:var(--system-ok);color:var(--on-system)}
+.chip.etat[aria-pressed="true"].warn{background:var(--system-warn);border-color:var(--system-warn);color:var(--on-system)}
+.chip.etat[aria-pressed="true"].bad{background:var(--system-bad);border-color:var(--system-bad);color:var(--on-system)}
+.proto{background:var(--system-warn);color:var(--on-system)}
 .pill::before{display:none}.pill{padding:3px 10px}
 .badge,.pill,.chip{box-shadow:none}
 /* Onglets et tags (puces de filtre et d'état) : bordure line-strong */
@@ -488,6 +489,7 @@ header{justify-content:space-between;align-items:center}
 .nouv-t{display:flex;gap:8px;align-items:center}.nouv-t input{flex:1;min-width:0}.nouv-t .btn{flex:none;padding:8px 14px;font-size:14px}
 /* Verre dépoli (thème Jardin ; --glass vaut none ailleurs) */
 .card,.row,.today,.carte,.liees .check,.fiche,.gear,dialog:not(.plein){-webkit-backdrop-filter:var(--glass);backdrop-filter:var(--glass)}
+.card,.row,.today{border:1px solid var(--line-card)}
 </style>
 </head>
 <body>
