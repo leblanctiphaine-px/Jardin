@@ -868,7 +868,7 @@ function construireModes(){
 /* Graines et envies sont rangées comme des zones à part : « Stock de graines » et « Liste de souhaits ». */
 const groupeDe=p=>p.zone||A_CLASSER;
 /* L'état est un tag court pris dans une liste fixe ; les notes perso (historique, observations) vont dans etat_detail. */
-const ETATS={plantes:["semis","en croissance","en forme","à surveiller","en danger"],graines:["jamais essayé","déjà essayé"],envies:["à acheter"]};
+const ETATS={plantes:["semis","en forme","à surveiller","en danger"],graines:["jamais essayé","déjà essayé"],envies:["à acheter"]};
 /* Tags et onglets : majuscule au premier mot, les valeurs restent en minuscules dans les CSV. */
 const cap=x=>x?x[0].toUpperCase()+x.slice(1):x;
 const ETAT_CLASSE={"semis":"ok","en croissance":"ok","en forme":"ok","à surveiller":"warn","en danger":"bad"};
@@ -987,7 +987,7 @@ function editPlante(i){
   let p=i==null?null:S.plantes[i];
   const nouveau=!p, projet=p&&MODES.projets.includes(groupeDe(p));
   const base=p||{nom:"",zone:groupe===A_CLASSER||groupe===A_FAIRE?"":zonesOnglet(groupe)[0]||"",
-    etat:mode==="projets"?(groupe==="Liste de souhaits"?"à acheter":"jamais essayé"):"en croissance",etat_detail:mode==="projets"?"":`planté le ${dateJour()}`,besoins_eau:"",ensoleillement:"",notes:""};
+    etat:mode==="projets"?(groupe==="Liste de souhaits"?"à acheter":"jamais essayé"):"en forme",etat_detail:mode==="projets"?"":`planté le ${dateJour()}`,besoins_eau:"",ensoleillement:"",notes:""};
   let message=p?`Plantes : modifier ${p.nom}`:"";
   openDlg(`
     <div class="titre-fiche"><h2 id="p-titre">${p?esc(p.nom):"Nouvelle plante"}</h2>${p?`<button type="button" class="btn mini" id="p-modif">Modifier</button>`:""}</div>${p?`<button type="button" class="fab" id="p-claude">Demander à Claude</button>`:""}
