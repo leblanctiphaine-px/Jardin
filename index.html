@@ -139,6 +139,8 @@ dialog.plein .dlg{max-width:640px;margin:0 auto;padding-bottom:40px}
 .close{position:absolute;top:10px;right:10px;appearance:none;border:0;background:none;color:var(--muted);font:400 1.8rem/1 var(--f-body);width:40px;height:40px;border-radius:50%;cursor:pointer}
 .close:hover{color:var(--ink);background:var(--accent-aubergine)}
 .add-row{appearance:none;width:100%;margin-top:8px;padding:14px;border:1px dashed var(--line);border-radius:8px;background:none;color:var(--accent-text);font:500 .95rem var(--f-body);cursor:pointer}
+.add-duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px}
+.add-duo [hidden]{display:none}
 .add-row:hover{border-color:var(--accent-green);background:var(--accent-aubergine)}
 .etats{display:flex;flex-wrap:wrap;gap:6px}
 .chip.etat[aria-pressed="true"].ok{background:var(--system-ok-soft);border-color:var(--system-ok);color:var(--system-ok)}
@@ -489,6 +491,12 @@ header{justify-content:space-between;align-items:center}
 #v-connexion .reg{margin-top:0;padding:22px 0;max-width:640px}
 #v-connexion .reg:not([hidden])~.reg{border-top:1px solid var(--line-field)}
 #reg-contexte{margin-top:4px}
+/* Tâches : ligne soulevée pendant le réordonnancement (appui long) */
+#list-taches .task{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#list-taches .task.souleve{position:relative;z-index:2;background:var(--surface);outline:1px solid var(--line-field);border-radius:10px;scale:1.02;transition:scale .15s;cursor:grabbing}
+#list-taches.tri .task:not(.souleve){pointer-events:none}
+#list-taches .drop-vide{margin:0;padding:10px 0;font:400 14px/1.4 var(--f-body);color:var(--muted)}
+#list-taches .list:has(.task) .drop-vide{display:none}
 /* Fiche tâche : liste déroulante avec recherche pour la zone ou la plante liée */
 .combo{position:relative}
 .combo-btn{appearance:none;width:100%;display:flex;align-items:center;gap:8px;text-align:left;font:300 14px/1.4 var(--f-body);color:var(--ink);background:var(--surface);border:1px solid var(--line-field);border-radius:10px;padding:8px 10px;cursor:pointer}
@@ -654,7 +662,7 @@ header{justify-content:space-between;align-items:center}
   <section id="v-plantes" hidden style="margin-top:18px">
     <div class="chips" id="chips-plantes"></div>
     <div class="list" id="list-plantes"></div>
-    <button class="add-row" id="add-plante">+ Ajouter une plante</button>
+    <div class="add-duo"><button class="add-row" id="add-plante">+ Ajouter une plante</button><button class="add-row" id="add-tache-zone">+ Ajouter une tâche</button></div>
   </section>
 
   <!-- TACHES -->
@@ -996,6 +1004,7 @@ function renderPlantes(){
   const nG=S.plantes.filter(p=>groupeDe(p)==="Stock de graines").length, nE=S.plantes.filter(p=>groupeDe(p)==="Liste de souhaits").length;
   $("#n-projets").textContent=nG+nE;
   $("#s-projets").textContent=`${nG} sachets de graines · ${nE} envies`;
+  $("#add-tache-zone").hidden=mode==="projets";
   $("#add-plante").textContent=mode!=="projets"?"+ Ajouter une plante":groupe==="Liste de souhaits"?"+ Ajouter une envie":"+ Ajouter des graines";
 }
 const etatsPour=p=>{ const g=groupeDe(p), l=ETATS[g==="Stock de graines"?"graines":g==="Liste de souhaits"?"envies":"plantes"]; return l.includes(p.etat)||!p.etat?l:[...l,p.etat]; };
@@ -1063,7 +1072,7 @@ function editPlante(i){
       renderTaches(); sauver("taches",`Tâches : « ${t.tache} » faite`); liees(); });
     /* Nouvelle tâche liée : ajoutée seulement avec le bouton « Ajouter » (ou Entrée). */
     const ajouterT=()=>{ const v=$("#p-tache-new").value.trim(); if(!v) return $("#p-tache-new").focus();
-      S.taches.unshift({tache:v,priorite:"à faire",responsable:"",statut:"à faire",notes:"",plante:p.nom,zone:"",date:"",...creation()});
+      S.taches.unshift({tache:v,priorite:"moyen",responsable:"",statut:"à faire",notes:"",plante:p.nom,zone:"",date:"",...creation()});
       renderTaches(); sauver("taches",`Tâches : ajouter « ${v} »`); liees(); $("#p-tache-new").focus(); };
     $("#p-tache-ok").onclick=ajouterT;
     $("#p-tache-new").onkeydown=e=>{ if(e.key!=="Enter") return; e.preventDefault(); ajouterT(); };
@@ -1100,11 +1109,12 @@ function editPlante(i){
 }
 
 /* ---------- Tâches ---------- */
-/* Une tâche urgente datée ne devient urgente qu'à partir de sa date. Page Tâches : les tâches dont la date n'est pas arrivée vont dans la section « Bientôt ». */
-const estUrgente=t=>t.priorite==="urgent"&&(!t.date||t.date<=aujourdhui());
-const prioEff=t=>t.date&&t.date>aujourdhui()?"bientôt":t.priorite;
-const PRIO=["urgent","à faire","récurrent","réflexion"];
-const PRIO_COL={urgent:"var(--system-bad)","à faire":"var(--system-warn)",récurrent:"var(--accent-green)",réflexion:"var(--muted)"};
+/* Priorités : urgent, moyen, bas, réflexion. Une tâche urgente datée ne devient urgente qu'à partir de sa date ;
+   une tâche dont la date est passée devient urgente (on affiche « Urgent » plutôt que « En retard »).
+   Page Tâches : les tâches dont la date n'est pas arrivée vont dans l'onglet « Bientôt ». */
+const estUrgente=t=>(t.priorite==="urgent"&&(!t.date||t.date<=aujourdhui()))||!!(t.date&&t.date<aujourdhui());
+const prioEff=t=>t.date&&t.date>aujourdhui()?"bientôt":estUrgente(t)?"urgent":t.priorite;
+const PRIO=["urgent","moyen","bas","réflexion"];
 const FERMEES=["fait","abandonné"];
 const GARDE_JOURS=30, TAG_FAIT=/\s*(—\s*)?fait le (\d{2})\/(\d{2})\/(\d{4})/;
 function dateFait(t){const m=t.notes.match(TAG_FAIT);return m?new Date(+m[4],+m[3]-1,+m[2]):null}
@@ -1151,23 +1161,23 @@ function marquerVues(){ try{ localStorage.setItem(VUES_KEY,JSON.stringify(S.tach
 const zoneTache=t=>t.zone||(t.plante?(S.plantes.find(p=>p.nom===t.plante)||{}).zone||"":"");
 const ligneTache=({t,i})=>{
   const done=FERMEES.includes(t.statut);
-  /* Onglet « À faire » : pas de date (le tag « En retard » suffit) ; les autres onglets la gardent. */
+  /* Onglet « À faire » : pas de date (les tâches en retard sont dans Urgent) ; les autres onglets la gardent. */
   const voirDate=t.date&&!done&&ongletT!=="faire";
   return `<div class="row task ${done?"done":""}" data-edit-tache="${i}">
         <input type="checkbox" data-done="${i}" ${t.statut==="fait"?"checked":""} aria-label="Marquer « ${esc(t.tache)} » comme ${done?"à refaire":"faite"}">
         <span class="t">${esc(t.tache)}</span>
-        ${(u=>u.length&&!done?`<span class="urg">${u.join("")}</span>`:"")([nouvelles.has(t.tache)?'<span class="pill new">Nouvelle</span>':"",estUrgente(t)?'<span class="pill bad">Urgent</span>':"",t.date&&t.date<aujourdhui()?'<span class="pill bad">En retard</span>':""].filter(Boolean))}
-        ${qui(t)||t.plante||voirDate?`<span class="infos">${qui(t)?`<span class="qui"><span class="mini-av" aria-hidden="true">${esc(initiales(qui(t)))}</span>${esc(qui(t))}</span>`:""}${t.plante?`<span>${ICO_PLANTE}${esc(t.plante)}</span>`:""}${(z=>z?`<span>${ICO_PIN}${esc(z)}</span>`:"")(zoneTache(t))}${voirDate?`<span class="${t.date<aujourdhui()?"bad":t.date===aujourdhui()?"warn":""}">${ICO_CAL}${dateLongue(t.date)}</span>`:""}</span>`:""}
+        ${(u=>u.length&&!done?`<span class="urg">${u.join("")}</span>`:"")([nouvelles.has(t.tache)?'<span class="pill new">Nouvelle</span>':"",estUrgente(t)&&ongletT!=="faire"?'<span class="pill bad">Urgent</span>':""].filter(Boolean))}
+        ${qui(t)||zoneTache(t)||voirDate?`<span class="infos">${qui(t)?`<span class="qui"><span class="mini-av" aria-hidden="true">${esc(initiales(qui(t)))}</span>${esc(qui(t))}</span>`:""}${t.plante?`<span>${ICO_PLANTE}${esc(t.plante)}</span>`:""}${(z=>z?`<span>${ICO_PIN}${esc(z)}</span>`:"")(zoneTache(t))}${voirDate?`<span class="${t.date<aujourdhui()?"bad":t.date===aujourdhui()?"warn":""}">${ICO_CAL}${dateLongue(t.date)}</span>`:""}</span>`:""}
         ${(m=>m?`<span class="meta">${m}</span>`:"")((t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")}`:""))}</div>`; };
 /* Page Tâches : onglets texte (À faire / Bientôt / Réflexion / Faites), le choix est gardé sur l'appareil. */
 const ONGLET_T_KEY="jardin-onglet-taches";
 let ongletT=(()=>{ try{ return localStorage.getItem(ONGLET_T_KEY)||"faire" }catch(_){ return "faire" } })();
-const ONGLETS_T=[["faire","À faire",["urgent","à faire","récurrent"]],["bientot","Bientôt",["bientôt"]],["reflexion","Réflexion",["réflexion"]],["faites","Faites",null]];
+const ONGLETS_T=[["faire","À faire",["urgent","moyen","bas"]],["bientot","Bientôt",["bientôt"]],["reflexion","Réflexion",["réflexion"]],["faites","Faites",null]];
 function renderTaches(){
   const toutes=S.taches.map((t,i)=>({t,i}));
   const rows=toutes.filter(({t})=>!FERMEES.includes(t.statut)), faites=toutes.filter(({t})=>FERMEES.includes(t.statut));
   const connues=ONGLETS_T.flatMap(o=>o[2]||[]);
-  const prioDe=r=>{ const p=prioEff(r.t); return connues.includes(p)?p:"à faire"; };
+  const prioDe=r=>{ const p=prioEff(r.t); return connues.includes(p)?p:"moyen"; };
   const dans=o=>o[2]?rows.filter(r=>o[2].includes(prioDe(r))):faites;
   if(!ONGLETS_T.some(o=>o[0]===ongletT)) ongletT="faire";
   $("#onglets-taches").innerHTML=ONGLETS_T.map(o=>`<button type="button" data-onglet-t="${o[0]}" aria-current="${o[0]===ongletT?"page":"false"}">${o[1]}<span>${dans(o).length}</span></button>`).join("");
@@ -1175,10 +1185,11 @@ function renderTaches(){
   let html="";
   if(!o[2]) html=faites.length?`<div class="list">${faites.map(ligneTache).join("")}</div>`:`<p class="empty">Aucune tâche faite ces 30 derniers jours.</p>`;
   else {
-    const groupes=o[2].map(pr=>[pr,rows.filter(r=>prioDe(r)===pr).sort(parDate)]).filter(([,g])=>g.length);
-    for(const [pr,g] of groupes){
-      html+=(groupes.length>1?`<p class="group-h">${esc(cap(pr))} · ${g.length}</p>`:"")+`<div class="list">`+g.map(ligneTache).join("")+`</div>`;
-    }
+    /* Onglet « À faire » : les trois groupes Urgent / Moyen / Bas sont toujours là, pour pouvoir y glisser une tâche (ça change sa priorité). */
+    const groupes=o[2].map(pr=>[pr,rows.filter(r=>prioDe(r)===pr)]);
+    if(o[2].length>1&&groupes.some(([,g])=>g.length)) for(const [pr,g] of groupes)
+      html+=`<p class="group-h">${esc(cap(pr))} · ${g.length}</p><div class="list" data-prio="${pr}">`+g.map(ligneTache).join("")+`<p class="drop-vide">Aucune tâche</p></div>`;
+    else if(groupes[0][1].length) html=`<div class="list"${o[2][0]==="bientôt"?"":` data-prio="${o[2][0]}"`}>`+groupes[0][1].map(ligneTache).join("")+`</div>`;
     if(!html) html=`<p class="empty">${ongletT==="faire"?"Rien à faire pour l'instant. Bonne nouvelle !":"Rien ici pour l'instant."}</p>`;
   }
   $("#list-taches").innerHTML=html;
@@ -1187,14 +1198,14 @@ function renderTaches(){
 /* Accueil : bloc Tâches avec ce qui presse (urgentes, du jour ou en retard, puis à faire) et un lien vers toutes les tâches. */
 function renderAujourdhui(){
   const auj=aujourdhui(), ouv=S.taches.map((t,i)=>({t,i})).filter(({t})=>!FERMEES.includes(t.statut)&&pourMoi(t));
-  /* D'abord les urgentes, puis celles dont la date est passée ou du jour, puis les « à faire » ; 3 au maximum. */
+  /* D'abord les urgentes (dont celles en retard), puis celles du jour, puis les « moyen » ; 3 au maximum. */
   const rang=x=>estUrgente(x)?0:x.date&&x.date<=auj?1:2;
-  const presse=ouv.filter(({t})=>estUrgente(t)||(t.date&&t.date<=auj)||prioEff(t)==="à faire")
+  const presse=ouv.filter(({t})=>estUrgente(t)||(t.date&&t.date<=auj)||prioEff(t)==="moyen")
     .sort((a,b)=>rang(a.t)-rang(b.t)||parDate(a,b));
     const vus=presse.slice(0,3);
   const urg=ouv.filter(({t})=>estUrgente(t)).length, nv=ouv.filter(({t})=>nouvelles.has(t.tache)).length;
   $("#today").innerHTML=`<div class="today-h"><h2>Tâches</h2><span>${ouv.length} ouverte${ouv.length>1?"s":""}${urg?` · ${urg} urgente${urg>1?"s":""}`:""}${nv?` · ${nv} nouvelle${nv>1?"s":""}`:""}</span></div>`+(vus.length
-    ? `<ul>${vus.map(({t,i})=>`<li><input type="checkbox" data-carte-fait="${i}" aria-label="Marquer « ${esc(t.tache)} » comme faite"><button data-edit-tache="${i}"><span>${esc(t.tache)}${t.plante?`<em class="pl">${ICO_PLANTE}${esc(t.plante)}</em>`:t.zone?`<em class="pl">${ICO_PIN}${esc(t.zone)}</em>`:""}</span><span class="tg">${[estUrgente(t)?'<b class="bad">Urgent</b>':"",t.date&&t.date<auj?'<b class="bad">En retard</b>':""].filter(Boolean).join('<i> · </i>')}</span><span class="go">${ICO_FLECHE}</span></button></li>`).join("")}</ul>`
+    ? `<ul>${vus.map(({t,i})=>`<li><input type="checkbox" data-carte-fait="${i}" aria-label="Marquer « ${esc(t.tache)} » comme faite"><button data-edit-tache="${i}"><span>${esc(t.tache)}${t.plante?`<em class="pl">${ICO_PLANTE}${esc(t.plante)}</em>`:t.zone?`<em class="pl">${ICO_PIN}${esc(t.zone)}</em>`:""}</span><span class="tg">${[estUrgente(t)?'<b class="bad">Urgent</b>':""].filter(Boolean).join('<i> · </i>')}</span><span class="go">${ICO_FLECHE}</span></button></li>`).join("")}</ul>`
     : `<p class="vide">Rien de prévu ni d'urgent.</p>`)
     +`<div class="today-pied"><button type="button" class="btn mini" id="add-tache-accueil">+ Ajouter une tâche</button><button class="plus" data-tab="taches">Toutes les tâches<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button></div>`;
 }
@@ -1204,9 +1215,9 @@ const lirePrenom=()=>{ try{ return localStorage.getItem(PRENOM_KEY)||"" }catch(_
 function creation(){ let nom=lirePrenom();
   if(!nom){ nom=(prompt("Ton prénom ? Il apparaîtra discrètement sur les tâches que tu ajoutes.")||"").trim(); if(nom) try{ localStorage.setItem(PRENOM_KEY,nom) }catch(_){} }
   const d=new Date(); return {cree_par:nom,cree_le:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}; }
-function editTache(i,plante=""){
+function editTache(i,plante="",zone=""){
   let t=i==null?null:S.taches[i];
-  const base=t||{tache:"",priorite:"à faire",responsable:"",statut:"à faire",notes:"",plante,zone:"",date:""};
+  const base=t||{tache:"",priorite:"moyen",responsable:"",statut:"à faire",notes:"",plante,zone,date:""};
   /* Qui ? : Personne (libre) + les prénoms déjà vus dans les tâches + celui de cet appareil, sans doublon Tiph/Tiphaine. */
   const gens=[]; for(const n of [...S.taches.flatMap(x=>[qui(x),(x.cree_par||"").trim()]),lirePrenom()].filter(Boolean)) if(!gens.some(g=>memePersonne(g,n))) gens.push(n);
   const quiBase=qui(base), optsQui=[...gens.map(g=>memePersonne(g,quiBase)?quiBase:g).map(g=>[g,g])];
@@ -1359,7 +1370,7 @@ function setTab(t,push=true){ const ctx=/^ctx-(\d+)$/.exec(t);
 document.addEventListener("keydown",e=>{ if((e.key==="Enter"||e.key===" ")&&e.target.matches?.("div.row[data-edit-plante]")){ e.preventDefault(); editPlante(+e.target.dataset.editPlante); } });
 window.addEventListener("popstate",()=>setTab(location.hash.slice(1),false));
 document.addEventListener("click",e=>{
-  const el=e.target.closest("[data-tab],[data-g],[data-s],[data-carte-fait],[data-edit-plante],[data-done],[data-edit-tache],[data-edit-sec],[data-cancel-sec],#add-plante,#add-tache,#add-tache-accueil");
+  const el=e.target.closest("[data-tab],[data-g],[data-s],[data-carte-fait],[data-edit-plante],[data-done],[data-edit-tache],[data-edit-sec],[data-cancel-sec],#add-plante,#add-tache-zone,#add-tache,#add-tache-accueil");
   if(!el) return; const ds=el.dataset;
   if(ds.tab) return setTab(ds.tab);
   if(ds.g) {groupe=ds.g; return renderPlantes()}
@@ -1379,6 +1390,8 @@ document.addEventListener("click",e=>{
   if(ds.editSec!=null){ editingSec=true; return renderContexte(); }
   if(ds.cancelSec!=null){ editingSec=false; viderAttente(); return renderContexte(); }
   if(el.id==="add-plante") return editPlante(null);
+  /* Depuis une zone : la tâche est déjà liée à la zone affichée (rien si c'est l'onglet « À faire » ou « Terrasses »). */
+  if(el.id==="add-tache-zone") return editTache(null,"",groupe!==A_CLASSER&&VRAIES.includes(groupe)?groupe:"");
   if(el.id==="add-tache"||el.id==="add-tache-accueil") return editTache(null);
 });
 
@@ -1391,6 +1404,61 @@ $("#invite-copy").onclick=()=>{ const i=$("#invite-link");
   const repli=()=>{ i.select(); toast("Lien sélectionné : copie-le avec Ctrl+C ou un appui long"); };
   navigator.clipboard?.writeText(i.value).then(()=>toast("Lien copié"),repli) ?? repli(); };
 $("#c-forget").onclick=()=>{ cfg.token=""; try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(_){} charge=false; setSync("",""); setTab("connexion"); toast("Jeton oublié sur cet appareil"); };
+/* Réordonner les tâches : appui long (ou clic maintenu) sur une ligne, elle se soulève et suit le doigt, les autres s'écartent.
+   La lâcher dans un autre groupe (Urgent / Moyen / Bas) change sa priorité. L'ordre est celui des lignes de taches.csv, donc partagé. */
+(()=>{
+  const box=$("#list-taches"); let press=null, drag=null, bloquerClic=false;
+  const fin=()=>{ clearTimeout(press?.timer); press=null; };
+  box.addEventListener("pointerdown",e=>{
+    const row=e.target.closest(".task[data-edit-tache]"); if(!row||e.button>0||e.target.closest("input")||row.classList.contains("done")) return;
+    press={row,x:e.clientX,y:e.clientY,id:e.pointerId,timer:setTimeout(()=>demarrer(e.clientY),e.pointerType==="mouse"?250:400)};
+  });
+  const demarrer=y=>{
+    const row=press.row, list=row.parentElement; fin();
+    const lists=list.dataset.prio?[...box.querySelectorAll(".list[data-prio]")]:[list];
+    drag={row,list,lists,grab:y-row.getBoundingClientRect().top};
+    navigator.vibrate?.(15);
+    row.classList.add("souleve"); box.classList.add("tri");
+    getSelection()?.removeAllRanges();
+  };
+  const bouger=y=>{
+    const {row,lists,grab}=drag, h=row.offsetHeight, centre=y-grab+h/2;
+    /* Groupe visé : celui sous le doigt, sinon le plus proche. */
+    const dist=l=>{ const r=l.getBoundingClientRect(); return y<r.top?r.top-y:y>r.bottom?y-r.bottom:0; };
+    const cible=lists.reduce((a,l)=>dist(l)<dist(a)?l:a,lists[0]);
+    let avant=null;
+    for(const x of cible.querySelectorAll(".task")){ if(x===row) continue; const r=x.getBoundingClientRect(); if(centre<r.top+r.height/2){ avant=x; break; } }
+    if(!avant) avant=cible.querySelector(".drop-vide");
+    if(row.parentElement!==cible||row.nextElementSibling!==avant){
+      const tous=[...box.querySelectorAll(".task,.group-h")].filter(x=>x!==row), pos=new Map(tous.map(x=>[x,x.getBoundingClientRect().top]));
+      cible.insertBefore(row,avant);
+      for(const x of tous){ const d=pos.get(x)-x.getBoundingClientRect().top; if(Math.abs(d)>1) x.animate?.([{transform:`translateY(${d}px)`},{transform:"none"}],{duration:180,easing:"ease-out"}); }
+    }
+    row.style.transform=""; row.style.transform=`translateY(${y-grab-row.getBoundingClientRect().top}px)`;
+    if(y<70) scrollBy(0,-10); else if(y>innerHeight-70) scrollBy(0,10);
+  };
+  addEventListener("pointermove",e=>{
+    if(press&&e.pointerId===press.id&&Math.hypot(e.clientX-press.x,e.clientY-press.y)>8) fin();
+    if(drag){ e.preventDefault(); bouger(e.clientY); }
+  },{passive:false});
+  /* Pendant le déplacement au doigt, la page ne doit pas défiler. */
+  addEventListener("touchmove",e=>{ if(drag) e.preventDefault(); },{passive:false});
+  const lacher=()=>{
+    fin(); if(!drag) return;
+    const {row,list}=drag; drag=null; bloquerClic=true; setTimeout(()=>bloquerClic=false,50);
+    row.style.transform=""; row.classList.remove("souleve"); box.classList.remove("tri");
+    const t=S.taches[+row.dataset.editTache], prio=row.parentElement.dataset.prio, change=row.parentElement!==list&&prio&&prio!==t.priorite;
+    const ordre=[...box.querySelectorAll("[data-edit-tache]")].map(x=>+x.dataset.editTache), places=[...ordre].sort((a,b)=>a-b);
+    if(!change&&ordre.every((v,k)=>v===places[k])) return;
+    if(change){ t.priorite=prio;
+      if(prio!=="urgent"&&t.date&&t.date<aujourdhui()) toast("Sa date est passée : elle reste en Urgent tant que tu ne changes pas la date"); }
+    const copie=ordre.map(i=>S.taches[i]); places.forEach((p,k)=>S.taches[p]=copie[k]);
+    renderTaches(); renderPlantes(); sauver("taches",change?`Tâches : « ${t.tache} » en priorité ${prio}`:`Tâches : déplacer « ${t.tache} »`);
+  };
+  addEventListener("pointerup",lacher); addEventListener("pointercancel",lacher);
+  box.addEventListener("click",e=>{ if(bloquerClic){ e.stopPropagation(); e.preventDefault(); } },true);
+  box.addEventListener("contextmenu",e=>{ if(press||drag) e.preventDefault(); });
+})();
 $("#onglets-taches").onclick=e=>{ const b=e.target.closest("[data-onglet-t]"); if(!b) return; ongletT=b.dataset.ongletT;
   try{ localStorage.setItem(ONGLET_T_KEY,ongletT) }catch(_){} renderTaches(); };
 $("#c-prenom").value=lirePrenom();
