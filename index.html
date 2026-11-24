@@ -485,7 +485,6 @@ header{justify-content:space-between;align-items:center}
 #list-taches .row.task .infos,#list-taches .row.task .meta,#list-taches .row.task .par{grid-column:2/-1}
 /* Assignation : « Initiée par » discret sous la tâche, filtre Toutes / Mes tâches / Libres */
 .task .par{font:400 12px/1.3 var(--f-body);color:var(--muted)}
-#chips-taches{margin-bottom:4px}
 /* Réglages : sections séparées par un trait (Contexte du jardin, prénom, colocs, connexion) */
 #v-connexion .reg{margin-top:0;padding:22px 0;max-width:640px}
 #v-connexion .reg:not([hidden])~.reg{border-top:1px solid var(--line-field)}
@@ -630,7 +629,6 @@ header{justify-content:space-between;align-items:center}
 
   <!-- TACHES -->
   <section id="v-taches" hidden style="margin-top:18px">
-    <div class="chips" id="chips-taches" role="group" aria-label="Filtrer les tâches"></div>
     <div id="list-taches"></div>
     <button class="fab" id="add-tache">+ Ajouter une tâche</button>
   </section>
@@ -1102,9 +1100,6 @@ const memePersonne=(a,b)=>{ const n=x=>x.toLowerCase().normalize("NFD").replace(
   return !!a&&!!b&&(a===b||(Math.min(a.length,b.length)>=3&&(a.startsWith(b)||b.startsWith(a)))); };
 /* Accueil : on masque les tâches attribuées à quelqu'un d'autre (si le prénom de l'appareil est connu). */
 const pourMoi=t=>{ const q=qui(t), moi=lirePrenom(); return !q||!moi||memePersonne(q,moi); };
-const QUI_KEY="jardin-filtre-qui";
-let filtreQui=(()=>{ try{ return localStorage.getItem(QUI_KEY)||"toutes" }catch(_){ return "toutes" } })();
-const passeFiltre=t=>filtreQui==="miennes"?memePersonne(qui(t),lirePrenom()):filtreQui==="libres"?!qui(t):true;
 const ICO_POUBELLE=`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>`;
 const initiales=n=>n.trim().split(/[\s-]+/).filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join("")||"?";
 const ICO_CAL=`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>`;
@@ -1132,11 +1127,7 @@ const ligneTache=({t,i})=>{
         ${(m=>m?`<span class="meta">${m}</span>`:"")((t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")} · `:"")+esc(t.notes))}
         ${t.cree_par?`<span class="par">Initiée par ${esc(t.cree_par)}</span>`:""}</div>`; };
 function renderTaches(){
-  const ouvertes=S.taches.filter(t=>!FERMEES.includes(t.statut)), moi=lirePrenom();
-  if(filtreQui==="miennes"&&!moi) filtreQui="toutes";
-  $("#chips-taches").innerHTML=[["toutes","Toutes",ouvertes.length],...(moi?[["miennes","Mes tâches",ouvertes.filter(t=>memePersonne(qui(t),moi)).length]]:[]),["libres","Libres",ouvertes.filter(t=>!qui(t)).length]]
-    .map(([k,l,n])=>`<button type="button" class="chip" data-qui="${k}" aria-pressed="${filtreQui===k}">${l}<span>${n}</span></button>`).join("");
-  const toutes=S.taches.map((t,i)=>({t,i})).filter(({t})=>passeFiltre(t));
+  const toutes=S.taches.map((t,i)=>({t,i}));
   const rows=toutes.filter(({t})=>!FERMEES.includes(t.statut)), faites=toutes.filter(({t})=>FERMEES.includes(t.statut));
   const SECTIONS=["urgent","à faire","bientôt","récurrent","réflexion"];
   const prios=[...SECTIONS,...new Set(rows.map(r=>prioEff(r.t)).filter(p=>!SECTIONS.includes(p)))];
@@ -1145,7 +1136,7 @@ function renderTaches(){
     const g=rows.filter(r=>prioEff(r.t)===pr).sort(parDate); if(!g.length) continue;
     html+=`<p class="group-h">${esc(cap(pr))} · ${g.length}</p><div class="list">`+g.map(ligneTache).join("")+`</div>`;
   }
-  if(!html) html=`<p class="empty">${filtreQui==="miennes"?"Aucune tâche ouverte pour toi.":filtreQui==="libres"?"Aucune tâche libre.":"Aucune tâche ouverte. Bonne nouvelle !"}</p>`;
+  if(!html) html=`<p class="empty">Aucune tâche ouverte. Bonne nouvelle !</p>`;
   if(faites.length) html+=`<details class="fermees" ${fermeesOuvertes?"open":""}><summary>Faites ces 30 jours · ${faites.length}</summary><div class="list">${faites.map(ligneTache).join("")}</div></details>`;
   $("#list-taches").innerHTML=html;
   $("#list-taches .fermees")?.addEventListener("toggle",e=>fermeesOuvertes=e.target.open);
@@ -1335,8 +1326,6 @@ $("#invite-copy").onclick=()=>{ const i=$("#invite-link");
   const repli=()=>{ i.select(); toast("Lien sélectionné : copie-le avec Ctrl+C ou un appui long"); };
   navigator.clipboard?.writeText(i.value).then(()=>toast("Lien copié"),repli) ?? repli(); };
 $("#c-forget").onclick=()=>{ cfg.token=""; try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(_){} charge=false; setSync("",""); setTab("connexion"); toast("Jeton oublié sur cet appareil"); };
-$("#chips-taches").onclick=e=>{ const b=e.target.closest("[data-qui]"); if(!b) return; filtreQui=b.dataset.qui;
-  try{ localStorage.setItem(QUI_KEY,filtreQui) }catch(_){} renderTaches(); };
 $("#c-prenom").value=lirePrenom();
 $("#c-prenom").onchange=e=>{ const v=e.target.value.trim(); try{ v?localStorage.setItem(PRENOM_KEY,v):localStorage.removeItem(PRENOM_KEY) }catch(_){} try{ renderPlantes(); renderTaches() }catch(_){} };
 demarrer();
