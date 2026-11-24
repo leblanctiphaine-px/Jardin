@@ -169,7 +169,7 @@ dialog.plein .dlg{max-width:640px;margin:0 auto;padding-bottom:40px}
 label.f{display:grid;gap:4px;font-size:.85rem;font-weight:500;color:var(--muted);min-width:0}
 label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 .hint{font-size:.85rem;color:var(--muted);margin:0}
-.signature{font-size:12px;color:var(--muted);margin:12px 0 0;text-align:right}
+.signature{font-size:12px;color:var(--muted);margin:2px 0 0}
 .callout{font-size:.88rem;padding:8px 12px;border-radius:6px;background:var(--system-bad-soft);color:var(--system-bad-text)}
 .check{display:flex;gap:8px;align-items:center;font-size:.9rem}
 .check input{width:auto;accent-color:var(--accent-green)}
@@ -1323,6 +1323,7 @@ function editTache(i,plante="",zone=""){
     <!-- Fiche tâche : une page à lire, éditable sur place (titre, propriétés en lignes, détails), enregistrée au fil de l'eau. -->
     ${t?"":`<p class="fiche-k">Nouvelle tâche</p>`}
     <textarea id="t-nom" class="fiche-titre" rows="1" placeholder="Nom de la tâche" aria-label="Nom de la tâche" ${t?"":"autofocus"}>${esc(base.tache)}</textarea>
+    ${t&&t.cree_par?`<p class="signature">Initiée par ${esc(t.cree_par)}</p>`:""}
     <div class="props">
       <div class="prop"><span class="prop-l"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg><span class="vh">Priorité</span></span>
         <span class="prop-v prop-sel">${sel("t-prio",PRIO,base.priorite)}<svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></div>
@@ -1339,8 +1340,7 @@ function editTache(i,plante="",zone=""){
     </div>
     <textarea id="t-notes" class="fiche-notes" rows="3" placeholder="Ajouter des détails…" aria-label="Détails">${esc(base.notes)}</textarea>
 
-    <div class="actions sans-trait"><div><button type="button" class="btn danger tert" id="del" ${t?"":"hidden"}>${ICO_POUBELLE}<span>Supprimer</span></button></div>${t?`<div><button type="button" class="btn" id="t-claude">Demander à Claude</button><button type="button" class="btn primary" id="t-fini">${t.statut==="fait"?"Rouvrir la tâche":"Marquer comme terminée"}</button></div>`:`<div><button type="button" class="btn primary" id="t-ok">Ajouter la tâche</button></div>`}</div>
-    ${t&&t.cree_par?`<p class="signature">Initiée par ${esc(t.cree_par)}</p>`:""}`,
+    <div class="actions sans-trait"><div><button type="button" class="btn danger tert" id="del" ${t?"":"hidden"}>${ICO_POUBELLE}<span>Supprimer</span></button></div>${t?`<div><button type="button" class="btn" id="t-claude">Demander à Claude</button><button type="button" class="btn primary" id="t-fini">${t.statut==="fait"?"Rouvrir la tâche":"Marquer comme terminée"}</button></div>`:`<div><button type="button" class="btn primary" id="t-ok">Ajouter la tâche</button></div>`}</div>`,
     {onDelete:()=>{ S.taches.splice(S.taches.indexOf(t),1); render(); sauver("taches",`Tâches : supprimer « ${t.tache} »`); }});
   /* Recherche de plante : suggestions filtrées sous le champ, sans tenir compte des accents. */
   /* Zone ou plante liée : liste déroulante avec recherche (zones d'abord, puis plantes avec leur zone) ; « Aucune » retire le lien. */
