@@ -1161,13 +1161,13 @@ function marquerVues(){ try{ localStorage.setItem(VUES_KEY,JSON.stringify(S.tach
 const zoneTache=t=>t.zone||(t.plante?(S.plantes.find(p=>p.nom===t.plante)||{}).zone||"":"");
 const ligneTache=({t,i})=>{
   const done=FERMEES.includes(t.statut);
-  /* Onglet « À faire » : pas de date (les tâches en retard sont dans Urgent) ; les autres onglets la gardent. */
+  /* Lien : la plante si la tâche en a une, sinon sa zone. Onglet « À faire » : pas de date (les tâches en retard sont dans Urgent) ; les autres onglets la gardent. */
   const voirDate=t.date&&!done&&ongletT!=="faire";
   return `<div class="row task ${done?"done":""}" data-edit-tache="${i}">
         <input type="checkbox" data-done="${i}" ${t.statut==="fait"?"checked":""} aria-label="Marquer « ${esc(t.tache)} » comme ${done?"à refaire":"faite"}">
         <span class="t">${esc(t.tache)}</span>
         ${(u=>u.length&&!done?`<span class="urg">${u.join("")}</span>`:"")([nouvelles.has(t.tache)?'<span class="pill new">Nouvelle</span>':"",estUrgente(t)&&ongletT!=="faire"?'<span class="pill bad">Urgent</span>':""].filter(Boolean))}
-        ${qui(t)||zoneTache(t)||voirDate?`<span class="infos">${qui(t)?`<span class="qui"><span class="mini-av" aria-hidden="true">${esc(initiales(qui(t)))}</span>${esc(qui(t))}</span>`:""}${t.plante?`<span>${ICO_PLANTE}${esc(t.plante)}</span>`:""}${(z=>z?`<span>${ICO_PIN}${esc(z)}</span>`:"")(zoneTache(t))}${voirDate?`<span class="${t.date<aujourdhui()?"bad":t.date===aujourdhui()?"warn":""}">${ICO_CAL}${dateLongue(t.date)}</span>`:""}</span>`:""}
+        ${qui(t)||t.plante||t.zone||voirDate?`<span class="infos">${qui(t)?`<span class="qui"><span class="mini-av" aria-hidden="true">${esc(initiales(qui(t)))}</span>${esc(qui(t))}</span>`:""}${t.plante?`<span>${ICO_PLANTE}${esc(t.plante)}</span>`:t.zone?`<span>${ICO_PIN}${esc(t.zone)}</span>`:""}${voirDate?`<span class="${t.date<aujourdhui()?"bad":t.date===aujourdhui()?"warn":""}">${ICO_CAL}${dateLongue(t.date)}</span>`:""}</span>`:""}
         ${(m=>m?`<span class="meta">${m}</span>`:"")((t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")}`:""))}</div>`; };
 /* Page Tâches : onglets texte (À faire / Bientôt / Réflexion / Faites), le choix est gardé sur l'appareil. */
 const ONGLET_T_KEY="jardin-onglet-taches";
