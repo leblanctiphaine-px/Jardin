@@ -537,7 +537,8 @@ body.verrou{position:fixed;left:0;right:0;width:100%}
 .ask-send{appearance:none;flex:none;width:36px;height:36px;border-radius:50%;border:0;display:grid;place-items:center;background:var(--accent-green);color:var(--on-accent);cursor:pointer}
 .fiche-suppr{margin-top:16px}
 /* « Marquer comme terminée » reste collé en bas du tiroir pendant le défilement. */
-.fiche-pied{position:sticky;bottom:0;z-index:2;margin:4px -20px calc(-20px - env(safe-area-inset-bottom));padding:12px 20px calc(16px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--line-field)}
+.fiche-pied{position:sticky;bottom:0;z-index:2;margin:4px -20px calc(-20px - env(safe-area-inset-bottom));padding:12px 20px calc(16px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid transparent;transition:border-color .15s}
+dialog.sous-pied .fiche-pied{border-top-color:var(--line-field)}
 .fiche-pied .btn{width:100%;justify-content:center}
 .ask-h{margin:6px 0 0;font:400 12px/1.3 var(--f-body);color:var(--muted)}
 /* Profil : photo ronde (ou initiales) et boutons ; les avatars des tâches affichent la photo quand il y en a une. */
@@ -801,6 +802,32 @@ body.verrou{position:fixed;left:0;right:0;width:100%}
     else if(!ouvert&&fige){ fige=false; document.documentElement.classList.remove("verrou"); document.body.classList.remove("verrou"); document.body.style.top=""; scrollTo(0,y); } };
   const obs=new MutationObserver(maj);
   for(const d of document.querySelectorAll("dialog")) obs.observe(d,{attributes:true,attributeFilter:["open"]});
+})();
+/* Tiroirs (mobile) : glisser vers le bas pour fermer, depuis la poignée, l'en-tête ou le contenu quand il est en haut. Le tiroir suit le doigt ; au-delà d'un seuil ou d'un geste rapide il se ferme, sinon il revient. Un tap sur la poignée ferme aussi. */
+(()=>{ const mobile=matchMedia("(max-width:640px)"), HAUT=44;
+  const fermer=d=>{ d.style.transition="transform .2s ease-in"; d.style.transform="translateY(100%)";
+    setTimeout(()=>{ d.close(); d.style.transition=""; d.style.transform=""; },200); };
+  const defile=(el,d)=>{ for(;el&&el!==d;el=el.parentElement) if(el.scrollTop>0&&el.scrollHeight>el.clientHeight) return true; return false; };
+  for(const d of document.querySelectorAll("dialog")){ let g=null;
+    d.addEventListener("touchstart",e=>{ g=null; if(!mobile.matches||d.classList.contains("plein")||e.touches.length!==1) return;
+      const r=d.getBoundingClientRect(), x=e.touches[0].clientX, y=e.touches[0].clientY, enHaut=y-r.top<HAUT;
+      if(!enHaut&&(d.scrollTop>0||defile(e.target,d)||e.target===document.activeElement&&e.target.matches("input,textarea,[contenteditable]"))) return;
+      g={y0:y,t0:Date.now(),dy:0,suit:false,poignee:y-r.top<28&&Math.abs(x-(r.left+r.width/2))<60,dernier:[y,Date.now()],v:0}; },{passive:true});
+    d.addEventListener("touchmove",e=>{ if(!g) return; const y=e.touches[0].clientY, dy=y-g.y0;
+      if(!g.suit){ if(Math.abs(dy)<6) return; if(dy<0||(d.scrollTop>0&&!g.poignee)){ g=null; return; } g.suit=true; d.style.transition="none"; }
+      e.preventDefault(); g.dy=Math.max(0,dy); d.style.transform=`translateY(${g.dy}px)`;
+      const n=Date.now(); g.v=(y-g.dernier[0])/Math.max(1,n-g.dernier[1]); g.dernier=[y,n]; },{passive:false});
+    const fin=()=>{ if(!g) return; const s=g; g=null;
+      if(!s.suit){ if(s.poignee&&Date.now()-s.t0<300) fermer(d); return; }
+      if(s.dy>Math.min(120,d.offsetHeight*.25)||s.v>.5) fermer(d);
+      else{ d.style.transition="transform .2s ease-out"; d.style.transform=""; setTimeout(()=>{ d.style.transition=""; },200); } };
+    d.addEventListener("touchend",fin); d.addEventListener("touchcancel",fin); }
+})();
+/* Trait au-dessus du bouton collé en bas : seulement quand du contenu passe dessous (pas tout en bas du défilement). */
+(()=>{ const maj=d=>d.classList.toggle("sous-pied",!!d.querySelector(".fiche-pied")&&d.scrollHeight-d.clientHeight-d.scrollTop>1);
+  const ro=new ResizeObserver(es=>{ for(const e of es){ const d=e.target.closest("dialog"); if(d) maj(d); } });
+  for(const d of document.querySelectorAll("dialog")){ d.addEventListener("scroll",()=>maj(d),{passive:true}); ro.observe(d);
+    new MutationObserver(()=>{ maj(d); for(const c of d.children) ro.observe(c); }).observe(d,{attributes:true,attributeFilter:["open"],childList:true,subtree:true}); }
 })();
 </script>
 <div class="toast" id="toast" role="status"></div>
