@@ -1142,7 +1142,7 @@ const ligneTache=({t,i})=>{
         <span class="t">${esc(t.tache)}</span>
         ${(u=>u.length&&!done?`<span class="urg">${u.join("")}</span>`:"")([nouvelles.has(t.tache)?'<span class="pill new">Nouvelle</span>':"",estUrgente(t)?'<span class="pill bad">Urgent</span>':"",t.date&&t.date<aujourdhui()?'<span class="pill bad">En retard</span>':""].filter(Boolean))}
         ${qui(t)||t.plante||voirDate?`<span class="infos">${qui(t)?`<span class="qui"><span class="mini-av" aria-hidden="true">${esc(initiales(qui(t)))}</span>${esc(qui(t))}</span>`:""}${t.plante?`<span>${ICO_PLANTE}${esc(t.plante)}</span>`:""}${(z=>z?`<span>${ICO_PIN}${esc(z)}</span>`:"")(zoneTache(t))}${voirDate?`<span class="${t.date<aujourdhui()?"bad":t.date===aujourdhui()?"warn":""}">${ICO_CAL}${dateLongue(t.date)}</span>`:""}</span>`:""}
-        ${(m=>m?`<span class="meta">${m}</span>`:"")((t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")} · `:"")+esc(t.notes))}
+        ${(m=>m?`<span class="meta">${m}</span>`:"")((t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")}`:""))}
         ${t.cree_par?`<span class="par">Initiée par ${esc(t.cree_par)}</span>`:""}</div>`; };
 /* Page Tâches : onglets texte (À faire / Bientôt / Réflexion / Faites), le choix est gardé sur l'appareil. */
 const ONGLET_T_KEY="jardin-onglet-taches";
