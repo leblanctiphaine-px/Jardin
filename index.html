@@ -1142,8 +1142,7 @@ const ligneTache=({t,i})=>{
         <span class="t">${esc(t.tache)}</span>
         ${(u=>u.length&&!done?`<span class="urg">${u.join("")}</span>`:"")([nouvelles.has(t.tache)?'<span class="pill new">Nouvelle</span>':"",estUrgente(t)?'<span class="pill bad">Urgent</span>':"",t.date&&t.date<aujourdhui()?'<span class="pill bad">En retard</span>':""].filter(Boolean))}
         ${qui(t)||t.plante||voirDate?`<span class="infos">${qui(t)?`<span class="qui"><span class="mini-av" aria-hidden="true">${esc(initiales(qui(t)))}</span>${esc(qui(t))}</span>`:""}${t.plante?`<span>${ICO_PLANTE}${esc(t.plante)}</span>`:""}${(z=>z?`<span>${ICO_PIN}${esc(z)}</span>`:"")(zoneTache(t))}${voirDate?`<span class="${t.date<aujourdhui()?"bad":t.date===aujourdhui()?"warn":""}">${ICO_CAL}${dateLongue(t.date)}</span>`:""}</span>`:""}
-        ${(m=>m?`<span class="meta">${m}</span>`:"")((t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")}`:""))}
-        ${t.cree_par?`<span class="par">Initiée par ${esc(t.cree_par)}</span>`:""}</div>`; };
+        ${(m=>m?`<span class="meta">${m}</span>`:"")((t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")}`:""))}</div>`; };
 /* Page Tâches : onglets texte (À faire / Bientôt / Réflexion / Faites), le choix est gardé sur l'appareil. */
 const ONGLET_T_KEY="jardin-onglet-taches";
 let ongletT=(()=>{ try{ return localStorage.getItem(ONGLET_T_KEY)||"faire" }catch(_){ return "faire" } })();
@@ -1209,7 +1208,8 @@ function editTache(i,plante=""){
       <label class="f full">Plante liée<input id="t-plante" value="${esc(base.plante)}" placeholder="Chercher une plante…" autocomplete="off"></label><div class="sugg full" id="t-sugg" hidden></div>
       <label class="f full">Détails<textarea id="t-notes">${esc(base.notes)}</textarea></label>
     </div>
-    <div class="actions sans-trait"><div><button type="button" class="btn danger tert" id="del" ${t?"":"hidden"}>${ICO_POUBELLE}<span>Supprimer</span></button></div>${t?`<div><button type="button" class="btn" id="t-claude">Demander à Claude</button></div>`:`<div><button type="button" class="btn primary" id="t-ok">Ajouter la tâche</button></div>`}</div>`,
+    <div class="actions sans-trait"><div><button type="button" class="btn danger tert" id="del" ${t?"":"hidden"}>${ICO_POUBELLE}<span>Supprimer</span></button></div>${t?`<div><button type="button" class="btn" id="t-claude">Demander à Claude</button></div>`:`<div><button type="button" class="btn primary" id="t-ok">Ajouter la tâche</button></div>`}</div>
+    ${t&&t.cree_par?`<p class="signature">Initiée par ${esc(t.cree_par)}</p>`:""}`,
     {onDelete:()=>{ S.taches.splice(S.taches.indexOf(t),1); render(); sauver("taches",`Tâches : supprimer « ${t.tache} »`); }});
   /* Recherche de plante : suggestions filtrées sous le champ, sans tenir compte des accents. */
   const plat=x=>x.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
