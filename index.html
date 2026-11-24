@@ -169,7 +169,7 @@ dialog.plein .dlg{max-width:640px;margin:0 auto;padding-bottom:40px}
 label.f{display:grid;gap:4px;font-size:.85rem;font-weight:500;color:var(--muted);min-width:0}
 label.f code{font:400 .72rem var(--f-mono);color:var(--muted)}
 .hint{font-size:.85rem;color:var(--muted);margin:0}
-.signature{font-size:12px;color:var(--muted);margin:12px 0 0;text-align:right}
+.signature{font-size:12px;color:var(--muted);margin:2px 0 0}
 .callout{font-size:.88rem;padding:8px 12px;border-radius:6px;background:var(--system-bad-soft);color:var(--system-bad-text)}
 .check{display:flex;gap:8px;align-items:center;font-size:.9rem}
 .check input{width:auto;accent-color:var(--accent-green)}
@@ -511,9 +511,11 @@ header{justify-content:space-between;align-items:center}
 .fiche-titre:hover,.fiche-notes:hover,.prop-v:hover,.fiche-titre:focus,.fiche-notes:focus,.prop-v:focus-within{background:var(--tag-off);outline:none}
 .fiche-titre::placeholder,.fiche-notes::placeholder{color:var(--muted);opacity:1}
 .props{display:grid;gap:2px;margin:14px 0 4px;padding:8px 0;border-top:1px solid var(--line-field);border-bottom:1px solid var(--line-field)}
-.prop{display:grid;grid-template-columns:140px minmax(0,1fr);align-items:center;gap:8px;min-height:40px}
+.prop{display:grid;grid-template-columns:20px minmax(0,1fr);align-items:center;gap:8px;min-height:40px}
 .prop-l{display:flex;align-items:center;gap:8px;font:400 14px/1.3 var(--f-body);color:var(--muted)}
 .prop-l svg{flex:none}
+.prop-ico{display:grid;place-items:center;width:16px}
+.prop-ico .pin{width:16px;height:16px}
 .prop-v{position:relative;display:flex;align-items:center;gap:6px;min-width:0;border-radius:8px;padding:4px 8px;margin-left:-8px;font:400 14px/1.4 var(--f-body);color:var(--ink);transition:background-color .15s}
 .prop-v .vide{color:var(--muted)}
 .prop-v .chev{flex:none;color:var(--muted);opacity:0;transition:opacity .15s}
@@ -523,16 +525,18 @@ header{justify-content:space-between;align-items:center}
 .prop-date{cursor:pointer}
 .prop-date input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;padding:0}
 .prop-date #t-date-txt{flex:1}
-.prop-x{position:relative;z-index:1;appearance:none;background:none;border:0;padding:2px 4px;font:400 12px var(--f-body);color:var(--muted);cursor:pointer;text-decoration:underline}
-.prop-x[hidden]{display:none}
+.prop-date.rempli input{pointer-events:none}
+.prop-k{color:var(--muted);margin-right:8px}
+.date-pop{grid-column:2;display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:4px 0 6px}
+.date-pop input{width:auto;flex:1;min-width:150px}
 .props .avatars{margin:0;gap:6px}
 .props .avatar{flex-direction:row;gap:6px;padding:3px 10px 3px 3px;border-radius:999px;min-width:0;font-size:12px}
 .props .avatar .rond{width:24px;height:24px;font-size:11px}
 .props .avatar:hover{background:var(--surface)}
-.prop.combo{grid-template-columns:140px minmax(0,1fr)}
+.prop.combo{grid-template-columns:20px minmax(0,1fr)}
 .prop.combo .combo-pop{grid-column:1/-1}
 .props .combo-btn{border:0;background:none;padding:0;font:inherit}
-@media (max-width:420px){ .prop,.prop.combo{grid-template-columns:118px minmax(0,1fr)} }
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 /* Tâches : ligne soulevée pendant le réordonnancement (appui long) */
 #list-taches .task{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #list-taches .task.souleve{position:relative;z-index:2;background:var(--surface);outline:1px solid var(--line-field);border-radius:10px;scale:1.02;transition:scale .15s;cursor:grabbing}
@@ -1319,23 +1323,24 @@ function editTache(i,plante="",zone=""){
     <!-- Fiche tâche : une page à lire, éditable sur place (titre, propriétés en lignes, détails), enregistrée au fil de l'eau. -->
     ${t?"":`<p class="fiche-k">Nouvelle tâche</p>`}
     <textarea id="t-nom" class="fiche-titre" rows="1" placeholder="Nom de la tâche" aria-label="Nom de la tâche" ${t?"":"autofocus"}>${esc(base.tache)}</textarea>
+    ${t&&t.cree_par?`<p class="signature">Initiée par ${esc(t.cree_par)}</p>`:""}
     <div class="props">
-      <div class="prop"><span class="prop-l"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg>Priorité</span>
+      <div class="prop"><span class="prop-l"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg><span class="vh">Priorité</span></span>
         <span class="prop-v prop-sel">${sel("t-prio",PRIO,base.priorite)}<svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></div>
-      <div class="prop"><span class="prop-l"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>Date</span>
-        <span class="prop-v prop-date"><span id="t-date-txt"></span><input id="t-date" type="date" value="${esc(base.date||"")}" aria-label="Date de rappel"><button type="button" class="prop-x" id="t-date-x" aria-label="Retirer la date">Retirer</button></span></div>
-      <div class="prop"><span class="prop-l" id="t-qui-l"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-3.5 3.8-5.5 7-5.5s6 2 7 5.5"/></svg>Qui s'en charge</span>
+      <div class="prop"><span class="prop-l"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg><span class="vh">Rappel</span></span>
+        <span class="prop-v prop-date"><span id="t-date-txt"></span><input id="t-date" type="date" value="${esc(base.date||"")}" aria-label="Date de rappel"></span>
+        <div class="date-pop" id="t-date-pop" hidden><input id="t-date-edit" type="date" aria-label="Changer la date"><button type="button" class="btn danger tert" id="t-date-x">Retirer la date</button></div></div>
+      <div class="prop"><span class="prop-l" id="t-qui-l"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-3.5 3.8-5.5 7-5.5s6 2 7 5.5"/></svg><span class="vh">Qui s'en charge</span></span>
         <span class="prop-v"><input type="hidden" id="t-qui" value="${esc(quiBase)}">
         <span class="avatars" role="group" aria-labelledby="t-qui-l">${optsQui.map(([v,l])=>`<button type="button" class="avatar" data-qui-v="${esc(v)}" aria-pressed="${v===quiBase}"><span class="rond" aria-hidden="true">${avatarIn(v)}</span><span class="nom">${esc(l)}</span></button>`).join("")}</span></span></div>
-      <div class="prop combo" id="t-combo"><span class="prop-l" id="t-combo-l"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Lié à</span>
+      <div class="prop combo" id="t-combo"><span class="prop-l" id="t-combo-l"><span id="t-combo-ico" class="prop-ico"></span><span class="vh">Lié à</span></span>
         <span class="prop-v"><input type="hidden" id="t-plante" value="${esc(base.plante)}"><input type="hidden" id="t-zone" value="${esc(base.zone||"")}">
         <button type="button" class="combo-btn" id="t-combo-btn" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="t-combo-l"><span id="t-combo-val"></span><svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></span>
         <div class="combo-pop" id="t-combo-pop" hidden><input id="t-combo-q" type="search" placeholder="Rechercher une zone ou une plante…" autocomplete="off" aria-label="Rechercher"><div class="combo-list" role="listbox" id="t-combo-list"></div></div></div>
     </div>
     <textarea id="t-notes" class="fiche-notes" rows="3" placeholder="Ajouter des détails…" aria-label="Détails">${esc(base.notes)}</textarea>
 
-    <div class="actions sans-trait"><div><button type="button" class="btn danger tert" id="del" ${t?"":"hidden"}>${ICO_POUBELLE}<span>Supprimer</span></button></div>${t?`<div><button type="button" class="btn" id="t-claude">Demander à Claude</button><button type="button" class="btn primary" id="t-fini">${t.statut==="fait"?"Rouvrir la tâche":"Marquer comme terminée"}</button></div>`:`<div><button type="button" class="btn primary" id="t-ok">Ajouter la tâche</button></div>`}</div>
-    ${t&&t.cree_par?`<p class="signature">Initiée par ${esc(t.cree_par)}</p>`:""}`,
+    <div class="actions sans-trait"><div><button type="button" class="btn danger tert" id="del" ${t?"":"hidden"}>${ICO_POUBELLE}<span>Supprimer</span></button></div>${t?`<div><button type="button" class="btn" id="t-claude">Demander à Claude</button><button type="button" class="btn primary" id="t-fini">${t.statut==="fait"?"Rouvrir la tâche":"Marquer comme terminée"}</button></div>`:`<div><button type="button" class="btn primary" id="t-ok">Ajouter la tâche</button></div>`}</div>`,
     {onDelete:()=>{ S.taches.splice(S.taches.indexOf(t),1); render(); sauver("taches",`Tâches : supprimer « ${t.tache} »`); }});
   /* Recherche de plante : suggestions filtrées sous le champ, sans tenir compte des accents. */
   /* Zone ou plante liée : liste déroulante avec recherche (zones d'abord, puis plantes avec leur zone) ; « Aucune » retire le lien. */
@@ -1343,7 +1348,8 @@ function editTache(i,plante="",zone=""){
   const zonesT=VRAIES.filter(z=>z!==A_CLASSER);
   const optsLien=[...zonesT.map(z=>({type:"zone",v:z,lib:z,sous:"Zone"})),...plantes.map(n=>({type:"plante",v:n,lib:n,sous:groupeDe(S.plantes.find(p=>p.nom===n)||{})}))];
   const majVal=()=>{ const pl=$("#t-plante").value, z=$("#t-zone").value;
-    $("#t-combo-val").innerHTML=pl?`${ICO_PLANTE}<span>${esc(pl)}</span>`:z?`${ICO_PIN}<span>${esc(z)}</span>`:`<span class="vide">Ajouter une zone ou une plante</span>`; };
+    $("#t-combo-val").innerHTML=pl?`<span>${esc(pl)}</span>`:z?`<span>${esc(z)}</span>`:`<span class="vide">Ajouter une zone ou une plante</span>`;
+    $("#t-combo-ico").innerHTML=pl?ICO_PLANTE:ICO_PIN; };
   const listeLien=()=>{ const q=plat($("#t-combo-q").value.trim()), lie=$("#t-plante").value||$("#t-zone").value;
     const r=optsLien.filter(o=>!q||plat(o.lib).includes(q)).slice(0,40);
     $("#t-combo-list").innerHTML=(lie&&!q?`<button type="button" role="option" data-lien="" data-type="">Aucune (retirer le lien)</button>`:"")
@@ -1352,9 +1358,14 @@ function editTache(i,plante="",zone=""){
   const choisir=(type,v)=>{ $("#t-plante").value=type==="plante"?v:""; $("#t-zone").value=type==="zone"?v:""; majVal(); ouvrir(false); $("#dlg-form").dispatchEvent(new Event("input")); };
   majVal();
   /* Date : texte lisible (« Ajouter une date » si vide), le sélecteur natif s'ouvre au toucher. */
-  const majDate=()=>{ const d=$("#t-date").value; $("#t-date-txt").innerHTML=d?esc(dateLongue(d)):`<span class="vide">Ajouter une date</span>`; $("#t-date-x").hidden=!d; };
+  /* Rappel : vide, un toucher ouvre directement le sélecteur de date ; rempli, il ouvre un petit panneau pour changer la date ou la retirer. */
+  const majDate=()=>{ const d=$("#t-date").value; $("#t-date-txt").innerHTML=d?`<span class="prop-k">Rappel</span>${esc(dateLongue(d))}`:`<span class="vide">Ajouter un rappel</span>`;
+    $(".prop-date").classList.toggle("rempli",!!d); };
+  const popDate=on=>{ $("#t-date-pop").hidden=!on; if(on) $("#t-date-edit").value=$("#t-date").value; };
   majDate(); $("#t-date").addEventListener("input",majDate); $("#t-date").addEventListener("change",majDate);
-  $("#t-date-x").onclick=()=>{ $("#t-date").value=""; majDate(); $("#dlg-form").dispatchEvent(new Event("input")); };
+  $(".prop-date").addEventListener("click",()=>{ if($("#t-date").value) popDate($("#t-date-pop").hidden); });
+  $("#t-date-edit").addEventListener("change",e=>{ if(!e.target.value) return; $("#t-date").value=e.target.value; majDate(); popDate(false); $("#dlg-form").dispatchEvent(new Event("input")); });
+  $("#t-date-x").onclick=()=>{ $("#t-date").value=""; majDate(); popDate(false); $("#dlg-form").dispatchEvent(new Event("input")); };
   /* Titre et détails grandissent avec le texte ; Entrée dans le titre ne fait pas de retour à la ligne. */
   const pousse=el=>{ el.style.height="auto"; el.style.height=el.scrollHeight+"px"; };
   for(const el of [$("#t-nom"),$("#t-notes")]){ el.addEventListener("input",()=>pousse(el)); requestAnimationFrame(()=>pousse(el)); }
