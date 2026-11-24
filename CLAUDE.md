@@ -9,6 +9,7 @@ Base de données + suivi du jardin et des plantes d'intérieur de la colocation 
 - **`bilans.csv`** — ce qui a marché ou non, pour décider quoi refaire. Colonnes : `date,plante,resultat,pourquoi,fiche` (`resultat` ∈ `réussi`, `mitigé`, `raté` ; `fiche` = nom de la fiche de Graines et envies concernée). Quand une plante est retirée de `plantes.csv` (récolte finie, morte, jetée), demander comment ça s'est passé et ajouter une ligne ici.
 - **`contexte-jardin.md`** — contexte général et durable : zones du jardin, type de sol, système d'arrosage, nuisibles connus (limaces), conseils de saison. Pas un inventaire de plantes — n'y ajoute pas de tableau de plantes, ça va dans `plantes.csv`.
 - **`README.txt`** — présentation du projet (objectifs généraux). Rarement à modifier.
+- **`avatars.json`** — photos de profil des colocs (`{prénom: image JPEG 160 px en data URI}`), écrit par l'interface (Réglages › Profil). Ne pas modifier à la main.
 - **`photos/`** — photos du jardin par zone.
 - **`index.html`** — le Carnet du jardin : interface web (GitHub Pages) pour gérer `plantes.csv`, `taches.csv`, `bilans.csv` et `contexte-jardin.md`. Chaque modification faite dans l'interface devient un commit sur `main`. Si tu changes les colonnes d'un CSV ou la structure en sections `##` du contexte, mets l'interface à jour.
 

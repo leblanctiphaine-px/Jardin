@@ -495,6 +495,14 @@ header{justify-content:space-between;align-items:center}
 .reg-details summary{cursor:pointer;color:var(--accent-text);font:500 14px/1.4 var(--f-body)}
 .reg-details[open] summary{margin-bottom:8px}
 #reg-contexte{margin-top:4px}
+/* Profil : photo ronde (ou initiales) et boutons ; les avatars des tâches affichent la photo quand il y en a une. */
+.profil-photo{display:flex;align-items:center;gap:16px}
+.profil-av{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;overflow:hidden;flex:none;background:var(--accent-aubergine);color:var(--on-accent);font:500 22px var(--f-body)}
+.profil-btns{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
+#p-av-choisir{cursor:pointer}
+#p-av-choisir.off{opacity:.5;pointer-events:none}
+.profil-av img,.avatar .rond img,.mini-av img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+.avatar .rond,.task .infos .mini-av{overflow:hidden}
 /* Fiche tâche éditable sur place : pas de cadres permanents, un fond léger au survol ou au focus montre ce qui se modifie. */
 .fiche-k{margin:0;font:500 12px/1.3 var(--f-body);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .fiche-titre,.fiche-notes{appearance:none;display:block;width:100%;resize:none;overflow:hidden;background:none;border:0;border-radius:8px;color:var(--ink);padding:4px 6px;margin:0 -6px;width:calc(100% + 12px);transition:background-color .15s}
@@ -660,7 +668,7 @@ header{justify-content:space-between;align-items:center}
     <!-- Réglages : une page d'accueil avec les rubriques, chacune ouvre sa page (retour vers Réglages). -->
     <div class="list reg-menu" id="reg-menu" hidden>
       <button class="row reg-item" data-tab="reg-jardin"><span class="t">Contexte du jardin</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="meta" id="rm-jardin"></span></button>
-      <button class="row reg-item" data-tab="reg-profil"><span class="t">Mon prénom</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="meta" id="rm-profil"></span></button>
+      <button class="row reg-item" data-tab="reg-profil"><span class="t">Profil</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="meta" id="rm-profil"></span></button>
       <button class="row reg-item" data-tab="reg-colocs"><span class="t">Inviter les colocs</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="meta">Le lien à envoyer pour qu'ils modifient le carnet</span></button>
       <button class="row reg-item" data-tab="reg-github"><span class="t">Connexion GitHub</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="meta" id="rm-github"></span></button>
     </div>
@@ -669,6 +677,14 @@ header{justify-content:space-between;align-items:center}
       <div class="list" id="reg-contexte"></div>
     </div>
     <div class="sec conn reg" id="reg-profil" hidden>
+      <div class="profil-photo">
+        <span class="profil-av" id="p-av" aria-hidden="true"></span>
+        <div class="profil-btns">
+          <label class="btn" id="p-av-choisir">Choisir une photo<input type="file" id="p-av-file" accept="image/*" hidden></label>
+          <button type="button" class="btn danger tert" id="p-av-retirer" hidden>Retirer la photo</button>
+        </div>
+      </div>
+      <p class="hint" id="p-av-hint">Ta photo remplace tes initiales sur les tâches, pour toute la coloc.</p>
       <label class="f">Prénom<input id="c-prenom" autocomplete="given-name" placeholder="Ex. Tiph"></label>
       <p class="hint">Il signe les tâches que tu ajoutes, et l'accueil ne te montre que les tâches libres ou les tiennes. Gardé sur cet appareil.</p>
     </div>
@@ -901,7 +917,7 @@ async function demarrer(){
   if(!cfg.token){ charge=false; return setTab("connexion",false); }
   setSync("Chargement…","busy");
   try{
-    await Promise.all(Object.keys(PATHS).map(charger));
+    await Promise.all([...Object.keys(PATHS).map(charger),chargerAvatars()]);
   }catch(e){
     charge=false; setSync("Hors ligne","bad");
     $("#conn-err").textContent=msgErreur(e); $("#conn-err").hidden=false;
@@ -1188,6 +1204,38 @@ const memePersonne=(a,b)=>{ const n=x=>x.toLowerCase().normalize("NFD").replace(
 /* Accueil : on masque les tâches attribuées à quelqu'un d'autre (si le prénom de l'appareil est connu). */
 const pourMoi=t=>{ const q=qui(t), moi=lirePrenom(); return !q||!moi||memePersonne(q,moi); };
 const ICO_POUBELLE=`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>`;
+/* Avatars : photos des colocs dans avatars.json ({prénom: image en data URI, 160 px}), lu et écrit dans le dépôt comme les autres fichiers. */
+let AVATARS={}, avSha=null;
+const AV_PATH="avatars.json";
+const cleAv=n=>Object.keys(AVATARS).find(k=>memePersonne(k,n));
+const photoDe=n=>n?AVATARS[cleAv(n)]||"":"";
+/* Rond d'avatar : la photo si la personne en a une, sinon ses initiales. */
+const avatarIn=n=>{ const ph=photoDe(n); return ph?`<img src="${ph}" alt="">`:esc(initiales(n)); };
+async function chargerAvatars(){
+  try{ const j=await gh(`/repos/${cfg.repo}/contents/${AV_PATH}?ref=${encodeURIComponent(cfg.branch)}`); avSha=j.sha; AVATARS=JSON.parse(b64dec(j.content)||"{}"); }
+  catch(e){ if(e.status!==404) console.warn("avatars",e); AVATARS={}; avSha=null; }
+}
+async function enregistrerAvatar(nom,photo){
+  for(let essai=0;essai<2;essai++){
+    if(essai) await chargerAvatars();
+    const k=cleAv(nom)||nom, prochain={...AVATARS}; if(photo) prochain[k]=photo; else delete prochain[k];
+    try{
+      const r=await gh(`/repos/${cfg.repo}/contents/${AV_PATH}`,{method:"PUT",body:JSON.stringify({message:`Profil : ${photo?"photo de":"retirer la photo de"} ${nom}`,content:b64enc(JSON.stringify(prochain,null,1)+"\n"),branch:cfg.branch,...(avSha?{sha:avSha}:{})})});
+      AVATARS=prochain; avSha=r.content.sha; return true;
+    }catch(e){ if(e.status!==409&&e.status!==422||essai) { toast(msgErreur(e)); return false; } }
+  }
+}
+/* Photo choisie : recadrée au carré au centre, réduite à 160 px, en JPEG. */
+function reduirePhoto(fichier){
+  return new Promise((ok,ko)=>{ const img=new Image(), url=URL.createObjectURL(fichier);
+    img.onload=()=>{ const c=document.createElement("canvas"), T=160, m=Math.min(img.width,img.height); c.width=c.height=T;
+      c.getContext("2d").drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,T,T); URL.revokeObjectURL(url); ok(c.toDataURL("image/jpeg",.82)); };
+    img.onerror=()=>{ URL.revokeObjectURL(url); ko(new Error("image")); }; img.src=url; });
+}
+function majProfil(){ const n=lirePrenom(), ph=photoDe(n);
+  $("#p-av").innerHTML=ph?`<img src="${ph}" alt="">`:esc(n?initiales(n):"?");
+  $("#p-av-retirer").hidden=!ph; $("#p-av-choisir").classList.toggle("off",!n);
+  $("#p-av-hint").textContent=n?"Ta photo remplace tes initiales sur les tâches, pour toute la coloc.":"Renseigne d'abord ton prénom ci-dessous pour ajouter une photo."; }
 const initiales=n=>n.trim().split(/[\s-]+/).filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join("")||"?";
 const ICO_CAL=`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>`;
 const dateLongue=iso=>new Date(iso+"T12:00").toLocaleDateString("fr-FR",{day:"2-digit",month:"long",...(iso.slice(0,4)!==String(new Date().getFullYear())?{year:"numeric"}:{})});
@@ -1213,7 +1261,7 @@ const ligneTache=({t,i})=>{
         <input type="checkbox" data-done="${i}" ${t.statut==="fait"?"checked":""} aria-label="Marquer « ${esc(t.tache)} » comme ${done?"à refaire":"faite"}">
         <span class="t">${esc(t.tache)}</span>
         ${(u=>u.length&&!done?`<span class="urg">${u.join("")}</span>`:"")([nouvelles.has(t.tache)?'<span class="pill new">Nouvelle</span>':"",estUrgente(t)&&ongletT!=="faire"?'<span class="pill bad">Urgent</span>':""].filter(Boolean))}
-        ${qui(t)||t.plante||t.zone||voirDate?`<span class="infos">${qui(t)?`<span class="qui"><span class="mini-av" aria-hidden="true">${esc(initiales(qui(t)))}</span>${esc(qui(t))}</span>`:""}${t.plante?`<span>${ICO_PLANTE}${esc(t.plante)}</span>`:t.zone?`<span>${ICO_PIN}${esc(t.zone)}</span>`:""}${voirDate?`<span class="${t.date<aujourdhui()?"bad":t.date===aujourdhui()?"warn":""}">${ICO_CAL}${dateLongue(t.date)}</span>`:""}</span>`:""}
+        ${qui(t)||t.plante||t.zone||voirDate?`<span class="infos">${qui(t)?`<span class="qui"><span class="mini-av" aria-hidden="true">${avatarIn(qui(t))}</span>${esc(qui(t))}</span>`:""}${t.plante?`<span>${ICO_PLANTE}${esc(t.plante)}</span>`:t.zone?`<span>${ICO_PIN}${esc(t.zone)}</span>`:""}${voirDate?`<span class="${t.date<aujourdhui()?"bad":t.date===aujourdhui()?"warn":""}">${ICO_CAL}${dateLongue(t.date)}</span>`:""}</span>`:""}
         ${(m=>m?`<span class="meta">${m}</span>`:"")((t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")}`:""))}</div>`; };
 /* Page Tâches : onglets texte (À faire / Bientôt / Réflexion / Faites), le choix est gardé sur l'appareil. */
 const ONGLET_T_KEY="jardin-onglet-taches";
@@ -1281,7 +1329,7 @@ function editTache(i,plante="",zone=""){
         <span class="prop-v prop-date"><span id="t-date-txt"></span><input id="t-date" type="date" value="${esc(base.date||"")}" aria-label="Date de rappel"><button type="button" class="prop-x" id="t-date-x" aria-label="Retirer la date">Retirer</button></span></div>
       <div class="prop"><span class="prop-l" id="t-qui-l"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-3.5 3.8-5.5 7-5.5s6 2 7 5.5"/></svg>Qui s'en charge</span>
         <span class="prop-v"><input type="hidden" id="t-qui" value="${esc(quiBase)}">
-        <span class="avatars" role="group" aria-labelledby="t-qui-l">${optsQui.map(([v,l])=>`<button type="button" class="avatar" data-qui-v="${esc(v)}" aria-pressed="${v===quiBase}"><span class="rond" aria-hidden="true">${esc(initiales(v))}</span><span class="nom">${esc(l)}</span></button>`).join("")}</span></span></div>
+        <span class="avatars" role="group" aria-labelledby="t-qui-l">${optsQui.map(([v,l])=>`<button type="button" class="avatar" data-qui-v="${esc(v)}" aria-pressed="${v===quiBase}"><span class="rond" aria-hidden="true">${avatarIn(v)}</span><span class="nom">${esc(l)}</span></button>`).join("")}</span></span></div>
       <div class="prop combo" id="t-combo"><span class="prop-l" id="t-combo-l"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Lié à</span>
         <span class="prop-v"><input type="hidden" id="t-plante" value="${esc(base.plante)}"><input type="hidden" id="t-zone" value="${esc(base.zone||"")}">
         <button type="button" class="combo-btn" id="t-combo-btn" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="t-combo-l"><span id="t-combo-val"></span><svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></span>
@@ -1411,7 +1459,7 @@ function openDlg(html,{onDelete,confirmer=true,plein=false}={}){
 
 /* ---------- Navigation ---------- */
 function render(){ construireModes(); renderPlantes(); renderTaches(); renderContexte(); }
-const TITRES={jardin:"Jardin",serre:"Serre",interieur:"Intérieur",projets:"Graines et envies",taches:"Tâches",contexte:"Contexte",connexion:"Réglages","reg-jardin":"Contexte du jardin","reg-profil":"Mon prénom","reg-colocs":"Inviter les colocs","reg-github":"Connexion GitHub"};
+const TITRES={jardin:"Jardin",serre:"Serre",interieur:"Intérieur",projets:"Graines et envies",taches:"Tâches",contexte:"Contexte",connexion:"Réglages","reg-jardin":"Contexte du jardin","reg-profil":"Profil","reg-colocs":"Inviter les colocs","reg-github":"Connexion GitHub"};
 function setTab(t,push=true){ const ctx=/^ctx-(\d+)$/.exec(t);
   if(t==="contexte"||(ctx&&!S.contexte[+ctx[1]])) t="reg-jardin"; else if(!ctx&&!TITRES[t]) t="accueil"; if(!charge) t="connexion"; tab=t;
   const reg=t==="connexion"||t.startsWith("reg-");
@@ -1424,7 +1472,8 @@ function setTab(t,push=true){ const ctx=/^ctx-(\d+)$/.exec(t);
     $("#conn-etat").textContent=charge?`Le carnet est relié au dépôt ${cfg.repo}. Chaque modification y est enregistrée, rien ne se perd.`:"Le carnet lit et écrit les fichiers du dépôt GitHub du jardin. Colle ton jeton pour commencer, ou ouvre le lien d'invitation qu'on t'a envoyé.";
     if(charge){ $("#invite-link").value=lienInvitation();
       $("#rm-jardin").textContent=S.contexte.map(x=>x.titre).join(", ")||"Zones, sol, arrosage, limaces…";
-      $("#rm-profil").textContent=lirePrenom()||"Pas encore renseigné";
+      $("#rm-profil").textContent=lirePrenom()?lirePrenom()+(photoDe(lirePrenom())?" · avec photo":" · sans photo"):"Prénom et photo";
+      majProfil();
       $("#rm-github").textContent=`Connecté à ${cfg.repo}`; } }
   const vue=MODES[t]?"plantes":ctx?"contexte":reg?"connexion":t;
   const ouverte=ctx?+ctx[1]:null; if(ouverte!==secOuverte){ viderAttente(); secOuverte=ouverte; editingSec=false; renderContexte(); }
@@ -1533,7 +1582,14 @@ $("#c-forget").onclick=()=>{ cfg.token=""; try{localStorage.setItem(CFG_KEY,JSON
 $("#onglets-taches").onclick=e=>{ const b=e.target.closest("[data-onglet-t]"); if(!b) return; ongletT=b.dataset.ongletT;
   try{ localStorage.setItem(ONGLET_T_KEY,ongletT) }catch(_){} renderTaches(); };
 $("#c-prenom").value=lirePrenom();
-$("#c-prenom").onchange=e=>{ const v=e.target.value.trim(); try{ v?localStorage.setItem(PRENOM_KEY,v):localStorage.removeItem(PRENOM_KEY) }catch(_){} try{ renderPlantes(); renderTaches() }catch(_){} };
+$("#p-av-file").onchange=async e=>{ const f=e.target.files[0]; e.target.value=""; const n=lirePrenom(); if(!f) return;
+  if(!n){ toast("Renseigne d'abord ton prénom"); return $("#c-prenom").focus(); }
+  let ph; try{ ph=await reduirePhoto(f); }catch(_){ return toast("Cette image ne peut pas être lue"); }
+  setSync("Enregistrement…","busy");
+  if(await enregistrerAvatar(n,ph)){ setSync("Enregistré","ok"); toast("Photo enregistrée"); majProfil(); renderTaches(); } else setSync("Non enregistré","bad"); };
+$("#p-av-retirer").onclick=async()=>{ const n=lirePrenom(); setSync("Enregistrement…","busy");
+  if(await enregistrerAvatar(n,"")){ setSync("Enregistré","ok"); toast("Photo retirée"); majProfil(); renderTaches(); } else setSync("Non enregistré","bad"); };
+$("#c-prenom").onchange=e=>{ const v=e.target.value.trim(); try{ v?localStorage.setItem(PRENOM_KEY,v):localStorage.removeItem(PRENOM_KEY) }catch(_){} try{ renderPlantes(); renderTaches(); majProfil() }catch(_){} };
 demarrer();
 </script>
 </body>
