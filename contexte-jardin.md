@@ -25,6 +25,8 @@ Solutions disponibles / à suggérer :
 - **Sol dur et argileux** dans la plupart des zones extérieures — difficile à travailler sans arrosage préalable
 - Technique recommandée : arroser profondément la veille avant de planter
 - Pas d'amendement général prévu pour l'instant (trop de travail pour peu de plants)
+- Terre de jardin trop argileuse pour les pots : elle se tasse et retient l'eau. En pot, utiliser du terreau.
+- Matériaux disponibles (nov. 2026) : plusieurs types de terreau, un peu de sable de chantier (à rincer avant usage en pot). Pas de pouzzolane.
 
 ---
 
