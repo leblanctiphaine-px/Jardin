@@ -495,6 +495,10 @@ header{justify-content:space-between;align-items:center}
 .reg-details summary{cursor:pointer;color:var(--accent-text);font:500 14px/1.4 var(--f-body)}
 .reg-details[open] summary{margin-bottom:8px}
 #reg-contexte{margin-top:4px}
+/* Modales et tiroirs : leur contenu défile seul, la page derrière reste immobile. */
+dialog{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+html.verrou,html.verrou body{overflow:hidden}
+body.verrou{position:fixed;left:0;right:0;width:100%}
 /* Fiche tâche : priorité à gauche et personnes à droite sur la même ligne, sans icône */
 .prop-top{display:flex;align-items:center;justify-content:space-between;gap:8px 12px;flex-wrap:wrap;min-height:40px}
 .prop-top .prop-sel{margin-left:-8px}
@@ -787,6 +791,16 @@ header{justify-content:space-between;align-items:center}
 <a class="fab" id="fab-claude" href="https://claude.ai/code/project/chan_01TqBsirXojFXyLjmkSXSNzp" target="_blank" rel="noopener" title="Une question, une photo ? Ouvre le projet Jardin">Demander à Claude</a>
 <dialog id="dlg"><form class="dlg" id="dlg-form" method="dialog"></form></dialog>
 <dialog id="dlg-qui"></dialog>
+<script>
+/* Tant qu'une modale ou un tiroir est ouvert, la page est figée (aussi sur iPhone, où overflow:hidden ne suffit pas) puis remise à sa position. */
+(()=>{ let y=0, fige=false;
+  const maj=()=>{ const ouvert=!!document.querySelector("dialog[open]");
+    if(ouvert&&!fige){ y=scrollY; fige=true; document.documentElement.classList.add("verrou"); document.body.classList.add("verrou"); document.body.style.top=-y+"px"; }
+    else if(!ouvert&&fige){ fige=false; document.documentElement.classList.remove("verrou"); document.body.classList.remove("verrou"); document.body.style.top=""; scrollTo(0,y); } };
+  const obs=new MutationObserver(maj);
+  for(const d of document.querySelectorAll("dialog")) obs.observe(d,{attributes:true,attributeFilter:["open"]});
+})();
+</script>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
