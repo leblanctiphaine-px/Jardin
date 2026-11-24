@@ -1,28 +1,28 @@
-tache,priorite,responsable,statut,notes,plante,date,cree_par,cree_le
-Vérifier qu'il reprends ou recolter,à faire,moi,à faire,,Gingembre,2026-12-04,Tiphaine,2026-11-24
-Mettre une coupelle en dessous,à faire,moi,à faire,,Dracaena Lemon Lime,,Tiphaine,2026-11-24
-Rempoter dans de plus grands pots,à faire,moi,à faire,,Poivrier du Sichuan,,Tiphaine,2026-11-24
-Trouver plus de lumière,à faire,moi,à faire,,Tradescantia zebrina/pallida (panier suspendu),,Tiphaine,2026-11-24
-Essayer de recolter,à faire,,à faire,,Curcuma,,Tiphaine,2026-11-24
-Mettre en terre les graines de poivrier du Sichuan et d'erable,à faire,,à faire,,,2026-11-26,Tiphaine,2026-11-24
-Réparer la tonnelle,à faire,,fait,fait le 12/11/2026,,,Clem,2026-11-11
-Réparer l'arrosage automatique,urgent,,fait,Il casse tout le temps au niveau du bac du milieu sur la droite de la serre — fait le 12/11/2026,,,,2026-10-05
-Tailler,à faire,,à faire,,Oranger du Mexique (Choisya),,,2026-10-04
-Planter en pot et recolter,à faire,,fait,fait le 24/11/2026,Gingembre,2026-10-17,,2026-10-04
-Arroser à fond la serre,urgent,,fait,sol très sec : 2 passages espacés de 30 min pour que l'eau pénètre — fait le 11/11/2026,,2026-10-06,,2026-10-04
-Récolter tout le basilic de la serre,à faire,Clem,à faire,avant les nuits sous 10 °C — pesto ou congélation en glaçons d'huile,Basilic (5 plants),2026-10-17,,2026-10-04
-Couper ce qui est malade,à faire,,à faire,Débarrasser les fruits et tout ce qui est pourri ou malade mais laisser tout ce qui est sain.,Melon,2026-10-17,,2026-10-04
-Semer la vesce d'hiver dans les bacs de la serre,à faire,,à faire,"à la volée ~10-15 g/m² (le sachet de 80 g fait ~6 m²), ratisser, arroser et garder humide ; garder un bac pour la mâche",Vesce d'Hiver,2026-10-11,,2026-10-04
-Semer la mâche dans un bac de la serre,à faire,Clem,à faire,récolte vers décembre — limaces : remettre des granulés au semis,Mâche Ronde Maraîchère,2026-10-11,,2026-10-04
-Faucher la vesce d'hiver en serre,réflexion,,à faire,avant la floraison ; laisser 2-3 semaines en paillis puis griffer légèrement ; planter 3 semaines après,Vesce d'Hiver,2027-03-20,,2026-10-04
-Toiles d'araignée dans la serre,à faire,,à faire,,,,,2026-10-04
-Vérifier si c'est mort et comment tailler,à faire,,fait,fait le 12/11/2026,Mûres,,,2026-10-04
-Savoir s'il est mort et comment le couper,à faire,,à faire,,Houx,,,2026-10-04
-Tailler legerement,à faire,,à faire,,Sauge,,,2026-10-04
-A tailler pour l'hiver,à faire,,à faire,,Rosiers,,,2026-10-04
-Se debarasser des pièges a limace,à faire,Tiphaine,à faire,,,,,2026-10-04
-S'occuper du poivrier du Sichuan,urgent,,fait,20/06 — les plants restants dans la caissette laissés grossir 2 semaines de plus avant repiquage en godets 8-10 cm — fait le 24/11/2026,Poivrier du Sichuan,2026-10-06,,2026-10-04
-Surveiller les 2 laitues survivantes sous cloche,récurrent,,abandonné,"toutes mangées par les limaces le 4 juin — laitues perdues. Cloche tissu inefficace, les limaces passent dessous",,,,2026-10-04
-Tailler la vigne (taille de structure),urgent,,fait,"couper ce qui fait concurrence au figuier en racines, tailler pour ne pas faire trop d'ombre au mûrier — réserver à l'hiver (dormance), pas en pleine saison de végétation (risque maladies du bois sur grosses coupes) — fait le 12/11/2026",Vigne,,,2026-10-04
-Tailler les roses,à faire,,à faire,,Roses,,,2026-10-04
-Demander à la casa de supprimer les arbres morts,réflexion,,à faire,20/06,,,,2026-10-04
+tache,priorite,responsable,statut,notes,plante,date,cree_par,cree_le,zone
+Vérifier qu'il reprends ou recolter,à faire,moi,à faire,,Gingembre,2026-12-04,Tiphaine,2026-11-24,
+Mettre une coupelle en dessous,à faire,moi,à faire,,Dracaena Lemon Lime,,Tiphaine,2026-11-24,
+Rempoter dans de plus grands pots,à faire,moi,à faire,,Poivrier du Sichuan,,Tiphaine,2026-11-24,
+Trouver plus de lumière,à faire,moi,à faire,,Tradescantia zebrina/pallida (panier suspendu),,Tiphaine,2026-11-24,
+Essayer de recolter,à faire,,à faire,,Curcuma,,Tiphaine,2026-11-24,
+Mettre en terre les graines de poivrier du Sichuan et d'erable,à faire,,à faire,,,2026-11-26,Tiphaine,2026-11-24,
+Réparer la tonnelle,à faire,,fait,fait le 12/11/2026,,,Clem,2026-11-11,
+Réparer l'arrosage automatique,urgent,,fait,Il casse tout le temps au niveau du bac du milieu sur la droite de la serre — fait le 12/11/2026,,,,2026-10-05,
+Tailler,à faire,,à faire,,Oranger du Mexique (Choisya),,,2026-10-04,
+Planter en pot et recolter,à faire,,fait,fait le 24/11/2026,Gingembre,2026-10-17,,2026-10-04,
+Arroser à fond la serre,urgent,,fait,sol très sec : 2 passages espacés de 30 min pour que l'eau pénètre — fait le 11/11/2026,,2026-10-06,,2026-10-04,
+Récolter tout le basilic de la serre,à faire,Clem,à faire,avant les nuits sous 10 °C — pesto ou congélation en glaçons d'huile,Basilic (5 plants),2026-10-17,,2026-10-04,
+Couper ce qui est malade,à faire,,à faire,Débarrasser les fruits et tout ce qui est pourri ou malade mais laisser tout ce qui est sain.,Melon,2026-10-17,,2026-10-04,
+Semer la vesce d'hiver dans les bacs de la serre,à faire,,à faire,"à la volée ~10-15 g/m² (le sachet de 80 g fait ~6 m²), ratisser, arroser et garder humide ; garder un bac pour la mâche",Vesce d'Hiver,2026-10-11,,2026-10-04,
+Semer la mâche dans un bac de la serre,à faire,Clem,à faire,récolte vers décembre — limaces : remettre des granulés au semis,Mâche Ronde Maraîchère,2026-10-11,,2026-10-04,
+Faucher la vesce d'hiver en serre,réflexion,,à faire,avant la floraison ; laisser 2-3 semaines en paillis puis griffer légèrement ; planter 3 semaines après,Vesce d'Hiver,2027-03-20,,2026-10-04,
+Toiles d'araignée dans la serre,à faire,,à faire,,,,,2026-10-04,
+Vérifier si c'est mort et comment tailler,à faire,,fait,fait le 12/11/2026,Mûres,,,2026-10-04,
+Savoir s'il est mort et comment le couper,à faire,,à faire,,Houx,,,2026-10-04,
+Tailler legerement,à faire,,à faire,,Sauge,,,2026-10-04,
+A tailler pour l'hiver,à faire,,à faire,,Rosiers,,,2026-10-04,
+Se debarasser des pièges a limace,à faire,Tiphaine,à faire,,,,,2026-10-04,
+S'occuper du poivrier du Sichuan,urgent,,fait,20/06 — les plants restants dans la caissette laissés grossir 2 semaines de plus avant repiquage en godets 8-10 cm — fait le 24/11/2026,Poivrier du Sichuan,2026-10-06,,2026-10-04,
+Surveiller les 2 laitues survivantes sous cloche,récurrent,,abandonné,"toutes mangées par les limaces le 4 juin — laitues perdues. Cloche tissu inefficace, les limaces passent dessous",,,,2026-10-04,
+Tailler la vigne (taille de structure),urgent,,fait,"couper ce qui fait concurrence au figuier en racines, tailler pour ne pas faire trop d'ombre au mûrier — réserver à l'hiver (dormance), pas en pleine saison de végétation (risque maladies du bois sur grosses coupes) — fait le 12/11/2026",Vigne,,,2026-10-04,
+Tailler les roses,à faire,,à faire,,Roses,,,2026-10-04,
+Demander à la casa de supprimer les arbres morts,réflexion,,à faire,20/06,,,,2026-10-04,
