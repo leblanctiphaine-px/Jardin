@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Casa verte</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23542a12'/%3E%3Cpath d='M18 18C10.2 18 6 13.8 6 6C13.8 6 18 10.2 18 18Z' fill='%23f2eee6'/%3E%3C/svg%3E">
-<script>/* Thème choisi dans Réglages, appliqué avant l'affichage pour éviter un flash. */
-try{const t=localStorage.getItem("jardin-theme");if(t==="light"||t==="dark"||t==="jardin")document.documentElement.dataset.theme=t}catch(e){}</script>
+<script>/* Un seul thème : « Jardin » (Tiph, 24/11/2026), appliqué avant l'affichage. */
+document.documentElement.dataset.theme="jardin";try{localStorage.removeItem("jardin-theme")}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
@@ -557,16 +557,6 @@ header{justify-content:space-between;align-items:center}
 
   <!-- CONNEXION -->
   <section id="v-connexion" hidden>
-    <div class="sec conn" id="apparence">
-      <h2 class="invite-t">Apparence</h2>
-      <div class="etats" role="radiogroup" aria-label="Thème" id="theme-choix">
-        <button type="button" class="chip" role="radio" data-theme-choix="auto">Automatique</button>
-        <button type="button" class="chip" role="radio" data-theme-choix="light">Clair</button>
-        <button type="button" class="chip" role="radio" data-theme-choix="jardin">Jardin</button>
-        <button type="button" class="chip" role="radio" data-theme-choix="dark">Sombre</button>
-      </div>
-      <p class="hint">« Automatique » suit le réglage du téléphone ou de l'ordinateur. Le choix est gardé sur cet appareil.</p>
-    </div>
     <div class="sec conn" id="prenom-sec">
       <h2 class="invite-t">Ton prénom</h2>
       <label class="f">Prénom<input id="c-prenom" autocomplete="given-name" placeholder="Pour signer les tâches que tu ajoutes"></label>
@@ -1305,18 +1295,10 @@ $("#invite-copy").onclick=()=>{ const i=$("#invite-link");
   const repli=()=>{ i.select(); toast("Lien sélectionné : copie-le avec Ctrl+C ou un appui long"); };
   navigator.clipboard?.writeText(i.value).then(()=>toast("Lien copié"),repli) ?? repli(); };
 $("#c-forget").onclick=()=>{ cfg.token=""; try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(_){} charge=false; setSync("",""); setTab("connexion"); toast("Jeton oublié sur cet appareil"); };
-/* Apparence : automatique (système), clair ou sombre, mémorisé dans ce navigateur. */
-const majTheme=()=>{ const t=document.documentElement.dataset.theme||"auto";
-  document.querySelectorAll("[data-theme-choix]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.themeChoix===t)); };
 $("#chips-taches").onclick=e=>{ const b=e.target.closest("[data-qui]"); if(!b) return; filtreQui=b.dataset.qui;
   try{ localStorage.setItem(QUI_KEY,filtreQui) }catch(_){} renderTaches(); };
 $("#c-prenom").value=lirePrenom();
 $("#c-prenom").onchange=e=>{ const v=e.target.value.trim(); try{ v?localStorage.setItem(PRENOM_KEY,v):localStorage.removeItem(PRENOM_KEY) }catch(_){} try{ renderTaches() }catch(_){} };
-$("#theme-choix").onclick=e=>{ const b=e.target.closest("[data-theme-choix]"); if(!b) return; const t=b.dataset.themeChoix;
-  if(t==="auto") delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme=t;
-  try{ t==="auto"?localStorage.removeItem("jardin-theme"):localStorage.setItem("jardin-theme",t) }catch(_){}
-  majTheme(); };
-majTheme();
 demarrer();
 </script>
 </body>
