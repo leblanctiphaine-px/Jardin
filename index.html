@@ -489,6 +489,22 @@ header{justify-content:space-between;align-items:center}
 #v-connexion .reg{margin-top:0;padding:22px 0;max-width:640px}
 #v-connexion .reg:not([hidden])~.reg{border-top:1px solid var(--line-field)}
 #reg-contexte{margin-top:4px}
+/* Fiche tâche : liste déroulante avec recherche pour la zone ou la plante liée */
+.combo{position:relative}
+.combo-btn{appearance:none;width:100%;display:flex;align-items:center;gap:8px;text-align:left;font:300 14px/1.4 var(--f-body);color:var(--ink);background:var(--surface);border:1px solid var(--line-field);border-radius:10px;padding:8px 10px;cursor:pointer}
+.combo-btn>span{flex:1;min-width:0;display:flex;align-items:center;gap:6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.combo-btn svg{flex:none;color:var(--muted)}
+.combo-btn .vide{color:var(--muted)}
+.combo-pop{margin-top:6px;border:1px solid var(--line-field);border-radius:10px;background:var(--surface);padding:6px;display:grid;gap:4px}
+.combo-pop input{border-radius:8px}
+.combo-list{max-height:240px;overflow-y:auto;display:grid}
+.combo-list button{appearance:none;background:none;border:0;border-radius:8px;display:flex;align-items:center;gap:8px;text-align:left;padding:8px;cursor:pointer;color:var(--ink);font:400 14px/1.3 var(--f-body)}
+.combo-list button svg{flex:none;color:var(--muted)}
+.combo-list button span{display:grid}
+.combo-list button small{font:400 12px/1.3 var(--f-body);color:var(--muted)}
+.combo-list button:hover,.combo-list button[aria-selected="true"]{background:var(--tag-off)}
+.combo-list [data-type=""]{color:var(--muted)}
+.combo-vide{margin:0;padding:8px;color:var(--muted);font-size:14px}
 /* Liste des tâches : personne assignée en mini avatar à initiales (comme dans la fiche) */
 .task .infos .mini-av{width:20px;height:20px;border-radius:50%;display:inline-grid;place-items:center;background:var(--accent-aubergine);color:var(--on-accent);font:500 10px/1 var(--f-body);flex:none}
 .task .infos .qui{gap:6px}
@@ -660,7 +676,7 @@ header{justify-content:space-between;align-items:center}
 
 <script>
 const S = {plantes: [], taches: [], contexte: [], bilans: []};
-const COLS = {plantes:["nom","zone","etat","etat_detail","besoins_eau","ensoleillement","notes"], taches:["tache","priorite","responsable","statut","notes","plante","date","cree_par","cree_le"], bilans:["date","plante","resultat","pourquoi","fiche"]};
+const COLS = {plantes:["nom","zone","etat","etat_detail","besoins_eau","ensoleillement","notes"], taches:["tache","priorite","responsable","statut","notes","plante","date","cree_par","cree_le","zone"], bilans:["date","plante","resultat","pourquoi","fiche"]};
 let tab = "accueil", groupe = "", mode = "jardin";
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -971,7 +987,7 @@ function renderPlantes(){
   for(const k of ["jardin","serre","interieur"]){
     const ps=S.plantes.filter(p=>MODES[k].includes(groupeDe(p))), orange=ps.filter(p=>etatClasse(p.etat)==="warn");
     const surv=orange.length;
-    const noms=new Set(ps.map(p=>p.nom)), nt=S.taches.filter(t=>noms.has(t.plante)&&!FERMEES.includes(t.statut)&&pourMoi(t)).length;
+    const noms=new Set(ps.map(p=>p.nom)), nt=S.taches.filter(t=>(noms.has(t.plante)||MODES[k].includes(t.zone))&&!FERMEES.includes(t.statut)&&pourMoi(t)).length;
     $("#n-"+k).textContent=`${ps.length} plante${ps.length>1?"s":""}`;
     /* Nombre de tâches ouvertes en gros à droite de la carte, libellé dessous ; rien s'il n'y en a pas. */
     const al=$("#s-"+k); al.hidden=!nt;
@@ -1047,7 +1063,7 @@ function editPlante(i){
       renderTaches(); sauver("taches",`Tâches : « ${t.tache} » faite`); liees(); });
     /* Nouvelle tâche liée : ajoutée seulement avec le bouton « Ajouter » (ou Entrée). */
     const ajouterT=()=>{ const v=$("#p-tache-new").value.trim(); if(!v) return $("#p-tache-new").focus();
-      S.taches.unshift({tache:v,priorite:"à faire",responsable:"",statut:"à faire",notes:"",plante:p.nom,date:"",...creation()});
+      S.taches.unshift({tache:v,priorite:"à faire",responsable:"",statut:"à faire",notes:"",plante:p.nom,zone:"",date:"",...creation()});
       renderTaches(); sauver("taches",`Tâches : ajouter « ${v} »`); liees(); $("#p-tache-new").focus(); };
     $("#p-tache-ok").onclick=ajouterT;
     $("#p-tache-new").onkeydown=e=>{ if(e.key!=="Enter") return; e.preventDefault(); ajouterT(); };
@@ -1132,7 +1148,7 @@ function reperer(){ let vues=null; try{ vues=JSON.parse(localStorage.getItem(VUE
   if(Array.isArray(vues)) nouvelles=new Set(S.taches.filter(t=>!FERMEES.includes(t.statut)&&!vues.includes(t.tache)).map(t=>t.tache)); else marquerVues(); }
 function marquerVues(){ try{ localStorage.setItem(VUES_KEY,JSON.stringify(S.taches.map(t=>t.tache).filter(n=>ongletVu||!nouvelles.has(n)))) }catch(_){} }
 /* Zone d'une tâche = zone de la plante liée (vide si pas de plante ou plante inconnue). */
-const zoneTache=t=>t.plante?(S.plantes.find(p=>p.nom===t.plante)||{}).zone||"":"";
+const zoneTache=t=>t.zone||(t.plante?(S.plantes.find(p=>p.nom===t.plante)||{}).zone||"":"");
 const ligneTache=({t,i})=>{
   const done=FERMEES.includes(t.statut);
   /* Onglet « À faire » : pas de date (le tag « En retard » suffit) ; les autres onglets la gardent. */
@@ -1178,7 +1194,7 @@ function renderAujourdhui(){
     const vus=presse.slice(0,3);
   const urg=ouv.filter(({t})=>estUrgente(t)).length, nv=ouv.filter(({t})=>nouvelles.has(t.tache)).length;
   $("#today").innerHTML=`<div class="today-h"><h2>Tâches</h2><span>${ouv.length} ouverte${ouv.length>1?"s":""}${urg?` · ${urg} urgente${urg>1?"s":""}`:""}${nv?` · ${nv} nouvelle${nv>1?"s":""}`:""}</span></div>`+(vus.length
-    ? `<ul>${vus.map(({t,i})=>`<li><input type="checkbox" data-carte-fait="${i}" aria-label="Marquer « ${esc(t.tache)} » comme faite"><button data-edit-tache="${i}"><span>${esc(t.tache)}${t.plante?`<em class="pl">${ICO_PLANTE}${esc(t.plante)}</em>`:""}</span><span class="tg">${[estUrgente(t)?'<b class="bad">Urgent</b>':"",t.date&&t.date<auj?'<b class="bad">En retard</b>':""].filter(Boolean).join('<i> · </i>')}</span><span class="go">${ICO_FLECHE}</span></button></li>`).join("")}</ul>`
+    ? `<ul>${vus.map(({t,i})=>`<li><input type="checkbox" data-carte-fait="${i}" aria-label="Marquer « ${esc(t.tache)} » comme faite"><button data-edit-tache="${i}"><span>${esc(t.tache)}${t.plante?`<em class="pl">${ICO_PLANTE}${esc(t.plante)}</em>`:t.zone?`<em class="pl">${ICO_PIN}${esc(t.zone)}</em>`:""}</span><span class="tg">${[estUrgente(t)?'<b class="bad">Urgent</b>':"",t.date&&t.date<auj?'<b class="bad">En retard</b>':""].filter(Boolean).join('<i> · </i>')}</span><span class="go">${ICO_FLECHE}</span></button></li>`).join("")}</ul>`
     : `<p class="vide">Rien de prévu ni d'urgent.</p>`)
     +`<div class="today-pied"><button type="button" class="btn mini" id="add-tache-accueil">+ Ajouter une tâche</button><button class="plus" data-tab="taches">Toutes les tâches<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button></div>`;
 }
@@ -1190,7 +1206,7 @@ function creation(){ let nom=lirePrenom();
   const d=new Date(); return {cree_par:nom,cree_le:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}; }
 function editTache(i,plante=""){
   let t=i==null?null:S.taches[i];
-  const base=t||{tache:"",priorite:"à faire",responsable:"",statut:"à faire",notes:"",plante,date:""};
+  const base=t||{tache:"",priorite:"à faire",responsable:"",statut:"à faire",notes:"",plante,zone:"",date:""};
   /* Qui ? : Personne (libre) + les prénoms déjà vus dans les tâches + celui de cet appareil, sans doublon Tiph/Tiphaine. */
   const gens=[]; for(const n of [...S.taches.flatMap(x=>[qui(x),(x.cree_par||"").trim()]),lirePrenom()].filter(Boolean)) if(!gens.some(g=>memePersonne(g,n))) gens.push(n);
   const quiBase=qui(base), optsQui=[...gens.map(g=>memePersonne(g,quiBase)?quiBase:g).map(g=>[g,g])];
@@ -1205,20 +1221,35 @@ function editTache(i,plante=""){
         <label class="f">Date (rappel)<input id="t-date" type="date" value="${esc(base.date||"")}"></label></div>
       <div class="f full"><span id="t-qui-l">Qui s'en charge ?</span><input type="hidden" id="t-qui" value="${esc(quiBase)}">
         <div class="avatars" role="group" aria-labelledby="t-qui-l">${optsQui.map(([v,l])=>`<button type="button" class="avatar" data-qui-v="${esc(v)}" aria-pressed="${v===quiBase}"><span class="rond" aria-hidden="true">${esc(initiales(v))}</span><span class="nom">${esc(l)}</span></button>`).join("")}</div></div>
-      <label class="f full">Plante liée<input id="t-plante" value="${esc(base.plante)}" placeholder="Chercher une plante…" autocomplete="off"></label><div class="sugg full" id="t-sugg" hidden></div>
+      <div class="f full combo" id="t-combo"><span id="t-combo-l">Zone ou plante liée</span>
+        <input type="hidden" id="t-plante" value="${esc(base.plante)}"><input type="hidden" id="t-zone" value="${esc(base.zone||"")}">
+        <button type="button" class="combo-btn" id="t-combo-btn" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="t-combo-l"><span id="t-combo-val"></span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="combo-pop" id="t-combo-pop" hidden><input id="t-combo-q" type="search" placeholder="Rechercher une zone ou une plante…" autocomplete="off" aria-label="Rechercher"><div class="combo-list" role="listbox" id="t-combo-list"></div></div></div>
       <label class="f full">Détails<textarea id="t-notes">${esc(base.notes)}</textarea></label>
     </div>
-    <div class="actions sans-trait"><div><button type="button" class="btn danger tert" id="del" ${t?"":"hidden"}>${ICO_POUBELLE}<span>Supprimer</span></button></div>${t?`<div><button type="button" class="btn" id="t-claude">Demander à Claude</button></div>`:`<div><button type="button" class="btn primary" id="t-ok">Ajouter la tâche</button></div>`}</div>
+    <div class="actions sans-trait"><div><button type="button" class="btn danger tert" id="del" ${t?"":"hidden"}>${ICO_POUBELLE}<span>Supprimer</span></button></div>${t?`<div><button type="button" class="btn" id="t-claude">Demander à Claude</button><button type="button" class="btn primary" id="t-fini">${t.statut==="fait"?"Rouvrir la tâche":"Marquer comme terminée"}</button></div>`:`<div><button type="button" class="btn primary" id="t-ok">Ajouter la tâche</button></div>`}</div>
     ${t&&t.cree_par?`<p class="signature">Initiée par ${esc(t.cree_par)}</p>`:""}`,
     {onDelete:()=>{ S.taches.splice(S.taches.indexOf(t),1); render(); sauver("taches",`Tâches : supprimer « ${t.tache} »`); }});
   /* Recherche de plante : suggestions filtrées sous le champ, sans tenir compte des accents. */
+  /* Zone ou plante liée : liste déroulante avec recherche (zones d'abord, puis plantes avec leur zone) ; « Aucune » retire le lien. */
   const plat=x=>x.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-  const suggerer=()=>{ const q=plat($("#t-plante").value.trim()), box=$("#t-sugg");
-    const r=plantes.filter(n=>plat(n).includes(q)&&n!==$("#t-plante").value).slice(0,6);
-    box.hidden=!r.length; box.innerHTML=r.map(n=>`<button type="button" class="chip" data-plante="${esc(n)}">${esc(n)}</button>`).join(""); };
-  $("#t-plante").onfocus=suggerer; $("#t-plante").addEventListener("input",suggerer);
-  $("#t-sugg").onclick=e=>{ const b=e.target.closest("[data-plante]"); if(!b) return; $("#t-plante").value=b.dataset.plante;
-    $("#t-sugg").hidden=true; $("#dlg-form").dispatchEvent(new Event("input")); };
+  const zonesT=VRAIES.filter(z=>z!==A_CLASSER);
+  const optsLien=[...zonesT.map(z=>({type:"zone",v:z,lib:z,sous:"Zone"})),...plantes.map(n=>({type:"plante",v:n,lib:n,sous:groupeDe(S.plantes.find(p=>p.nom===n)||{})}))];
+  const majVal=()=>{ const pl=$("#t-plante").value, z=$("#t-zone").value;
+    $("#t-combo-val").innerHTML=pl?`${ICO_PLANTE}<span>${esc(pl)}</span>`:z?`${ICO_PIN}<span>${esc(z)}</span>`:`<span class="vide">Aucune</span>`; };
+  const listeLien=()=>{ const q=plat($("#t-combo-q").value.trim()), lie=$("#t-plante").value||$("#t-zone").value;
+    const r=optsLien.filter(o=>!q||plat(o.lib).includes(q)).slice(0,40);
+    $("#t-combo-list").innerHTML=(lie&&!q?`<button type="button" role="option" data-lien="" data-type="">Aucune (retirer le lien)</button>`:"")
+      +(r.length?r.map(o=>`<button type="button" role="option" data-lien="${esc(o.v)}" data-type="${o.type}" aria-selected="${o.v===lie}">${o.type==="zone"?ICO_PIN:ICO_PLANTE}<span>${esc(o.lib)}<small>${esc(o.sous)}</small></span></button>`).join(""):`<p class="combo-vide">Aucun résultat</p>`); };
+  const ouvrir=on=>{ $("#t-combo-pop").hidden=!on; $("#t-combo-btn").setAttribute("aria-expanded",on); if(on){ $("#t-combo-q").value=""; listeLien(); $("#t-combo-q").focus(); } };
+  const choisir=(type,v)=>{ $("#t-plante").value=type==="plante"?v:""; $("#t-zone").value=type==="zone"?v:""; majVal(); ouvrir(false); $("#dlg-form").dispatchEvent(new Event("input")); };
+  majVal();
+  $("#t-combo-btn").onclick=()=>ouvrir($("#t-combo-pop").hidden);
+  $("#t-combo-q").addEventListener("input",listeLien);
+  $("#t-combo-q").onkeydown=e=>{ if(e.key==="Escape"){ e.preventDefault(); e.stopPropagation(); ouvrir(false); $("#t-combo-btn").focus(); }
+    if(e.key==="Enter"){ e.preventDefault(); const b=$("#t-combo-list [data-type]:not([data-type=''])")||$("#t-combo-list [data-lien]"); if(b) choisir(b.dataset.type,b.dataset.lien); } };
+  $("#t-combo-list").onclick=e=>{ const b=e.target.closest("[data-lien]"); if(b) choisir(b.dataset.type,b.dataset.lien); };
+  $("#dlg-form").addEventListener("click",e=>{ if(!$("#t-combo-pop").hidden&&!e.target.closest("#t-combo")) ouvrir(false); });
   /* Un appui sélectionne la personne ; un second appui sur la même la désélectionne (tâche libre). */
   $("#dlg-form .avatars").onclick=e=>{ const b=e.target.closest("[data-qui-v]"); if(!b) return; const on=b.getAttribute("aria-pressed")!=="true";
     $("#t-qui").value=on?b.dataset.quiV:"";
@@ -1227,7 +1258,10 @@ function editTache(i,plante=""){
   $("#t-claude")&&($("#t-claude").onclick=async()=>{ const q=`À propos de la tâche « ${t.tache} »${t.plante?` (${t.plante})`:""} : `;
     try{ await navigator.clipboard.writeText(q); toast("Nom de la tâche copié : colle-le dans ta question"); }catch(_){}
     open(LIEN_CLAUDE,"_blank","noopener"); });
-  const lireT=()=>({tache:$("#t-nom").value.trim(),priorite:$("#t-prio").value,responsable:$("#t-qui").value,statut:base.statut,notes:$("#t-notes").value.trim(),plante:$("#t-plante").value.trim(),date:$("#t-date").value});
+  /* Terminer (ou rouvrir) la tâche depuis sa fiche, puis fermer la fiche. */
+  $("#t-fini")&&($("#t-fini").onclick=()=>{ const on=t.statut!=="fait"; marquerFait(t,on);
+    sauver("taches",`Tâches : « ${t.tache} » ${on?"faite":"rouverte"}`); renderTaches(); renderPlantes(); $("#dlg").close(); toast(on?"Tâche terminée":"Tâche rouverte"); });
+  const lireT=()=>({tache:$("#t-nom").value.trim(),priorite:$("#t-prio").value,responsable:$("#t-qui").value,statut:base.statut,notes:$("#t-notes").value.trim(),plante:$("#t-plante").value.trim(),zone:$("#t-zone").value,date:$("#t-date").value});
   /* Nouvelle tâche : rien n'est enregistré avant « Ajouter la tâche » (fermer sans valider l'abandonne). Tâche existante : enregistrée au fil de la saisie. */
   if(!t){
     const ajouter=()=>{ const n=lireT(); if(!n.tache){ toast("Donne un nom à la tâche"); return $("#t-nom").focus(); }
