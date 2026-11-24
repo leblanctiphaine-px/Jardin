@@ -495,6 +495,10 @@ header{justify-content:space-between;align-items:center}
 .reg-details summary{cursor:pointer;color:var(--accent-text);font:500 14px/1.4 var(--f-body)}
 .reg-details[open] summary{margin-bottom:8px}
 #reg-contexte{margin-top:4px}
+/* Modales et tiroirs : leur contenu défile seul, la page derrière reste immobile. */
+dialog{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+html.verrou,html.verrou body{overflow:hidden}
+body.verrou{position:fixed;left:0;right:0;width:100%}
 /* Fiche tâche : priorité à gauche et personnes à droite sur la même ligne, sans icône */
 .prop-top{display:flex;align-items:center;justify-content:space-between;gap:8px 12px;flex-wrap:wrap;min-height:40px}
 .prop-top .prop-sel{margin-left:-8px}
@@ -531,8 +535,10 @@ header{justify-content:space-between;align-items:center}
 .ask-box textarea:focus{outline:none}
 .ask-box textarea::placeholder{color:var(--muted);opacity:1}
 .ask-send{appearance:none;flex:none;width:36px;height:36px;border-radius:50%;border:0;display:grid;place-items:center;background:var(--accent-green);color:var(--on-accent);cursor:pointer}
-.fiche-act{display:grid;gap:10px;margin-top:20px}
-.fiche-act>.btn{width:100%;justify-content:center}
+.fiche-suppr{margin-top:16px}
+/* « Marquer comme terminée » reste collé en bas du tiroir pendant le défilement. */
+.fiche-pied{position:sticky;bottom:0;z-index:2;margin:4px -20px calc(-20px - env(safe-area-inset-bottom));padding:12px 20px calc(16px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--line-field)}
+.fiche-pied .btn{width:100%;justify-content:center}
 .ask-h{margin:6px 0 0;font:400 12px/1.3 var(--f-body);color:var(--muted)}
 /* Profil : photo ronde (ou initiales) et boutons ; les avatars des tâches affichent la photo quand il y en a une. */
 .profil-photo{display:flex;align-items:center;gap:16px}
@@ -787,6 +793,16 @@ header{justify-content:space-between;align-items:center}
 <a class="fab" id="fab-claude" href="https://claude.ai/code/project/chan_01TqBsirXojFXyLjmkSXSNzp" target="_blank" rel="noopener" title="Une question, une photo ? Ouvre le projet Jardin">Demander à Claude</a>
 <dialog id="dlg"><form class="dlg" id="dlg-form" method="dialog"></form></dialog>
 <dialog id="dlg-qui"></dialog>
+<script>
+/* Tant qu'une modale ou un tiroir est ouvert, la page est figée (aussi sur iPhone, où overflow:hidden ne suffit pas) puis remise à sa position. */
+(()=>{ let y=0, fige=false;
+  const maj=()=>{ const ouvert=!!document.querySelector("dialog[open]");
+    if(ouvert&&!fige){ y=scrollY; fige=true; document.documentElement.classList.add("verrou"); document.body.classList.add("verrou"); document.body.style.top=-y+"px"; }
+    else if(!ouvert&&fige){ fige=false; document.documentElement.classList.remove("verrou"); document.body.classList.remove("verrou"); document.body.style.top=""; scrollTo(0,y); } };
+  const obs=new MutationObserver(maj);
+  for(const d of document.querySelectorAll("dialog")) obs.observe(d,{attributes:true,attributeFilter:["open"]});
+})();
+</script>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -1390,8 +1406,8 @@ function editTache(i,plante="",zone=""){
       <div class="ask-box"><textarea id="t-q" rows="1" placeholder="Pose une question sur cette tâche…" aria-label="Question pour Claude"></textarea>
       <button type="button" class="ask-send" id="t-q-send" aria-label="Envoyer à Claude"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></button></div>
       <p class="ask-h">Ta question est copiée et le projet Claude s'ouvre : tu n'as plus qu'à coller.</p></div>`:""}
-    ${t?`<div class="fiche-act"><button type="button" class="btn primary" id="t-fini">${t.statut==="fait"?"Rouvrir la tâche":"Marquer comme terminée"}</button>
-      <div><button type="button" class="btn danger tert" id="del">${ICO_POUBELLE}<span>Supprimer</span></button></div></div>`
+    ${t?`<div class="fiche-suppr"><button type="button" class="btn danger tert" id="del">${ICO_POUBELLE}<span>Supprimer la tâche</span></button></div>
+      <div class="fiche-pied"><button type="button" class="btn primary" id="t-fini">${t.statut==="fait"?"Rouvrir la tâche":"Marquer comme terminée"}</button></div>`
     :`<div class="actions sans-trait"><div><button type="button" class="btn danger tert" id="del" hidden></button></div><div><button type="button" class="btn primary" id="t-ok">Ajouter la tâche</button></div></div>`}`,
     {onDelete:()=>{ S.taches.splice(S.taches.indexOf(t),1); render(); sauver("taches",`Tâches : supprimer « ${t.tache} »`); }});
   /* Recherche de plante : suggestions filtrées sous le champ, sans tenir compte des accents. */
