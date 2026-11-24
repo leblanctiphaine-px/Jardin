@@ -482,7 +482,13 @@ header{justify-content:space-between;align-items:center}
 #list-taches .row.task input[type=checkbox]{grid-column:1;grid-row:1;margin-top:5px}
 #list-taches .row.task .t{grid-column:2;grid-row:1}
 #list-taches .row.task .urg{grid-column:3;grid-row:1;display:flex;gap:4px;align-self:start;margin-top:3px}
-#list-taches .row.task .infos,#list-taches .row.task .meta{grid-column:2/-1}
+#list-taches .row.task .infos,#list-taches .row.task .meta,#list-taches .row.task .par{grid-column:2/-1}
+/* Assignation : « Initiée par » discret sous la tâche, filtre Toutes / Mes tâches / Libres */
+.task .par{font:400 12px/1.3 var(--f-body);color:var(--muted)}
+#chips-taches{margin-bottom:4px}
+/* Accueil : « Ajouter une tâche » à côté du lien vers toutes les tâches */
+.today-pied .btn{order:2}
+.today-pied{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .today h2{font-size:22px}
 /* Accueil : case à cocher devant chaque tâche (cocher = fait sans ouvrir la tâche) */
 .today li{display:flex;align-items:center;gap:8px}
@@ -601,6 +607,7 @@ header{justify-content:space-between;align-items:center}
 
   <!-- TACHES -->
   <section id="v-taches" hidden style="margin-top:18px">
+    <div class="chips" id="chips-taches" role="group" aria-label="Filtrer les tâches"></div>
     <div id="list-taches"></div>
     <button class="fab" id="add-tache">+ Ajouter une tâche</button>
   </section>
@@ -1005,7 +1012,7 @@ function editPlante(i){
       renderTaches(); sauver("taches",`Tâches : « ${t.tache} » faite`); liees(); });
     /* Nouvelle tâche liée : ajoutée seulement avec le bouton « Ajouter » (ou Entrée). */
     const ajouterT=()=>{ const v=$("#p-tache-new").value.trim(); if(!v) return $("#p-tache-new").focus();
-      S.taches.unshift({tache:v,priorite:"à faire",responsable:"moi",statut:"à faire",notes:"",plante:p.nom,date:"",...creation()});
+      S.taches.unshift({tache:v,priorite:"à faire",responsable:"",statut:"à faire",notes:"",plante:p.nom,date:"",...creation()});
       renderTaches(); sauver("taches",`Tâches : ajouter « ${v} »`); liees(); $("#p-tache-new").focus(); };
     $("#p-tache-ok").onclick=ajouterT;
     $("#p-tache-new").onkeydown=e=>{ if(e.key!=="Enter") return; e.preventDefault(); ajouterT(); };
@@ -1066,6 +1073,14 @@ const aujourdhui=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.g
 const dateCourte=iso=>{const [a,m,j]=iso.split("-");return `${j}/${m}${a!==String(new Date().getFullYear())?"/"+a:""}`};
 /* Tâches : plante liée et date de rappel avec une icône, date au format « 01 octobre ». */
 const ICO_PLANTE=`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>`;
+const ICO_QUI=`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+/* Assignation : « responsable » = prénom de qui s'en charge, vide = libre. « Tiph » et « Tiphaine » désignent la même personne. */
+const qui=t=>{ const r=(t.responsable||"").trim(); return r==="moi"?"":r; };
+const memePersonne=(a,b)=>{ const n=x=>x.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim(); a=n(a); b=n(b);
+  return !!a&&!!b&&(a===b||(Math.min(a.length,b.length)>=3&&(a.startsWith(b)||b.startsWith(a)))); };
+const QUI_KEY="jardin-filtre-qui";
+let filtreQui=(()=>{ try{ return localStorage.getItem(QUI_KEY)||"toutes" }catch(_){ return "toutes" } })();
+const passeFiltre=t=>filtreQui==="miennes"?memePersonne(qui(t),lirePrenom()):filtreQui==="libres"?!qui(t):true;
 const ICO_CAL=`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>`;
 const dateLongue=iso=>new Date(iso+"T12:00").toLocaleDateString("fr-FR",{day:"2-digit",month:"long",...(iso.slice(0,4)!==String(new Date().getFullYear())?{year:"numeric"}:{})});
 const ICO_LIMACE=`<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 13a6 6 0 1 0 12 0 4 4 0 1 0-8 0 2 2 0 0 0 4 0"/><circle cx="10" cy="13" r="8"/><path d="M2 21h12c4.4 0 8-3.6 8-8V7a2 2 0 1 0-4 0v6"/><path d="M18 3 19.1 5.2"/><path d="M22 3 20.9 5.2"/></svg>`;
@@ -1087,10 +1102,15 @@ const ligneTache=({t,i})=>{
         <input type="checkbox" data-done="${i}" ${t.statut==="fait"?"checked":""} aria-label="Marquer « ${esc(t.tache)} » comme ${done?"à refaire":"faite"}">
         <span class="t">${esc(t.tache)}</span>
         ${(u=>u.length&&!done?`<span class="urg">${u.join("")}</span>`:"")([nouvelles.has(t.tache)?'<span class="pill new">Nouvelle</span>':"",estUrgente(t)?'<span class="pill bad">Urgent</span>':"",t.date&&t.date<aujourdhui()?'<span class="pill bad">En retard</span>':""].filter(Boolean))}
-        ${t.plante||t.date&&!done?`<span class="infos">${t.plante?`<span>${ICO_PLANTE}${esc(t.plante)}</span>`:""}${t.date&&!done?`<span class="${t.date<aujourdhui()?"bad":t.date===aujourdhui()?"warn":""}">${ICO_CAL}${dateLongue(t.date)}</span>`:""}</span>`:""}
-        ${(m=>m?`<span class="meta">${m}</span>`:"")((t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")} · `:"")+esc(t.notes))}</div>`; };
+        ${qui(t)||t.plante||t.date&&!done?`<span class="infos">${qui(t)?`<span>${ICO_QUI}${esc(qui(t))}</span>`:""}${t.plante?`<span>${ICO_PLANTE}${esc(t.plante)}</span>`:""}${t.date&&!done?`<span class="${t.date<aujourdhui()?"bad":t.date===aujourdhui()?"warn":""}">${ICO_CAL}${dateLongue(t.date)}</span>`:""}</span>`:""}
+        ${(m=>m?`<span class="meta">${m}</span>`:"")((t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")} · `:"")+esc(t.notes))}
+        ${t.cree_par?`<span class="par">Initiée par ${esc(t.cree_par)}</span>`:""}</div>`; };
 function renderTaches(){
-  const toutes=S.taches.map((t,i)=>({t,i}));
+  const ouvertes=S.taches.filter(t=>!FERMEES.includes(t.statut)), moi=lirePrenom();
+  if(filtreQui==="miennes"&&!moi) filtreQui="toutes";
+  $("#chips-taches").innerHTML=[["toutes","Toutes",ouvertes.length],...(moi?[["miennes","Mes tâches",ouvertes.filter(t=>memePersonne(qui(t),moi)).length]]:[]),["libres","Libres",ouvertes.filter(t=>!qui(t)).length]]
+    .map(([k,l,n])=>`<button type="button" class="chip" data-qui="${k}" aria-pressed="${filtreQui===k}">${l}<span>${n}</span></button>`).join("");
+  const toutes=S.taches.map((t,i)=>({t,i})).filter(({t})=>passeFiltre(t));
   const rows=toutes.filter(({t})=>!FERMEES.includes(t.statut)), faites=toutes.filter(({t})=>FERMEES.includes(t.statut));
   const SECTIONS=["urgent","à faire","bientôt","récurrent","réflexion"];
   const prios=[...SECTIONS,...new Set(rows.map(r=>prioEff(r.t)).filter(p=>!SECTIONS.includes(p)))];
@@ -1099,7 +1119,7 @@ function renderTaches(){
     const g=rows.filter(r=>prioEff(r.t)===pr).sort(parDate); if(!g.length) continue;
     html+=`<p class="group-h">${esc(cap(pr))} · ${g.length}</p><div class="list">`+g.map(ligneTache).join("")+`</div>`;
   }
-  if(!html) html=`<p class="empty">Aucune tâche ouverte. Bonne nouvelle !</p>`;
+  if(!html) html=`<p class="empty">${filtreQui==="miennes"?"Aucune tâche ouverte pour toi.":filtreQui==="libres"?"Aucune tâche libre.":"Aucune tâche ouverte. Bonne nouvelle !"}</p>`;
   if(faites.length) html+=`<details class="fermees" ${fermeesOuvertes?"open":""}><summary>Faites ces 30 jours · ${faites.length}</summary><div class="list">${faites.map(ligneTache).join("")}</div></details>`;
   $("#list-taches").innerHTML=html;
   $("#list-taches .fermees")?.addEventListener("toggle",e=>fermeesOuvertes=e.target.open);
@@ -1117,7 +1137,7 @@ function renderAujourdhui(){
   $("#today").innerHTML=`<div class="today-h"><h2>Tâches</h2><span>${ouv.length} ouverte${ouv.length>1?"s":""}${urg?` · ${urg} urgente${urg>1?"s":""}`:""}${nv?` · ${nv} nouvelle${nv>1?"s":""}`:""}</span></div>`+(vus.length
     ? `<ul>${vus.map(({t,i})=>`<li><input type="checkbox" data-carte-fait="${i}" aria-label="Marquer « ${esc(t.tache)} » comme faite"><button data-edit-tache="${i}"><span>${esc(t.tache)}</span><span class="tg">${[estUrgente(t)?'<b class="bad">Urgent</b>':"",t.date&&t.date<auj?'<b class="bad">En retard</b>':""].filter(Boolean).join('<i> · </i>')}</span><span class="go">${ICO_FLECHE}</span></button></li>`).join("")}</ul>`
     : `<p class="vide">Rien de prévu ni d'urgent.</p>`)
-    +`<button class="plus" data-tab="taches">Toutes les tâches<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>`;
+    +`<div class="today-pied"><button type="button" class="btn mini" id="add-tache-accueil">+ Ajouter une tâche</button><button class="plus" data-tab="taches">Toutes les tâches<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button></div>`;
 }
 /* Qui a créé la tâche et quand : prénom demandé une fois puis gardé sur cet appareil (réglable dans Réglages). */
 const PRENOM_KEY="jardin-prenom";
@@ -1127,7 +1147,10 @@ function creation(){ let nom=lirePrenom();
   const d=new Date(); return {cree_par:nom,cree_le:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}; }
 function editTache(i,plante=""){
   let t=i==null?null:S.taches[i];
-  const base=t||{tache:"",priorite:"à faire",responsable:"moi",statut:"à faire",notes:"",plante,date:""};
+  const base=t||{tache:"",priorite:"à faire",responsable:"",statut:"à faire",notes:"",plante,date:""};
+  /* Qui ? : Personne (libre) + les prénoms déjà vus dans les tâches + celui de cet appareil, sans doublon Tiph/Tiphaine. */
+  const gens=[]; for(const n of [...S.taches.flatMap(x=>[qui(x),(x.cree_par||"").trim()]),lirePrenom()].filter(Boolean)) if(!gens.some(g=>memePersonne(g,n))) gens.push(n);
+  const quiBase=qui(base), optsQui=[["","Personne (libre)"],...gens.map(g=>memePersonne(g,quiBase)?quiBase:g).map(g=>[g,g])];
   const sel=(id,vals,v)=>`<select id="${id}">${[...new Set([...vals,v])].map(x=>`<option value="${esc(x)}" ${x===v?"selected":""}>${esc(cap(x))}</option>`).join("")}</select>`;
   const plantes=[...new Set(S.plantes.filter(p=>VRAIES.includes(groupeDe(p))).map(p=>p.nom))];
   let message=t?`Tâches : modifier « ${t.tache} »`:"";
@@ -1137,6 +1160,7 @@ function editTache(i,plante=""){
       <label class="f full">Tâche<input id="t-nom" value="${esc(base.tache)}" ${t?"":"autofocus"}></label>
       <div class="duo full"><label class="f">Priorité${sel("t-prio",PRIO,base.priorite)}</label>
         <label class="f">Date (rappel)<input id="t-date" type="date" value="${esc(base.date||"")}"></label></div>
+      <label class="f full">Qui s'en charge ?<select id="t-qui">${optsQui.map(([v,l])=>`<option value="${esc(v)}" ${v===quiBase?"selected":""}>${esc(l)}</option>`).join("")}</select></label>
       <label class="f full">Plante liée<input id="t-plante" value="${esc(base.plante)}" placeholder="Chercher une plante…" autocomplete="off"></label><div class="sugg full" id="t-sugg" hidden></div>
       <label class="f full">Notes<textarea id="t-notes">${esc(base.notes)}</textarea></label>
     </div>
@@ -1151,11 +1175,11 @@ function editTache(i,plante=""){
   $("#t-plante").onfocus=suggerer; $("#t-plante").addEventListener("input",suggerer);
   $("#t-sugg").onclick=e=>{ const b=e.target.closest("[data-plante]"); if(!b) return; $("#t-plante").value=b.dataset.plante;
     $("#t-sugg").hidden=true; $("#dlg-form").dispatchEvent(new Event("input")); };
-  const lireT=()=>({tache:$("#t-nom").value.trim(),priorite:$("#t-prio").value,statut:base.statut,notes:$("#t-notes").value.trim(),plante:$("#t-plante").value.trim(),date:$("#t-date").value});
+  const lireT=()=>({tache:$("#t-nom").value.trim(),priorite:$("#t-prio").value,responsable:$("#t-qui").value,statut:base.statut,notes:$("#t-notes").value.trim(),plante:$("#t-plante").value.trim(),date:$("#t-date").value});
   /* Nouvelle tâche : rien n'est enregistré avant « Ajouter la tâche » (fermer sans valider l'abandonne). Tâche existante : enregistrée au fil de la saisie. */
   if(!t){
     const ajouter=()=>{ const n=lireT(); if(!n.tache){ toast("Donne un nom à la tâche"); return $("#t-nom").focus(); }
-      S.taches.unshift({...n,responsable:"moi",...creation()}); renderTaches(); renderPlantes(); sauver("taches",`Tâches : ajouter « ${n.tache} »`); $("#dlg").close(); };
+      S.taches.unshift({...n,...creation()}); renderTaches(); renderPlantes(); sauver("taches",`Tâches : ajouter « ${n.tache} »`); $("#dlg").close(); };
     $("#t-ok").onclick=ajouter;
     $("#dlg-form").onsubmit=e=>{ e.preventDefault(); ajouter(); };
     return;
@@ -1249,7 +1273,7 @@ function setTab(t,push=true){ const ctx=/^ctx-(\d+)$/.exec(t);
 document.addEventListener("keydown",e=>{ if((e.key==="Enter"||e.key===" ")&&e.target.matches?.("div.row[data-edit-plante]")){ e.preventDefault(); editPlante(+e.target.dataset.editPlante); } });
 window.addEventListener("popstate",()=>setTab(location.hash.slice(1),false));
 document.addEventListener("click",e=>{
-  const el=e.target.closest("[data-tab],[data-g],[data-s],[data-carte-fait],[data-edit-plante],[data-done],[data-edit-tache],[data-edit-sec],[data-cancel-sec],#add-plante,#add-tache");
+  const el=e.target.closest("[data-tab],[data-g],[data-s],[data-carte-fait],[data-edit-plante],[data-done],[data-edit-tache],[data-edit-sec],[data-cancel-sec],#add-plante,#add-tache,#add-tache-accueil");
   if(!el) return; const ds=el.dataset;
   if(ds.tab) return setTab(ds.tab);
   if(ds.g) {groupe=ds.g; return renderPlantes()}
@@ -1269,7 +1293,7 @@ document.addEventListener("click",e=>{
   if(ds.editSec!=null){ editingSec=true; return renderContexte(); }
   if(ds.cancelSec!=null){ editingSec=false; viderAttente(); return renderContexte(); }
   if(el.id==="add-plante") return editPlante(null);
-  if(el.id==="add-tache") return editTache(null);
+  if(el.id==="add-tache"||el.id==="add-tache-accueil") return editTache(null);
 });
 
 
@@ -1284,8 +1308,10 @@ $("#c-forget").onclick=()=>{ cfg.token=""; try{localStorage.setItem(CFG_KEY,JSON
 /* Apparence : automatique (système), clair ou sombre, mémorisé dans ce navigateur. */
 const majTheme=()=>{ const t=document.documentElement.dataset.theme||"auto";
   document.querySelectorAll("[data-theme-choix]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.themeChoix===t)); };
+$("#chips-taches").onclick=e=>{ const b=e.target.closest("[data-qui]"); if(!b) return; filtreQui=b.dataset.qui;
+  try{ localStorage.setItem(QUI_KEY,filtreQui) }catch(_){} renderTaches(); };
 $("#c-prenom").value=lirePrenom();
-$("#c-prenom").onchange=e=>{ const v=e.target.value.trim(); try{ v?localStorage.setItem(PRENOM_KEY,v):localStorage.removeItem(PRENOM_KEY) }catch(_){} };
+$("#c-prenom").onchange=e=>{ const v=e.target.value.trim(); try{ v?localStorage.setItem(PRENOM_KEY,v):localStorage.removeItem(PRENOM_KEY) }catch(_){} try{ renderTaches() }catch(_){} };
 $("#theme-choix").onclick=e=>{ const b=e.target.closest("[data-theme-choix]"); if(!b) return; const t=b.dataset.themeChoix;
   if(t==="auto") delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme=t;
   try{ t==="auto"?localStorage.removeItem("jardin-theme"):localStorage.setItem("jardin-theme",t) }catch(_){}
