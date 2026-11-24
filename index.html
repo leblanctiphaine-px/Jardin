@@ -489,6 +489,13 @@ header{justify-content:space-between;align-items:center}
 #v-connexion .reg{margin-top:0;padding:22px 0;max-width:640px}
 #v-connexion .reg:not([hidden])~.reg{border-top:1px solid var(--line-field)}
 #reg-contexte{margin-top:4px}
+/* Page Tâches : onglets en texte, l'actif souligné */
+.onglets-t{display:flex;gap:20px;flex-wrap:wrap;margin:4px 0 8px}
+.onglets-t button{appearance:none;background:none;border:0;padding:6px 0;cursor:pointer;font:500 15px/1.3 var(--f-body);color:var(--muted);text-decoration:none}
+.onglets-t button span{margin-left:5px;font:400 12px var(--f-body);font-variant-numeric:tabular-nums}
+.onglets-t button{border-bottom:2px solid transparent}
+.onglets-t button[aria-current="page"]{color:var(--ink);border-bottom-color:currentColor}
+.onglets-t button:hover{color:var(--ink)}
 #v-connexion .actions{border-top:0;padding-top:0}
 /* Accueil, cartes de zone : titre + nombre de plantes discret, description, et bandeau d'alerte fondu dans le bas de la carte (une seule zone de clic) */
 .card.zone{grid-template-columns:minmax(0,1fr) auto;column-gap:16px;align-items:center}
@@ -633,6 +640,7 @@ header{justify-content:space-between;align-items:center}
 
   <!-- TACHES -->
   <section id="v-taches" hidden style="margin-top:18px">
+    <nav class="onglets-t" id="onglets-taches" aria-label="Catégories de tâches"></nav>
     <div id="list-taches"></div>
     <button class="fab" id="add-tache">+ Ajouter une tâche</button>
   </section>
@@ -1115,7 +1123,6 @@ const ICO_GOUTTE=`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" st
 const ICO_SOLEIL=`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`;
 const parDate=(a,b)=>(a.t.date||"9999")<(b.t.date||"9999")?-1:(a.t.date||"9999")>(b.t.date||"9999")?1:0;
 /* Tâches ouvertes par priorité ; les tâches faites dans une section repliée tout en bas. */
-let fermeesOuvertes=false;
 /* Nouvelles tâches : celles qu'on n'a pas encore vues sur cet appareil (liste des noms vus gardée en local). */
 const VUES_KEY="jardin-taches-vues"; let nouvelles=new Set(), ongletVu=false;
 function reperer(){ let vues=null; try{ vues=JSON.parse(localStorage.getItem(VUES_KEY)) }catch(_){}
@@ -1130,20 +1137,29 @@ const ligneTache=({t,i})=>{
         ${qui(t)||t.plante||t.date&&!done?`<span class="infos">${qui(t)?`<span>${ICO_QUI}${esc(qui(t))}</span>`:""}${t.plante?`<span>${ICO_PLANTE}${esc(t.plante)}</span>`:""}${t.date&&!done?`<span class="${t.date<aujourdhui()?"bad":t.date===aujourdhui()?"warn":""}">${ICO_CAL}${dateLongue(t.date)}</span>`:""}</span>`:""}
         ${(m=>m?`<span class="meta">${m}</span>`:"")((t.statut==="fait"&&dateFait(t)?`Retirée le ${new Date(dateFait(t).getTime()+GARDE_JOURS*864e5).toLocaleDateString("fr-FR")} · `:"")+esc(t.notes))}
         ${t.cree_par?`<span class="par">Initiée par ${esc(t.cree_par)}</span>`:""}</div>`; };
+/* Page Tâches : onglets texte (À faire / Bientôt / Réflexion / Faites), le choix est gardé sur l'appareil. */
+const ONGLET_T_KEY="jardin-onglet-taches";
+let ongletT=(()=>{ try{ return localStorage.getItem(ONGLET_T_KEY)||"faire" }catch(_){ return "faire" } })();
+const ONGLETS_T=[["faire","À faire",["urgent","à faire","récurrent"]],["bientot","Bientôt",["bientôt"]],["reflexion","Réflexion",["réflexion"]],["faites","Faites",null]];
 function renderTaches(){
   const toutes=S.taches.map((t,i)=>({t,i}));
   const rows=toutes.filter(({t})=>!FERMEES.includes(t.statut)), faites=toutes.filter(({t})=>FERMEES.includes(t.statut));
-  const SECTIONS=["urgent","à faire","bientôt","récurrent","réflexion"];
-  const prios=[...SECTIONS,...new Set(rows.map(r=>prioEff(r.t)).filter(p=>!SECTIONS.includes(p)))];
+  const connues=ONGLETS_T.flatMap(o=>o[2]||[]);
+  const prioDe=r=>{ const p=prioEff(r.t); return connues.includes(p)?p:"à faire"; };
+  const dans=o=>o[2]?rows.filter(r=>o[2].includes(prioDe(r))):faites;
+  if(!ONGLETS_T.some(o=>o[0]===ongletT)) ongletT="faire";
+  $("#onglets-taches").innerHTML=ONGLETS_T.map(o=>`<button type="button" data-onglet-t="${o[0]}" aria-current="${o[0]===ongletT?"page":"false"}">${o[1]}<span>${dans(o).length}</span></button>`).join("");
+  const o=ONGLETS_T.find(x=>x[0]===ongletT);
   let html="";
-  for(const pr of prios){
-    const g=rows.filter(r=>prioEff(r.t)===pr).sort(parDate); if(!g.length) continue;
-    html+=`<p class="group-h">${esc(cap(pr))} · ${g.length}</p><div class="list">`+g.map(ligneTache).join("")+`</div>`;
+  if(!o[2]) html=faites.length?`<div class="list">${faites.map(ligneTache).join("")}</div>`:`<p class="empty">Aucune tâche faite ces 30 derniers jours.</p>`;
+  else {
+    const groupes=o[2].map(pr=>[pr,rows.filter(r=>prioDe(r)===pr).sort(parDate)]).filter(([,g])=>g.length);
+    for(const [pr,g] of groupes){
+      html+=(groupes.length>1?`<p class="group-h">${esc(cap(pr))} · ${g.length}</p>`:"")+`<div class="list">`+g.map(ligneTache).join("")+`</div>`;
+    }
+    if(!html) html=`<p class="empty">${ongletT==="faire"?"Rien à faire pour l'instant. Bonne nouvelle !":"Rien ici pour l'instant."}</p>`;
   }
-  if(!html) html=`<p class="empty">Aucune tâche ouverte. Bonne nouvelle !</p>`;
-  if(faites.length) html+=`<details class="fermees" ${fermeesOuvertes?"open":""}><summary>Faites ces 30 jours · ${faites.length}</summary><div class="list">${faites.map(ligneTache).join("")}</div></details>`;
   $("#list-taches").innerHTML=html;
-  $("#list-taches .fermees")?.addEventListener("toggle",e=>fermeesOuvertes=e.target.open);
   renderAujourdhui();
 }
 /* Accueil : bloc Tâches avec ce qui presse (urgentes, du jour ou en retard, puis à faire) et un lien vers toutes les tâches. */
@@ -1334,6 +1350,8 @@ $("#invite-copy").onclick=()=>{ const i=$("#invite-link");
   const repli=()=>{ i.select(); toast("Lien sélectionné : copie-le avec Ctrl+C ou un appui long"); };
   navigator.clipboard?.writeText(i.value).then(()=>toast("Lien copié"),repli) ?? repli(); };
 $("#c-forget").onclick=()=>{ cfg.token=""; try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(_){} charge=false; setSync("",""); setTab("connexion"); toast("Jeton oublié sur cet appareil"); };
+$("#onglets-taches").onclick=e=>{ const b=e.target.closest("[data-onglet-t]"); if(!b) return; ongletT=b.dataset.ongletT;
+  try{ localStorage.setItem(ONGLET_T_KEY,ongletT) }catch(_){} renderTaches(); };
 $("#c-prenom").value=lirePrenom();
 $("#c-prenom").onchange=e=>{ const v=e.target.value.trim(); try{ v?localStorage.setItem(PRENOM_KEY,v):localStorage.removeItem(PRENOM_KEY) }catch(_){} try{ renderPlantes(); renderTaches() }catch(_){} };
 demarrer();
