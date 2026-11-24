@@ -509,6 +509,15 @@ header{justify-content:space-between;align-items:center}
 .card,.row,.today,.carte,.liees .check,.fiche,.gear,dialog:not(.plein){-webkit-backdrop-filter:var(--glass);backdrop-filter:var(--glass)}
 .card,.row,.today{border:1px solid var(--line-card)}
 .pill,.chip.etat{background-clip:padding-box}
+/* Mobile : les modales (hors fiches plein écran) deviennent des tiroirs qui montent du bas ; centrées sur ordinateur. */
+@media (max-width:640px){
+  dialog:not(.plein){width:100vw;max-width:100vw;margin:auto 0 0;border-radius:20px 20px 0 0;max-height:calc(100dvh - 48px);border-bottom:0}
+  dialog:not(.plein) .dlg{padding-bottom:calc(20px + env(safe-area-inset-bottom))}
+  dialog:not(.plein) .dlg::before{content:"";position:absolute;top:10px;left:50%;width:40px;height:4px;margin-left:-20px;border-radius:2px;background:var(--line-field)}
+  dialog:not(.plein)[open]{animation:tiroir .28s cubic-bezier(.2,.8,.2,1)}
+}
+@keyframes tiroir{from{transform:translateY(100%)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){dialog:not(.plein)[open]{animation:none}}
 </style>
 </head>
 <body>
