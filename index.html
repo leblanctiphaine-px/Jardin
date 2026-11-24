@@ -1186,7 +1186,7 @@ function editTache(i,plante=""){
       <label class="f full">Plante liée<input id="t-plante" value="${esc(base.plante)}" placeholder="Chercher une plante…" autocomplete="off"></label><div class="sugg full" id="t-sugg" hidden></div>
       <label class="f full">Détails<textarea id="t-notes">${esc(base.notes)}</textarea></label>
     </div>
-    <div class="actions sans-trait"><div><button type="button" class="btn danger tert" id="del" ${t?"":"hidden"}>${ICO_POUBELLE}<span>Supprimer</span></button></div>${t?"":`<div><button type="button" class="btn primary" id="t-ok">Ajouter la tâche</button></div>`}</div>`,
+    <div class="actions sans-trait"><div><button type="button" class="btn danger tert" id="del" ${t?"":"hidden"}>${ICO_POUBELLE}<span>Supprimer</span></button></div>${t?`<div><button type="button" class="btn" id="t-claude">Demander à Claude</button></div>`:`<div><button type="button" class="btn primary" id="t-ok">Ajouter la tâche</button></div>`}</div>`,
     {onDelete:()=>{ S.taches.splice(S.taches.indexOf(t),1); render(); sauver("taches",`Tâches : supprimer « ${t.tache} »`); }});
   /* Recherche de plante : suggestions filtrées sous le champ, sans tenir compte des accents. */
   const plat=x=>x.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
@@ -1200,6 +1200,10 @@ function editTache(i,plante=""){
   $("#dlg-form .avatars").onclick=e=>{ const b=e.target.closest("[data-qui-v]"); if(!b) return; const on=b.getAttribute("aria-pressed")!=="true";
     $("#t-qui").value=on?b.dataset.quiV:"";
     document.querySelectorAll("#dlg-form [data-qui-v]").forEach(x=>x.setAttribute("aria-pressed",on&&x===b)); $("#dlg-form").dispatchEvent(new Event("input")); };
+  /* Question à Claude sur la tâche : comme pour les plantes, on copie le début du message puis on ouvre le projet. */
+  $("#t-claude")&&($("#t-claude").onclick=async()=>{ const q=`À propos de la tâche « ${t.tache} »${t.plante?` (${t.plante})`:""} : `;
+    try{ await navigator.clipboard.writeText(q); toast("Nom de la tâche copié : colle-le dans ta question"); }catch(_){}
+    open(LIEN_CLAUDE,"_blank","noopener"); });
   const lireT=()=>({tache:$("#t-nom").value.trim(),priorite:$("#t-prio").value,responsable:$("#t-qui").value,statut:base.statut,notes:$("#t-notes").value.trim(),plante:$("#t-plante").value.trim(),date:$("#t-date").value});
   /* Nouvelle tâche : rien n'est enregistré avant « Ajouter la tâche » (fermer sans valider l'abandonne). Tâche existante : enregistrée au fil de la saisie. */
   if(!t){
