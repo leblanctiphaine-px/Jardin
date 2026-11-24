@@ -506,7 +506,7 @@ header{justify-content:space-between;align-items:center}
 /* Fiche tâche éditable sur place : pas de cadres permanents, un fond léger au survol ou au focus montre ce qui se modifie. */
 .fiche-k{margin:0;font:500 12px/1.3 var(--f-body);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .fiche-titre,.fiche-notes{appearance:none;display:block;width:100%;resize:none;overflow:hidden;background:none;border:0;border-radius:8px;color:var(--ink);padding:4px 6px;margin:0 -6px;width:calc(100% + 12px);transition:background-color .15s}
-.fiche-titre{min-height:0;font:400 1.6rem/1.25 var(--f-display);font-synthesis:none;word-spacing:.1em;margin-top:2px}
+.fiche-titre{min-height:0;padding-right:48px!important;font:400 1.6rem/1.25 var(--f-display);font-synthesis:none;word-spacing:.1em;margin-top:2px}
 .fiche-notes{min-height:4.5em;margin-top:8px}
 .fiche-titre:hover,.fiche-notes:hover,.prop-v:hover,.fiche-titre:focus,.fiche-notes:focus,.prop-v:focus-within{background:var(--tag-off);outline:none}
 .fiche-titre::placeholder,.fiche-notes::placeholder{color:var(--muted);opacity:1}
@@ -532,8 +532,6 @@ header{justify-content:space-between;align-items:center}
 .prop.combo{grid-template-columns:140px minmax(0,1fr)}
 .prop.combo .combo-pop{grid-column:1/-1}
 .props .combo-btn{border:0;background:none;padding:0;font:inherit}
-.fiche-etat{margin:6px 0 0;font:400 12px/1.3 var(--f-body);color:var(--muted)}
-.fiche-etat.ok{color:var(--on-system-ok)}
 @media (max-width:420px){ .prop,.prop.combo{grid-template-columns:118px minmax(0,1fr)} }
 /* Tâches : ligne soulevée pendant le réordonnancement (appui long) */
 #list-taches .task{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -1319,7 +1317,7 @@ function editTache(i,plante="",zone=""){
   let message=t?`Tâches : modifier « ${t.tache} »`:"";
   openDlg(`
     <!-- Fiche tâche : une page à lire, éditable sur place (titre, propriétés en lignes, détails), enregistrée au fil de l'eau. -->
-    <p class="fiche-k">${t?"Tâche":"Nouvelle tâche"}</p>
+    ${t?"":`<p class="fiche-k">Nouvelle tâche</p>`}
     <textarea id="t-nom" class="fiche-titre" rows="1" placeholder="Nom de la tâche" aria-label="Nom de la tâche" ${t?"":"autofocus"}>${esc(base.tache)}</textarea>
     <div class="props">
       <div class="prop"><span class="prop-l"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg>Priorité</span>
@@ -1335,7 +1333,7 @@ function editTache(i,plante="",zone=""){
         <div class="combo-pop" id="t-combo-pop" hidden><input id="t-combo-q" type="search" placeholder="Rechercher une zone ou une plante…" autocomplete="off" aria-label="Rechercher"><div class="combo-list" role="listbox" id="t-combo-list"></div></div></div>
     </div>
     <textarea id="t-notes" class="fiche-notes" rows="3" placeholder="Ajouter des détails…" aria-label="Détails">${esc(base.notes)}</textarea>
-    ${t?`<p class="fiche-etat" id="t-etat" aria-live="polite">Les modifications sont enregistrées automatiquement</p>`:""}
+
     <div class="actions sans-trait"><div><button type="button" class="btn danger tert" id="del" ${t?"":"hidden"}>${ICO_POUBELLE}<span>Supprimer</span></button></div>${t?`<div><button type="button" class="btn" id="t-claude">Demander à Claude</button><button type="button" class="btn primary" id="t-fini">${t.statut==="fait"?"Rouvrir la tâche":"Marquer comme terminée"}</button></div>`:`<div><button type="button" class="btn primary" id="t-ok">Ajouter la tâche</button></div>`}</div>
     ${t&&t.cree_par?`<p class="signature">Initiée par ${esc(t.cree_par)}</p>`:""}`,
     {onDelete:()=>{ S.taches.splice(S.taches.indexOf(t),1); render(); sauver("taches",`Tâches : supprimer « ${t.tache} »`); }});
@@ -1390,8 +1388,6 @@ function editTache(i,plante="",zone=""){
   $("#dlg-form").oninput=()=>{
     const n=lireT(); if(!n.tache) return;
     Object.assign(t,n); renderTaches(); sauverBientot("taches",message=`Tâches : modifier « ${n.tache} »`);
-    const et=$("#t-etat"); et.textContent="Enregistré"; et.classList.add("ok"); clearTimeout(et._t);
-    et._t=setTimeout(()=>{ et.textContent="Les modifications sont enregistrées automatiquement"; et.classList.remove("ok"); },2000);
   };
 }
 
