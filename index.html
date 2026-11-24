@@ -486,6 +486,15 @@ header{justify-content:space-between;align-items:center}
 /* Assignation : « Initiée par » discret sous la tâche, filtre Toutes / Mes tâches / Libres */
 .task .par{font:400 12px/1.3 var(--f-body);color:var(--muted)}
 #chips-taches{margin-bottom:4px}
+/* Accueil, cartes de zone : nombre de plantes en petit à droite du titre, compteurs côte à côte dessous */
+.card-tl{display:flex;align-items:baseline;justify-content:space-between;gap:12px;min-width:0}
+.card-p{flex:none;font:400 12px/1.3 var(--f-body);color:var(--muted)}
+.compteurs{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:10px}
+.cpt{display:inline-flex;align-items:baseline;gap:6px}
+.cpt b{font:400 2rem/1 var(--f-display);font-synthesis:none;font-variant-numeric:tabular-nums;color:var(--accent-text)}
+.cpt i{font:400 12px/1.3 var(--f-body);font-style:normal;color:var(--muted)}
+.cpt.warn b{color:var(--system-warn-text)}.cpt.bad b{color:var(--system-bad-text)}
+.compteurs .rien{font:400 14px/1.4 var(--f-body);color:var(--muted)}
 /* Fiche tâche : Supprimer en bouton tertiaire (texte + poubelle), sans trait au-dessus des actions */
 .actions.sans-trait{border-top:0;padding-top:4px}
 .btn.tert,.btn.tert:hover,.btn.tert.armed{background:transparent;border-color:transparent;padding:8px 0;display:inline-flex;align-items:center;gap:6px;color:var(--system-bad-text)}
@@ -536,23 +545,20 @@ header{justify-content:space-between;align-items:center}
   <!-- ACCUEIL -->
   <section id="v-accueil" class="home" hidden>
     <div class="today" id="today"></div>
-    <button class="card kpi2" data-tab="jardin">
+    <button class="card zone" data-tab="jardin">
       <span class="card-k">Potager, pleine terre</span>
-      <span class="card-t">Jardin</span>
-      <span class="card-n kpis"><span class="kpi"><b id="t-jardin"></b><i id="tl-jardin">tâches</i></span><span class="kpi"><b id="n-jardin"></b><i id="nl-jardin">plantes</i></span></span>
-      <span class="card-s" id="s-jardin"></span>
+      <span class="card-tl"><span class="card-t">Jardin</span><span class="card-p" id="n-jardin"></span></span>
+      <span class="compteurs" id="s-jardin"></span>
     </button>
-    <button class="card kpi2" data-tab="serre">
+    <button class="card zone" data-tab="serre">
       <span class="card-k">Semis et cultures sous abri</span>
-      <span class="card-t">Serre</span>
-      <span class="card-n kpis"><span class="kpi"><b id="t-serre"></b><i id="tl-serre">tâches</i></span><span class="kpi"><b id="n-serre"></b><i id="nl-serre">plantes</i></span></span>
-      <span class="card-s" id="s-serre"></span>
+      <span class="card-tl"><span class="card-t">Serre</span><span class="card-p" id="n-serre"></span></span>
+      <span class="compteurs" id="s-serre"></span>
     </button>
-    <button class="card kpi2" data-tab="interieur">
+    <button class="card zone" data-tab="interieur">
       <span class="card-k">Pots de la maison et des terrasses</span>
-      <span class="card-t">Intérieur</span>
-      <span class="card-n kpis"><span class="kpi"><b id="t-interieur"></b><i id="tl-interieur">tâches</i></span><span class="kpi"><b id="n-interieur"></b><i id="nl-interieur">plantes</i></span></span>
-      <span class="card-s" id="s-interieur"></span>
+      <span class="card-tl"><span class="card-t">Intérieur</span><span class="card-p" id="n-interieur"></span></span>
+      <span class="compteurs" id="s-interieur"></span>
     </button>
     <button class="card" data-tab="contexte">
       <span class="card-k">Zones, sol, arrosage, limaces</span>
@@ -946,11 +952,12 @@ function renderPlantes(){
     const ps=S.plantes.filter(p=>MODES[k].includes(groupeDe(p))), orange=ps.filter(p=>etatClasse(p.etat)==="warn");
     const surv=orange.length;
     const nt=ps.reduce((s,p)=>s+nbTaches(p),0);
-    $("#n-"+k).textContent=ps.length; $("#nl-"+k).textContent=ps.length>1?"plantes":"plante";
-    $("#t-"+k).textContent=nt; $("#tl-"+k).textContent=nt>1?"tâches":"tâche";
+    $("#n-"+k).textContent=`${ps.length} plante${ps.length>1?"s":""}`;
     const danger=ps.filter(p=>p.etat==="en danger").length;
-    const bouts=[danger&&`<b class="bad">${danger} en danger</b>`,surv&&`<b class="warn">${surv} à surveiller</b>`].filter(Boolean);
-    $("#s-"+k).innerHTML=bouts.length?bouts.join('<span class="sep"> · </span>'):"Rien à signaler";
+    /* Compteurs côte à côte (gros chiffre + petit libellé) ; ceux à zéro sont masqués. */
+    const cpt=(n,l,cls="")=>n?`<span class="cpt ${cls}"><b>${n}</b><i>${l}</i></span>`:"";
+    const bouts=[cpt(nt,nt>1?"tâches":"tâche"),cpt(danger,"en danger","bad"),cpt(surv,"à surveiller","warn")].filter(Boolean);
+    $("#s-"+k).innerHTML=bouts.length?bouts.join(""):`<span class="rien">Rien à signaler</span>`;
   }
   const nG=S.plantes.filter(p=>groupeDe(p)==="Stock de graines").length, nE=S.plantes.filter(p=>groupeDe(p)==="Liste de souhaits").length;
   $("#n-projets").textContent=nG+nE;
