@@ -486,15 +486,14 @@ header{justify-content:space-between;align-items:center}
 /* Assignation : « Initiée par » discret sous la tâche, filtre Toutes / Mes tâches / Libres */
 .task .par{font:400 12px/1.3 var(--f-body);color:var(--muted)}
 #chips-taches{margin-bottom:4px}
-/* Accueil, cartes de zone : nombre de plantes en petit à droite du titre, compteurs côte à côte dessous */
+/* Accueil, cartes de zone : titre + nombre de plantes discret, description, et bandeau d'alerte fondu dans le bas de la carte (une seule zone de clic) */
 .card-tl{display:flex;align-items:baseline;justify-content:space-between;gap:12px;min-width:0}
 .card-p{flex:none;font:400 12px/1.3 var(--f-body);color:var(--muted)}
-.compteurs{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:10px}
-.cpt{display:inline-flex;align-items:baseline;gap:6px}
-.cpt b{font:400 2rem/1 var(--f-display);font-synthesis:none;font-variant-numeric:tabular-nums;color:var(--accent-text)}
-.cpt i{font:400 12px/1.3 var(--f-body);font-style:normal;color:var(--muted)}
-.cpt.warn b{color:var(--system-warn-text)}.cpt.bad b{color:var(--system-bad-text)}
-.compteurs .rien{font:400 14px/1.4 var(--f-body);color:var(--muted)}
+.card-d{font:400 14px/1.4 var(--f-body);color:var(--muted)}
+.card.zone .alerte{display:flex;align-items:center;gap:8px;margin:10px -22px -20px;padding:10px 22px 12px;font:500 14px/1.3 var(--f-body);color:var(--system-warn-text);background:linear-gradient(to bottom,transparent,color-mix(in srgb,var(--system-warn-text) 14%,transparent) 45%)}
+.card.zone .alerte[hidden]{display:none}
+.card.zone .alerte.bad{color:var(--system-bad-text);background:linear-gradient(to bottom,transparent,color-mix(in srgb,var(--system-bad-text) 14%,transparent) 45%)}
+.card.zone .alerte svg{flex:none}
 /* Fiche tâche : Supprimer en bouton tertiaire (texte + poubelle), sans trait au-dessus des actions */
 .actions.sans-trait{border-top:0;padding-top:4px}
 .btn.tert,.btn.tert:hover,.btn.tert.armed{background:transparent;border-color:transparent;padding:8px 0;display:inline-flex;align-items:center;gap:6px;color:var(--system-bad-text)}
@@ -546,19 +545,19 @@ header{justify-content:space-between;align-items:center}
   <section id="v-accueil" class="home" hidden>
     <div class="today" id="today"></div>
     <button class="card zone" data-tab="jardin">
-      <span class="card-k">Potager, pleine terre</span>
       <span class="card-tl"><span class="card-t">Jardin</span><span class="card-p" id="n-jardin"></span></span>
-      <span class="compteurs" id="s-jardin"></span>
+      <span class="card-d">Potager, pleine terre</span>
+      <span class="alerte" id="s-jardin" hidden></span>
     </button>
     <button class="card zone" data-tab="serre">
-      <span class="card-k">Semis et cultures sous abri</span>
       <span class="card-tl"><span class="card-t">Serre</span><span class="card-p" id="n-serre"></span></span>
-      <span class="compteurs" id="s-serre"></span>
+      <span class="card-d">Semis et cultures sous abri</span>
+      <span class="alerte" id="s-serre" hidden></span>
     </button>
     <button class="card zone" data-tab="interieur">
-      <span class="card-k">Pots de la maison et des terrasses</span>
       <span class="card-tl"><span class="card-t">Intérieur</span><span class="card-p" id="n-interieur"></span></span>
-      <span class="compteurs" id="s-interieur"></span>
+      <span class="card-d">Pots de la maison et des terrasses</span>
+      <span class="alerte" id="s-interieur" hidden></span>
     </button>
     <button class="card" data-tab="contexte">
       <span class="card-k">Zones, sol, arrosage, limaces</span>
@@ -953,11 +952,11 @@ function renderPlantes(){
     const surv=orange.length;
     const nt=ps.reduce((s,p)=>s+nbTaches(p),0);
     $("#n-"+k).textContent=`${ps.length} plante${ps.length>1?"s":""}`;
-    const danger=ps.filter(p=>p.etat==="en danger").length;
-    /* Compteurs côte à côte (gros chiffre + petit libellé) ; ceux à zéro sont masqués. */
-    const cpt=(n,l,cls="")=>n?`<span class="cpt ${cls}"><b>${n}</b><i>${l}</i></span>`:"";
-    const bouts=[cpt(nt,nt>1?"tâches":"tâche"),cpt(danger,"en danger","bad"),cpt(surv,"à surveiller","warn")].filter(Boolean);
-    $("#s-"+k).innerHTML=bouts.length?bouts.join(""):`<span class="rien">Rien à signaler</span>`;
+    /* Bandeau d'alerte en pied de carte seulement s'il y a des tâches ouvertes (rouge si l'une est en retard). */
+    const noms=new Set(ps.map(p=>p.nom)), auj=aujourdhui();
+    const retard=S.taches.filter(t=>noms.has(t.plante)&&!FERMEES.includes(t.statut)&&t.date&&t.date<auj).length;
+    const al=$("#s-"+k); al.hidden=!nt; al.classList.toggle("bad",!!retard);
+    al.innerHTML=nt?`${ICO_ALERTE}<span>${nt} tâche${nt>1?"s":""} à faire${retard?` dont ${retard} en retard`:""}</span>`:"";
   }
   const nG=S.plantes.filter(p=>groupeDe(p)==="Stock de graines").length, nE=S.plantes.filter(p=>groupeDe(p)==="Liste de souhaits").length;
   $("#n-projets").textContent=nG+nE;
@@ -1100,6 +1099,7 @@ let filtreQui=(()=>{ try{ return localStorage.getItem(QUI_KEY)||"toutes" }catch(
 const passeFiltre=t=>filtreQui==="miennes"?memePersonne(qui(t),lirePrenom()):filtreQui==="libres"?!qui(t):true;
 const ICO_POUBELLE=`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>`;
 const initiales=n=>n.trim().split(/[\s-]+/).filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join("")||"?";
+const ICO_ALERTE=`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>`;
 const ICO_CAL=`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>`;
 const dateLongue=iso=>new Date(iso+"T12:00").toLocaleDateString("fr-FR",{day:"2-digit",month:"long",...(iso.slice(0,4)!==String(new Date().getFullYear())?{year:"numeric"}:{})});
 const ICO_LIMACE=`<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 13a6 6 0 1 0 12 0 4 4 0 1 0-8 0 2 2 0 0 0 4 0"/><circle cx="10" cy="13" r="8"/><path d="M2 21h12c4.4 0 8-3.6 8-8V7a2 2 0 1 0-4 0v6"/><path d="M18 3 19.1 5.2"/><path d="M22 3 20.9 5.2"/></svg>`;
