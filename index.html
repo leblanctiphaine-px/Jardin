@@ -487,9 +487,13 @@ header{justify-content:space-between;align-items:center}
 #list-taches .row.task .infos,#list-taches .row.task .meta,#list-taches .row.task .par{grid-column:2/-1}
 /* Assignation : « Initiée par » discret sous la tâche, filtre Toutes / Mes tâches / Libres */
 .task .par{font:400 12px/1.3 var(--f-body);color:var(--muted)}
-/* Réglages : sections séparées par un trait (Contexte du jardin, prénom, colocs, connexion) */
-#v-connexion .reg{margin-top:0;padding:22px 0;max-width:640px}
-#v-connexion .reg:not([hidden])~.reg{border-top:1px solid var(--line-field)}
+/* Réglages : menu des rubriques (une ligne par page) puis une page par rubrique */
+#v-connexion .reg{margin-top:8px;max-width:640px}
+.reg-menu{max-width:640px;margin-top:8px}
+.reg-item .t,.reg-item .meta{grid-column:1}
+.reg-item .chev{grid-column:2;grid-row:1/span 2;color:var(--muted);align-self:center}
+.reg-details summary{cursor:pointer;color:var(--accent-text);font:500 14px/1.4 var(--f-body)}
+.reg-details[open] summary{margin-bottom:8px}
 #reg-contexte{margin-top:4px}
 /* Tâches : ligne soulevée pendant le réordonnancement (appui long) */
 #list-taches .task{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -621,38 +625,48 @@ header{justify-content:space-between;align-items:center}
 
   <!-- CONNEXION -->
   <section id="v-connexion" hidden>
+    <!-- Réglages : une page d'accueil avec les rubriques, chacune ouvre sa page (retour vers Réglages). -->
+    <div class="list reg-menu" id="reg-menu" hidden>
+      <button class="row reg-item" data-tab="reg-jardin"><span class="t">Contexte du jardin</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="meta" id="rm-jardin"></span></button>
+      <button class="row reg-item" data-tab="reg-profil"><span class="t">Mon prénom</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="meta" id="rm-profil"></span></button>
+      <button class="row reg-item" data-tab="reg-colocs"><span class="t">Inviter les colocs</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="meta">Le lien à envoyer pour qu'ils modifient le carnet</span></button>
+      <button class="row reg-item" data-tab="reg-github"><span class="t">Connexion GitHub</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="meta" id="rm-github"></span></button>
+    </div>
     <div class="sec conn reg" id="reg-jardin" hidden>
-      <h2 class="invite-t">Contexte du jardin</h2>
-      <p class="hint">Les infos durables : zones, sol, arrosage, limaces…</p>
+      <p class="hint">Les infos durables sur le jardin. Touche une section pour la lire ou la modifier.</p>
       <div class="list" id="reg-contexte"></div>
     </div>
-    <div class="sec conn reg" id="prenom-sec">
-      <h2 class="invite-t">Ton prénom</h2>
-      <label class="f">Prénom<input id="c-prenom" autocomplete="given-name" placeholder="Pour signer les tâches que tu ajoutes"></label>
-      <p class="hint">Affiché en petit en bas des tâches que tu crées. Gardé sur cet appareil.</p>
+    <div class="sec conn reg" id="reg-profil" hidden>
+      <label class="f">Prénom<input id="c-prenom" autocomplete="given-name" placeholder="Ex. Tiph"></label>
+      <p class="hint">Il signe les tâches que tu ajoutes, et l'accueil ne te montre que les tâches libres ou les tiennes. Gardé sur cet appareil.</p>
     </div>
-    <div class="sec conn reg" id="invite" hidden>
-      <h2 class="invite-t">Inviter les colocs</h2>
-      <p>Envoie ce lien en privé (message, groupe de la coloc). En l'ouvrant une fois, la personne peut consulter et modifier le carnet, sans compte GitHub.</p>
+    <div class="sec conn reg" id="reg-colocs" hidden>
+      <p>Envoie ce lien en privé à un ou une coloc. En l'ouvrant une fois, la personne peut lire et modifier le carnet, sans compte GitHub.</p>
       <label class="f">Lien d'invitation<input id="invite-link" readonly></label>
       <div class="actions"><div></div><div><button type="button" class="btn primary" id="invite-copy">Copier le lien</button></div></div>
-      <p class="hint">Ce lien contient ton jeton : toute personne qui l'a peut modifier les fichiers. Ne le publie pas en ligne. Pour couper l'accès à tout le monde, supprime le jeton sur <a href="https://github.com/settings/personal-access-tokens" target="_blank" rel="noopener">GitHub</a>, puis crée-en un nouveau et renvoie un lien.</p>
+      <p class="hint">Ce lien donne le droit de modifier le carnet : ne le publie pas en ligne. Pour couper l'accès à tout le monde, supprime le jeton sur <a href="https://github.com/settings/personal-access-tokens" target="_blank" rel="noopener">GitHub</a>, crée-en un nouveau et renvoie un lien.</p>
     </div>
-    <form class="sec conn reg" id="conn-form">
-      <h2 class="invite-t">Connexion au dépôt GitHub</h2>
+    <form class="sec conn reg" id="reg-github" hidden>
+      <h2 class="invite-t" id="conn-titre">Connexion au carnet</h2>
       <p class="hint" id="conn-err" hidden></p>
-      <p>Le carnet lit et écrit directement les fichiers du dépôt GitHub. Chaque modification devient un commit, donc rien ne se perd.</p>
+      <p id="conn-etat"></p>
       <label class="f">Jeton GitHub
         <input id="c-token" type="password" autocomplete="off" placeholder="github_pat_…" required>
       </label>
-      <p class="hint">Crée un jeton « fine-grained » sur <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a> : choisis seulement le dépôt du jardin, et dans « Repository permissions » mets <b>Contents</b> sur <b>Read and write</b>. Choisis la durée de validité la plus longue : si le jeton expire, les liens d'invitation ne marchent plus. Le jeton reste dans ce navigateur.</p>
-      <div class="fields">
-        <label class="f">Dépôt<input id="c-repo" required></label>
-        <label class="f">Branche<input id="c-branch" required></label>
-      </div>
+      <details class="reg-details">
+        <summary>Comment créer un jeton</summary>
+        <p class="hint">Sur <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a>, crée un jeton « fine-grained » limité au dépôt du jardin, avec <b>Contents</b> sur <b>Read and write</b>. Prends la durée la plus longue : quand le jeton expire, les liens d'invitation ne marchent plus. Le jeton reste dans ce navigateur.</p>
+      </details>
+      <details class="reg-details">
+        <summary>Dépôt et branche</summary>
+        <div class="fields">
+          <label class="f">Dépôt<input id="c-repo" required></label>
+          <label class="f">Branche<input id="c-branch" required></label>
+        </div>
+      </details>
       <div class="actions">
-        <div><button type="button" class="btn danger" id="c-forget">Oublier le jeton</button></div>
-        <div><button class="btn primary">Se connecter</button></div>
+        <div><button type="button" class="btn danger tert" id="c-forget">Se déconnecter de cet appareil</button></div>
+        <div><button class="btn primary">Enregistrer</button></div>
       </div>
     </form>
   </section>
@@ -1350,19 +1364,29 @@ function openDlg(html,{onDelete,confirmer=true,plein=false}={}){
 
 /* ---------- Navigation ---------- */
 function render(){ construireModes(); renderPlantes(); renderTaches(); renderContexte(); }
-const TITRES={jardin:"Jardin",serre:"Serre",interieur:"Intérieur",projets:"Graines et envies",taches:"Tâches",contexte:"Contexte",connexion:"Réglages"};
+const TITRES={jardin:"Jardin",serre:"Serre",interieur:"Intérieur",projets:"Graines et envies",taches:"Tâches",contexte:"Contexte",connexion:"Réglages","reg-jardin":"Contexte du jardin","reg-profil":"Mon prénom","reg-colocs":"Inviter les colocs","reg-github":"Connexion GitHub"};
 function setTab(t,push=true){ const ctx=/^ctx-(\d+)$/.exec(t);
-  if(t==="contexte"||(ctx&&!S.contexte[+ctx[1]])) t="connexion"; else if(!ctx&&!TITRES[t]) t="accueil"; if(!charge) t="connexion"; tab=t;
-  if(t==="connexion"){ $("#c-token").value=cfg.token; $("#c-repo").value=cfg.repo; $("#c-branch").value=cfg.branch;
-    $("#invite").hidden=!charge; $("#reg-jardin").hidden=!charge; if(charge) $("#invite-link").value=lienInvitation(); }
-  const vue=MODES[t]?"plantes":ctx?"contexte":t;
+  if(t==="contexte"||(ctx&&!S.contexte[+ctx[1]])) t="reg-jardin"; else if(!ctx&&!TITRES[t]) t="accueil"; if(!charge) t="connexion"; tab=t;
+  const reg=t==="connexion"||t.startsWith("reg-");
+  if(reg){ $("#c-token").value=cfg.token; $("#c-repo").value=cfg.repo; $("#c-branch").value=cfg.branch;
+    /* Pas encore connecté : seule la connexion s'affiche. Sinon : le menu des rubriques, ou la rubrique ouverte. */
+    const page=!charge?"reg-github":t;
+    $("#reg-menu").hidden=page!=="connexion";
+    for(const k of ["reg-jardin","reg-profil","reg-colocs","reg-github"]) $("#"+k).hidden=k!==page;
+    $("#conn-titre").hidden=charge; $("#c-forget").hidden=!cfg.token;
+    $("#conn-etat").textContent=charge?`Le carnet est relié au dépôt ${cfg.repo}. Chaque modification y est enregistrée, rien ne se perd.`:"Le carnet lit et écrit les fichiers du dépôt GitHub du jardin. Colle ton jeton pour commencer, ou ouvre le lien d'invitation qu'on t'a envoyé.";
+    if(charge){ $("#invite-link").value=lienInvitation();
+      $("#rm-jardin").textContent=S.contexte.map(x=>x.titre).join(", ")||"Zones, sol, arrosage, limaces…";
+      $("#rm-profil").textContent=lirePrenom()||"Pas encore renseigné";
+      $("#rm-github").textContent=`Connecté à ${cfg.repo}`; } }
+  const vue=MODES[t]?"plantes":ctx?"contexte":reg?"connexion":t;
   const ouverte=ctx?+ctx[1]:null; if(ouverte!==secOuverte){ viderAttente(); secOuverte=ouverte; editingSec=false; renderContexte(); }
   if(vue==="plantes"&&mode!==t){mode=t;groupe="";renderPlantes()}
   ["accueil","plantes","taches","contexte","connexion"].forEach(k=>$("#v-"+k).hidden=k!==vue);
   if(vue==="taches"&&charge){ ongletVu=true; marquerVues(); }
   $("#crumb").hidden=t==="accueil"||!charge;
   $("#btn-reglages").hidden=t!=="accueil"; $("header").hidden=t!=="accueil"; $("#crumb-t").textContent=ctx?S.contexte[secOuverte].titre:TITRES[t]||"";
-  $("#crumb .back").dataset.tab=ctx?"connexion":"accueil";
+  $("#crumb .back").dataset.tab=ctx?"reg-jardin":t.startsWith("reg-")?"connexion":"accueil";
   /* Bouton flottant « Demander à Claude » partout sauf Tâches (déjà son bouton +) et Contexte. */
   const fab=vue!=="taches"&&vue!=="contexte"; $("#fab-claude").hidden=!fab; $(".wrap").classList.toggle("avec-fab",fab);
   window.scrollTo(0,0);
@@ -1396,7 +1420,7 @@ document.addEventListener("click",e=>{
 });
 
 
-$("#conn-form").onsubmit=e=>{ e.preventDefault();
+$("#reg-github").onsubmit=e=>{ e.preventDefault();
   cfg={token:$("#c-token").value.trim(),repo:$("#c-repo").value.trim().replace(/^https:\/\/github\.com\//,"").replace(/\/$/,""),branch:$("#c-branch").value.trim()||"main"};
   try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg))}catch(_){}
   history.replaceState(null,"",location.pathname); demarrer(); };
