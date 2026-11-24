@@ -669,7 +669,7 @@ header{justify-content:space-between;align-items:center}
     <div class="list reg-menu" id="reg-menu" hidden>
       <button class="row reg-item" data-tab="reg-jardin"><span class="t">Contexte du jardin</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="meta" id="rm-jardin"></span></button>
       <button class="row reg-item" data-tab="reg-profil"><span class="t">Profil</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="meta" id="rm-profil"></span></button>
-      <button class="row reg-item" data-tab="reg-colocs"><span class="t">Inviter les colocs</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="meta">Le lien à envoyer pour qu'ils modifient le carnet</span></button>
+      <button class="row reg-item" data-tab="reg-colocs"><span class="t">Inviter quelqu'un</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="meta">Partager un lien d'accès au carnet</span></button>
       <button class="row reg-item" data-tab="reg-github"><span class="t">Connexion GitHub</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="meta" id="rm-github"></span></button>
     </div>
     <div class="sec conn reg" id="reg-jardin" hidden>
@@ -689,10 +689,9 @@ header{justify-content:space-between;align-items:center}
       <p class="hint">Il signe les tâches que tu ajoutes, et l'accueil ne te montre que les tâches libres ou les tiennes. Gardé sur cet appareil.</p>
     </div>
     <div class="sec conn reg" id="reg-colocs" hidden>
-      <p>Envoie ce lien en privé à un ou une coloc. En l'ouvrant une fois, la personne peut lire et modifier le carnet, sans compte GitHub.</p>
       <label class="f">Lien d'invitation<input id="invite-link" readonly></label>
       <div class="actions"><div></div><div><button type="button" class="btn primary" id="invite-copy">Copier le lien</button></div></div>
-      <p class="hint">Ce lien donne le droit de modifier le carnet : ne le publie pas en ligne. Pour couper l'accès à tout le monde, supprime le jeton sur <a href="https://github.com/settings/personal-access-tokens" target="_blank" rel="noopener">GitHub</a>, crée-en un nouveau et renvoie un lien.</p>
+      <p class="hint">À envoyer en privé : ce lien permet de modifier le carnet.</p>
     </div>
     <form class="sec conn reg" id="reg-github" hidden>
       <h2 class="invite-t" id="conn-titre">Connexion au carnet</h2>
@@ -1459,7 +1458,7 @@ function openDlg(html,{onDelete,confirmer=true,plein=false}={}){
 
 /* ---------- Navigation ---------- */
 function render(){ construireModes(); renderPlantes(); renderTaches(); renderContexte(); }
-const TITRES={jardin:"Jardin",serre:"Serre",interieur:"Intérieur",projets:"Graines et envies",taches:"Tâches",contexte:"Contexte",connexion:"Réglages","reg-jardin":"Contexte du jardin","reg-profil":"Profil","reg-colocs":"Inviter les colocs","reg-github":"Connexion GitHub"};
+const TITRES={jardin:"Jardin",serre:"Serre",interieur:"Intérieur",projets:"Graines et envies",taches:"Tâches",contexte:"Contexte",connexion:"Réglages","reg-jardin":"Contexte du jardin","reg-profil":"Profil","reg-colocs":"Inviter quelqu'un","reg-github":"Connexion GitHub"};
 function setTab(t,push=true){ const ctx=/^ctx-(\d+)$/.exec(t);
   if(t==="contexte"||(ctx&&!S.contexte[+ctx[1]])) t="reg-jardin"; else if(!ctx&&!TITRES[t]) t="accueil"; if(!charge) t="connexion"; tab=t;
   const reg=t==="connexion"||t.startsWith("reg-");
