@@ -495,6 +495,21 @@ header{justify-content:space-between;align-items:center}
 .reg-details summary{cursor:pointer;color:var(--accent-text);font:500 14px/1.4 var(--f-body)}
 .reg-details[open] summary{margin-bottom:8px}
 #reg-contexte{margin-top:4px}
+/* Croix de fermeture des modales et tiroirs : simple, sans rond ni fond (même au focus d'ouverture). */
+.close,.close:hover,.close:focus,.close:focus-visible{background:none!important;outline:none!important;box-shadow:none!important;border:0!important}
+.close:hover{color:var(--ink)}
+/* Fiche tâche : « Demander à Claude » comme une zone de commentaire */
+.ask{margin-top:18px;padding-top:14px;border-top:1px solid var(--line-field)}
+.ask-t{margin:0 0 8px;font:500 14px/1.3 var(--f-body);color:var(--ink)}
+.ask-box{display:flex;align-items:flex-end;gap:8px;background:var(--surface);border:1px solid var(--line-field);border-radius:12px;padding:6px 6px 6px 12px}
+.ask-box:focus-within{border-color:var(--accent-green)}
+.ask-box textarea{flex:1;min-height:0;resize:none;overflow:hidden;background:none;border:0;padding:6px 0;font:400 14px/1.4 var(--f-body);color:var(--ink)}
+.ask-box textarea:focus{outline:none}
+.ask-box textarea::placeholder{color:var(--muted);opacity:1}
+.ask-send{appearance:none;flex:none;width:36px;height:36px;border-radius:50%;border:0;display:grid;place-items:center;background:var(--accent-green);color:var(--on-accent);cursor:pointer}
+.fiche-act{display:grid;gap:10px;margin-top:20px}
+.fiche-act>.btn{width:100%;justify-content:center}
+.ask-h{margin:6px 0 0;font:400 12px/1.3 var(--f-body);color:var(--muted)}
 /* Profil : photo ronde (ou initiales) et boutons ; les avatars des tâches affichent la photo quand il y en a une. */
 .profil-photo{display:flex;align-items:center;gap:16px}
 .profil-av{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;overflow:hidden;flex:none;background:var(--accent-aubergine);color:var(--on-accent);font:500 22px var(--f-body)}
@@ -1340,7 +1355,13 @@ function editTache(i,plante="",zone=""){
     </div>
     <textarea id="t-notes" class="fiche-notes" rows="3" placeholder="Ajouter des détails…" aria-label="Détails">${esc(base.notes)}</textarea>
 
-    <div class="actions sans-trait"><div><button type="button" class="btn danger tert" id="del" ${t?"":"hidden"}>${ICO_POUBELLE}<span>Supprimer</span></button></div>${t?`<div><button type="button" class="btn" id="t-claude">Demander à Claude</button><button type="button" class="btn primary" id="t-fini">${t.statut==="fait"?"Rouvrir la tâche":"Marquer comme terminée"}</button></div>`:`<div><button type="button" class="btn primary" id="t-ok">Ajouter la tâche</button></div>`}</div>`,
+    ${t?`<div class="ask"><p class="ask-t">Demander à Claude</p>
+      <div class="ask-box"><textarea id="t-q" rows="1" placeholder="Pose une question sur cette tâche…" aria-label="Question pour Claude"></textarea>
+      <button type="button" class="ask-send" id="t-q-send" aria-label="Envoyer à Claude"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></button></div>
+      <p class="ask-h">Ta question est copiée et le projet Claude s'ouvre : tu n'as plus qu'à coller.</p></div>`:""}
+    ${t?`<div class="fiche-act"><button type="button" class="btn primary" id="t-fini">${t.statut==="fait"?"Rouvrir la tâche":"Marquer comme terminée"}</button>
+      <div><button type="button" class="btn danger tert" id="del">${ICO_POUBELLE}<span>Supprimer</span></button></div></div>`
+    :`<div class="actions sans-trait"><div><button type="button" class="btn danger tert" id="del" hidden></button></div><div><button type="button" class="btn primary" id="t-ok">Ajouter la tâche</button></div></div>`}`,
     {onDelete:()=>{ S.taches.splice(S.taches.indexOf(t),1); render(); sauver("taches",`Tâches : supprimer « ${t.tache} »`); }});
   /* Recherche de plante : suggestions filtrées sous le champ, sans tenir compte des accents. */
   /* Zone ou plante liée : liste déroulante avec recherche (zones d'abord, puis plantes avec leur zone) ; « Aucune » retire le lien. */
@@ -1381,9 +1402,14 @@ function editTache(i,plante="",zone=""){
     $("#t-qui").value=on?b.dataset.quiV:"";
     document.querySelectorAll("#dlg-form [data-qui-v]").forEach(x=>x.setAttribute("aria-pressed",on&&x===b)); $("#dlg-form").dispatchEvent(new Event("input")); };
   /* Question à Claude sur la tâche : comme pour les plantes, on copie le début du message puis on ouvre le projet. */
-  $("#t-claude")&&($("#t-claude").onclick=async()=>{ const q=`À propos de la tâche « ${t.tache} »${t.plante?` (${t.plante})`:""} : `;
-    try{ await navigator.clipboard.writeText(q); toast("Nom de la tâche copié : colle-le dans ta question"); }catch(_){}
-    open(LIEN_CLAUDE,"_blank","noopener"); });
+  /* Demander à Claude, façon commentaire : la question tapée est copiée avec le nom de la tâche, puis le projet s'ouvre (pas d'API payante). */
+  if(t){ const envoyer=async()=>{ const txt=$("#t-q").value.trim(); if(!txt){ toast("Écris ta question d'abord"); return $("#t-q").focus(); }
+      const lien=t.plante||t.zone, q=`À propos de la tâche « ${t.tache} »${lien?` (${lien})`:""} : ${txt}`;
+      try{ await navigator.clipboard.writeText(q); toast("Question copiée : colle-la dans Claude"); }catch(_){ toast("Copie impossible : recopie ta question dans Claude"); }
+      open(LIEN_CLAUDE,"_blank","noopener"); $("#t-q").value=""; pousse($("#t-q")); };
+    $("#t-q-send").onclick=envoyer;
+    $("#t-q").addEventListener("input",e=>{ e.stopPropagation(); pousse(e.target); });
+    $("#t-q").addEventListener("keydown",e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); envoyer(); } }); }
   /* Terminer (ou rouvrir) la tâche depuis sa fiche, puis fermer la fiche. */
   $("#t-fini")&&($("#t-fini").onclick=()=>{ const on=t.statut!=="fait"; marquerFait(t,on);
     sauver("taches",`Tâches : « ${t.tache} » ${on?"faite":"rouverte"}`); renderTaches(); renderPlantes(); $("#dlg").close(); toast(on?"Tâche terminée":"Tâche rouverte"); });
