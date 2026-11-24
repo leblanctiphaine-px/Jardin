@@ -536,7 +536,11 @@ header{justify-content:space-between;align-items:center}
 .prop-v .chev{flex:none;color:var(--muted);opacity:0;transition:opacity .15s}
 .prop-v:hover .chev,.prop-v:focus-within .chev{opacity:1}
 .prop-sel select{appearance:none;-webkit-appearance:none;background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;cursor:pointer;flex:1;min-width:0}
-.prop-sel .chev{position:absolute;right:8px;pointer-events:none}
+.prop-sel:hover,.prop-sel:focus-within{background:none}
+.prio-tag{position:relative;display:inline-flex;align-items:center;gap:4px;padding-right:6px!important;cursor:pointer}
+.prio-tag select{color:inherit;font:inherit;padding-right:14px;flex:none;field-sizing:content}
+.prio-tag select option{color:var(--ink);background:var(--surface)}
+.prio-tag .chev-t{position:absolute;right:6px;pointer-events:none}
 .prop-date{cursor:pointer}
 .prop-date input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;padding:0}
 .prop-date #t-date-txt{flex:1}
@@ -1193,6 +1197,8 @@ function editPlante(i){
 const estUrgente=t=>(t.priorite==="urgent"&&(!t.date||t.date<=aujourdhui()))||!!(t.date&&t.date<aujourdhui());
 const prioEff=t=>t.date&&t.date>aujourdhui()?"bientôt":estUrgente(t)?"urgent":t.priorite;
 const PRIO=["urgent","moyen","bas","réflexion"];
+/* Couleur du tag de priorité dans la fiche : urgent rouge, moyen orange, bas et réflexion neutres. */
+const PRIO_TAG={urgent:"bad",moyen:"warn"};
 const FERMEES=["fait","abandonné"];
 const GARDE_JOURS=30, TAG_FAIT=/\s*(—\s*)?fait le (\d{2})\/(\d{2})\/(\d{4})/;
 function dateFait(t){const m=t.notes.match(TAG_FAIT);return m?new Date(+m[4],+m[3]-1,+m[2]):null}
@@ -1341,7 +1347,7 @@ function editTache(i,plante="",zone=""){
     ${t&&t.cree_par?`<p class="signature">Initiée par ${esc(t.cree_par)}</p>`:""}
     <div class="props">
       <div class="prop"><span class="prop-l"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg><span class="vh">Priorité</span></span>
-        <span class="prop-v prop-sel">${sel("t-prio",PRIO,base.priorite)}<svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></div>
+        <span class="prop-v prop-sel"><span class="pill prio-tag ${PRIO_TAG[base.priorite]||""}" id="t-prio-tag">${sel("t-prio",PRIO,base.priorite)}<svg class="chev-t" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></span></div>
       <div class="prop"><span class="prop-l"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg><span class="vh">Rappel</span></span>
         <span class="prop-v prop-date"><span id="t-date-txt"></span><input id="t-date" type="date" value="${esc(base.date||"")}" aria-label="Date de rappel"></span>
         <div class="date-pop" id="t-date-pop" hidden><input id="t-date-edit" type="date" aria-label="Changer la date"><button type="button" class="btn danger tert" id="t-date-x">Retirer la date</button></div></div>
@@ -1378,6 +1384,7 @@ function editTache(i,plante="",zone=""){
   const ouvrir=on=>{ $("#t-combo-pop").hidden=!on; $("#t-combo-btn").setAttribute("aria-expanded",on); if(on){ $("#t-combo-q").value=""; listeLien(); $("#t-combo-q").focus(); } };
   const choisir=(type,v)=>{ $("#t-plante").value=type==="plante"?v:""; $("#t-zone").value=type==="zone"?v:""; majVal(); ouvrir(false); $("#dlg-form").dispatchEvent(new Event("input")); };
   majVal();
+  $("#t-prio").addEventListener("change",e=>{ $("#t-prio-tag").className="pill prio-tag "+(PRIO_TAG[e.target.value]||""); });
   /* Date : texte lisible (« Ajouter une date » si vide), le sélecteur natif s'ouvre au toucher. */
   /* Rappel : vide, un toucher ouvre directement le sélecteur de date ; rempli, il ouvre un petit panneau pour changer la date ou la retirer. */
   const majDate=()=>{ const d=$("#t-date").value; $("#t-date-txt").innerHTML=d?`<span class="prop-k">Rappel</span>${esc(dateLongue(d))}`:`<span class="vide">Ajouter un rappel</span>`;
